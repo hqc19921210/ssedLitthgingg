@@ -1,0 +1,52 @@
+<ons-page id="HomeTab" ng-controller="homeCtrl">
+	<ons-row>
+		<ons-col>
+			<select class="select-input select-input--underbar" placeholder="设备状态"  ng-model="quereyData.seleStatus" >
+				<option  value="1">全部</option>
+				<option  value="1">在线</option>
+				<option  value="0">离线</option>
+			</select>
+		</ons-col>
+		<ons-col>
+			<ons-search-input placeholder="设备名称或编号"></ons-search-input>
+		</ons-col>
+		<ons-col vertical-align="right" style="text-align: right;">
+			<button class="button--cta" btn-loading="loadCtl.search" ng-click="init()">搜索</button>
+		</ons-col>
+	</ons-row>
+    <p style="text-align: center;" >
+    
+      <ul class="list" >
+		<li class="list-item" ng-repeat="eqm in equipments">
+		<div class="list-item__left">
+		<img class="list-item__thumbnail" style="width:20px; height:20px;" src="{{getStatusImg(eqm.online)}}" >
+		</div>
+		
+		<div class="list-item__center">
+		<div class="list-item__title">{{ eqm.name }}</div>
+		<div class="list-item__subtitle">{{ eqm.devId}}</div>
+		</div>
+		
+		<div class="list-item__right">
+		<span class="toolbar-button"><i class="ion-ios-information list-item__icon"></i></span>
+		</div>
+		</li>
+		
+		</ul>
+		<!-- 分页 -->
+		<ons-bottom-toolbar>
+			<ons-row>
+			   <ons-col vertical-align="left"> 
+				<ons-toolbar-button ng-click="nextPage(currPage-1)">上一页</ons-toolbar-button>
+				</ons-col>
+			   <ons-col vertical-align="center" style="text-align: center;">
+			   		第 {{ currPage }} 页 
+			   		<div class="card__content card--material__content">共 {{ total }} 条记录，{{ pages }} 页</div>
+			   </ons-col>
+			   <ons-col vertical-align="right" style="text-align: right;">
+				<ons-toolbar-button ng-click="nextPage(currPage+1)">下一页</ons-toolbar-button>
+				</ons-col>
+			</ons-row>
+		</ons-bottom-toolbar>
+    </p>
+  </ons-page>

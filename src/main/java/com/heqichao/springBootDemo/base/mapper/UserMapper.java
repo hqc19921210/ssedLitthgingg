@@ -16,20 +16,22 @@ import com.heqichao.springBootDemo.base.entity.User;
  */
 public interface UserMapper {
 	
-	@Select("SELECT id,parent_uid parentId,account,company,contact,phone,fax,email,site,remark,competence"
-			+ " FROM users "
-			+ "where ACCOUNT = #{account}  "
-			+ "and PASSWORD = #{password} "
-			+ "and valid = 'N' ")
+	@Select("SELECT u.id,u.parent_uid parentId,u.account,u.company,u.contact,u.phone,u.fax,u.email,u.site,u.remark,"
+			+ "case competence when 4 then (select u2.title_name from users u2 where u2.id = u.parent_uid) else u.title_name end as title_name,"
+			+ " u.competence"
+			+ " FROM users u "
+			+ " where u.account = #{account}  "
+			+ " and u.password = #{password} "
+			+ " and u.valid = 'N' ")
 	public User getUserInfo(@Param("account") String account,@Param("password") String password);
 
-	@Select("SELECT id,parent_uid parentId,account,company,contact,phone,fax,email,site,remark,competence"
+	@Select("SELECT id,parent_uid parentId,account,company,contact,phone,fax,email,site,remark,title_name,competence"
 			+ " FROM users "
 			+ "where id = #{uid}  "
 			+ "and valid = 'N' ")
 	public User getUserInfoById(@Param("uid")Integer uid);
 	
-	@Select("<script>SELECT id,parent_uid parentId,account,company,contact,phone,fax,email,site,remark,competence"
+	@Select("<script>SELECT id,parent_uid parentId,account,company,contact,phone,fax,email,site,remark,title_name,competence"
 			+ " FROM users "
 			+ "where valid = 'N'  "
 			+ "<if test=\"competence == 3 \"> and ( id = #{id} or parent_uid = #{id} ) </if>"
@@ -55,17 +57,17 @@ public interface UserMapper {
 	@Select("select id from users where ACCOUNT = #{account} and password = #{password} and valid = 'N' limit 1")
 	public Integer checkPassword(@Param("account") String account,@Param("password") String password);
 	
-	@Insert("insert into users (parent_uid,account,password,company,contact,phone,fax,email,site,remark,competence,valid,add_date,udp_uid)"
-			+ " values(#{parentId},#{account},#{password},#{company},#{contact},#{phone},#{fax},#{email},#{site},#{remark},#{competence}, 'N', sysdate(), #{upadteUID}) ")
+	@Insert("insert into users (parent_uid,account,password,company,contact,phone,fax,email,site,remark,title_name,competence,valid,add_date,udp_uid)"
+			+ " values(#{parentId},#{account},#{password},#{company},#{contact},#{phone},#{fax},#{email},#{site},#{remark},#{titleName},#{competence}, 'N', sysdate(), #{upadteUID}) ")
 	public int insertUser(User user);
 	
 	@Update("update users set password=#{password}, udp_date = sysdate(), udp_uid = #{udid} where id=#{id} and valid = 'N' ")
 	public int updateUserPassword(@Param("id")Integer uid,@Param("udid")Integer udid,@Param("password") String password);
 	
-	@Update("update users set company=#{company}, contact=#{contact}, phone=#{phone}, fax=#{fax}, email=#{email}, site=#{site}, remark=#{remark}, udp_date = sysdate(), udp_uid = #{id} where id=#{id} and valid = 'N' ")
+	@Update("update users set company=#{company}, contact=#{contact}, phone=#{phone}, fax=#{fax}, email=#{email}, site=#{site}, remark=#{remark},title_name=#{titleName}, udp_date = sysdate(), udp_uid = #{id} where id=#{id} and valid = 'N' ")
 	public int updateUserInfo(User user);
 	
-	@Update("update users set company=#{company},parent_uid=#{parentId},competence=#{competence}, contact=#{contact}, phone=#{phone}, fax=#{fax}, email=#{email}, site=#{site}, remark=#{remark}, udp_date = sysdate(), udp_uid = #{upadteUID} where id=#{id} and valid = 'N' ")
+	@Update("update users set company=#{company},parent_uid=#{parentId},competence=#{competence}, contact=#{contact}, phone=#{phone}, fax=#{fax}, email=#{email}, site=#{site}, remark=#{remark},title_name=#{titleName}, udp_date = sysdate(), udp_uid = #{upadteUID} where id=#{id} and valid = 'N' ")
 	public int updateUserById(User user);
 	
 	@Update("update users set  udp_date = sysdate(), udp_uid = #{udid}, valid = 'D' where id=#{id} and valid = 'N' ")

@@ -211,6 +211,7 @@ public class DataLogServiceImpl implements DataLogService {
                     dataDetail.setLogId(dataLog.getId());
                 }
                 dataDetailMapper.save(dataDetails);
+                equipmentService.updateEquDataPointDate(dataDetails, date);
             }
             //保存报警数据
             if(alarmLogs.size()>0){

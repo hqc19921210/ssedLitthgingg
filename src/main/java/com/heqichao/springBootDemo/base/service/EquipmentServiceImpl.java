@@ -84,9 +84,11 @@ public class EquipmentServiceImpl implements EquipmentService {
 		Integer uid = ServletUtil.getSessionUser().getId();
 		Integer pid = ServletUtil.getSessionUser().getParentId();
 		PageUtil.setPage();
+		//构建正确total的pageInfo
 		PageInfo pageInfo = new PageInfo(eMapper.getEquipmentsForDevLstOrderBy(cmp,uid,pid,gid,eid,type,seleStatus));
 		List<Map<String,Object>> newLst = new ArrayList<Map<String,Object>>();
 //    	List<Equipment> eLst = eMapper.getEquipmentsForDevLstOrderBy(cmp,uid,pid,gid,eid,type,seleStatus);
+		//重构返回数据格式
     	List<Equipment> eLst = (List<Equipment>)pageInfo.getList();
     	List<DataDetail> pLst =eMapper.queryDetailPointList(eLst,cmp,uid,pid);
 //    	// 将list转为Map,这里key一定要为唯一值
@@ -119,9 +121,16 @@ public class EquipmentServiceImpl implements EquipmentService {
     		newLst.add(newClu);
     	}
 //        PageInfo pageInfo = new PageInfo(newLst);
+    	//将重构的数据set回pageInfo
     	pageInfo.setList(newLst);
         return pageInfo;
     }
+    
+    @Override
+    public void updateEquDataPointDate(List<DataDetail> list,Date addDate) {
+    	eMapper.updateEquDataPointDate(list, addDate);
+    }
+    // 设备匹配数据点
     public Map<String,Object> toEquipmentShow(Equipment equ,DataDetail point){
     	Map<String,Object> newClu= new HashMap<String,Object>();
     	if(equ == null) {

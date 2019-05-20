@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="utf-8">
+  <link href="wechat/css/onsenui.min.css" rel="stylesheet">
+  <link href="wechat/css/onsen-css-components.min.css" rel="stylesheet">
+  <link href="assets/plugins/datatables/buttons.bootstrap.min.css" rel="stylesheet" type="text/css" />
+  <link href="assets/css/menu.css" rel="stylesheet" type="text/css">
+  
+  <script type="text/javascript" src="static/js/angular-1.5.8.min.js"></script>
+  <script type="text/javascript" src="wechat/js/onsenui.min.js"></script>
+  <script type="text/javascript" src="wechat/js/angularjs-onsenui.min.js"></script>
+  <!-- Controllers -->
+  <script type="text/javascript" src="app/wechatApp.js"></script>
+  <script type="text/javascript" src="wechat/controller/homeController.js"></script>
+  <script type="text/javascript" src="wechat/controller/indexController.js"></script>
+  <!-- Directives -->
+  <script type="text/javascript" src="wechat/directive/wechatBtnLoadDirectives.js"></script>
+</head>
+
+<body ng-app="wechatApp">
+	<ons-navigator swipeable var="myNavigator" >
+		<ons-page ng-controller="indexCtrl">
+		  <ons-toolbar>
+		    <div class="center">物联网监测平台</div>
+		  </ons-toolbar>
+		
+		  <ons-tabbar swipeable position="auto" ons-prechange="selectedTab($event)" >
+		    <ons-tab page="wechat/modules/home.html" label="设备" icon="ion-cube" size="32px" active>
+		    </ons-tab>
+		    <ons-tab page="wechat/modules/data.html" label="历史数据" icon="fa-list" size="32px" >
+		    </ons-tab>
+		    <ons-tab page="wechat/modules/cmd.html" label="历史报警" icon="md-notifications" size="32px" >
+		    </ons-tab>
+		    <ons-tab page="wechat/modules/user.html" label="设置"  icon="md-settings" size="32px">
+		    </ons-tab>
+		  </ons-tabbar>
+		</ons-page>
+	</ons-navigator>
+</body>
+</html>

@@ -4,6 +4,7 @@ import com.github.pagehelper.PageInfo;
 import com.heqichao.springBootDemo.base.entity.Equipment;
 import com.heqichao.springBootDemo.base.entity.UploadResultEntity;
 import com.heqichao.springBootDemo.base.param.ResponeResult;
+import com.heqichao.springBootDemo.module.entity.DataDetail;
 
 import java.util.Date;
 import java.util.List;
@@ -118,4 +119,11 @@ public interface EquipmentService {
 	ResponeResult getEquSelectListByAppId();
 
 	Equipment getEquById(String devId);
+
+	/**
+	 * 更新设备数据点时间
+	 * @param list
+	 * @param addDate
+	 */
+	void updateEquDataPointDate(List<DataDetail> list, Date addDate);
 }

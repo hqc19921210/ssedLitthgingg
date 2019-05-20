@@ -33,6 +33,7 @@ public class User implements Serializable {
     private String email;
     private String site;
     private String remark;
+    private String titleName;
     private String status;
     private Integer competence;
     
@@ -60,6 +61,7 @@ public class User implements Serializable {
     	this.email = StringUtil.getStringByMap(map,"email");
     	this.site = StringUtil.getStringByMap(map,"site");
     	this.remark = StringUtil.getStringByMap(map,"remark");
+    	this.titleName = StringUtil.getStringByMap(map,"titleName");
     	this.competence = StringUtil.objectToInteger(StringUtil.getStringByMap(map,"competence"));
     }
     
@@ -149,6 +151,13 @@ public class User implements Serializable {
 	}
 	public void setRemark(String remark) {
 		this.remark = remark;
+	}
+	
+	public String getTitleName() {
+		return titleName;
+	}
+	public void setTitleName(String titleName) {
+		this.titleName = titleName;
 	}
 	public String getStatus() {
 		return status;
