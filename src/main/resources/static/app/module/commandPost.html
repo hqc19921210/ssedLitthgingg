@@ -1,0 +1,130 @@
+<div class="container" >
+<!-- Page-Title -->
+          <div class="row">
+              <div class="col-sm-12">
+                  <h4 class="pull-left page-title"><b>命令下发</b></h4>
+                  <ol class="breadcrumb pull-right">
+                      <li><a href="#">首页</a></li>
+                      <li ><a href="#/module/equView">设备列表</a></li>
+                      <li class="active">命令下发</li>
+                  </ol>
+              </div>
+          </div>
+		<div class="row" >
+		<div class="col-md-8 col-sm-8 col-lg-8">
+			<div class="panel panel-default">
+			<div class="panel-heading">
+                            <h3 class="panel-title">设备：{{equInfo.devId}}</h3>
+                        </div>
+				<div class="panel-body">
+                               <div class="row m-t-10" style="overflow: auto;">
+                               <table class="table  table-bordered table-striped" id="cmdtable-editable" data-ng-init="loadToggle()">
+                                   <thead>
+                                   <tr>
+                                       <th><input  type="checkbox" checked="true" ng-model="select_all" ng-change="selAll()">
+                                            </th>
+                                       <th>命令名称</th>
+                                       <th>命令类型</th>
+                                       <th>数值类型</th>
+                                       <th>单位</th>
+                                       <th>参数值</th>
+                                       <th>备注</th>
+                                   </tr>
+                                   </thead>
+                                   <tbody>
+
+                                   <tr class="gradeU" ng-repeat="entity in cmdlist">
+                                       <td><input  type="checkbox" ng-model="checkboxList[$index]" checked="checkboxList[$index]"></td>
+                                       <td>{{ entity.attrName }}</td>
+                                       <td>{{ entity.dataName }}</td>
+                                       <td>{{ entity.valueName }}</td>
+                                       <td>{{ entity.unit }}</td>
+                                       <td class="actions">
+											<input type="datetime-local" class="form-control" style="z-index: 1;border: 1px solid #25abde;" step = 1  ng-model="$parent.entity.param" ng-if="'DATE_TYPE'==entity.dataType" >
+                                          <!--  <input type="text" class="form-control" style="border: 1px solid #25abde;" ng-model="$parent.entity.param" maxlength="20"  placeholder="YYYY/MM/DD hh:mm:ss" ng-if="'DATE_TYPE'==entity.dataType"> -->
+                                           <span class="help-inline" ng-if="'DATE_TYPE'==entity.dataType" style="color:gray;" >输入格式: YYYY/MM/DD hh:mm:ss</span>
+                                           <input type="number" class="form-control" style="border: 1px solid #25abde;" ng-model="$parent.entity.param" min="0"  max="2147483647" placeholder="请输入整数" ng-if="'INT_TYPE'==entity.dataType">
+                                           <span class="help-inline" ng-if="'INT_TYPE'==entity.dataType" style="color:gray;" >取值范围: {{ !entity.numMin ? '0' : entity.numMin }}-{{ entity.numMax }}</span>
+                                           <div ng-if="'SWITCH_TYPE'==entity.dataType" >
+                                           		<div class="radio radio-info radio-inline">
+		                                            <input type="radio"  value=true ng-model="$parent.entity.param" >
+		                                            <label style="color:#25abde;"> Turn On </label>
+		                                        </div>
+		                                        <div class="radio radio-inline">
+		                                            <input type="radio"  value=false ng-model="$parent.entity.param" >
+		                                            <label > Turn Off </label>
+		                                        </div>
+                                           </div>
+                                            <select ng-if="'ENUMERATION_TYPE'==entity.dataType" class="form-control"   ng-model="$parent.entity.param" ng-options="a.key  for a in $parent.entity.eumSelect | orderBy: ['value'] track by a.key" >
+											</select>  
+                                       </td>
+                                       <td>{{ entity.memo }}</td>
+                                   </tr>
+
+
+                                   </tbody>
+                               </table>
+                               </div>
+                                <div class="panel-body">
+                                    <div class="row m-t-10">
+                                        <button  class="btn btn-primary waves-effect waves-light" btn-loading="loading" ng-click="save()">发送</button>
+                                        <button  class="btn btn-primary waves-effect waves-light" btn-loading="loading" ng-click="cancel()">取消</button>
+                                    </div>
+								</div>
+
+                      </div>
+			</div>
+		</div>
+		<div class="col-md-8 col-sm-8 col-lg-4">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">设备信息</h3>
+                        </div>
+                        <div class="panel-body">
+                                <div class="form-group">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <div><strong>设备名称：</strong><span class=" about-info-p text-muted"  ng-bind="equInfo.name"></span></div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <div><strong>设备类型：</strong><span class=" about-info-p text-muted"  ng-bind="equInfo.typeName"></span></div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <div><strong>使用模板：</strong><span class=" about-info-p text-muted"  ng-bind="equInfo.modelName"></span></div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12" >
+                                        <div class="form-group" ng-if="!!equInfo.appName">
+                                            <div><strong>所属应用：</strong><span class=" about-info-p text-muted"  ng-bind="$parent.equInfo.appName"></span></div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <div><strong>验证码：</strong><span class=" about-info-p text-muted"  ng-bind="equInfo.verification"></span></div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <div><strong>厂商ID：</strong><span class=" about-info-p text-muted"  ng-bind="equInfo.supportCode"></span></div>
+                                        </div>
+                                    </div>
+
+
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <div><strong>厂商名称：</strong><span class=" about-info-p text-muted"  ng-bind="equInfo.supporter"></span></div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                        </div>
+                    </div>
+
+                </div>
+		</div>
+</div>

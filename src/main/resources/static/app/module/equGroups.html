@@ -1,0 +1,137 @@
+
+
+<div class="container">
+
+                        <!-- Page-Title -->
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <h4 class="pull-left page-title"><b>设备分组</b></h4>
+                                <ol class="breadcrumb pull-right">
+                                    <li><a href="#">首页</a></li>
+                                    <li class="active">设备分组</li>
+                                </ol>
+                            </div>
+                        </div>
+                        
+						 <div class="row">
+						<div class="col-md-12">
+							<div class="panel panel-default" ng-show="dataOnReady">
+								<div class="panel-heading" ng-if="edit_cmp">
+				                    <button  type="button" class="btn btn-primary waves-effect waves-light" data-toggle="modal" data-target="#grp-add-modal" ng-click="$parent.addGrpClick()" >添加 <i class="fa fa-plus"></i></button>
+				                    <button id="dialog-equ-group"  data-toggle="modal" data-target="#grp-add-btn" style="display: none" ></button>
+				                </div>
+								<div class="panel-body">
+									<div class="dev_group_list" style="width: 95%;margin: 0 auto;">
+							           <tree-view tree-data="tree" add-group="addGroup($item)" edit-group="editGroup($item)" del-group="delGroup($item)" ></tree-view>
+							         </div>
+							    </div>
+							 </div>
+							 <div class="panel panel-default" ng-show="!dataOnReady">
+								 <div class="panel-body">
+										<div class="ex-page-content text-center">
+											<h3>Loading...</h3>
+								
+										</div>
+								</div>
+								</div>
+					  </div>
+	
+	<div id="grp-add-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="addGrpModal" aria-hidden="true" style="display: none">
+         <div class="modal-dialog"> 
+             <div class="modal-content"> 
+                 <div class="modal-header"> 
+                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true" ng-click="closeAddGrpModal()">×</button> 
+                     <h4 class="modal-title">添加分组</h4> 
+                 </div> 
+                 <div class="panel-body">
+                 <form class="form-horizontal" ng-submit="addGrp()" name="addGrpForm" novalidate="novalidate">
+                 
+                     <div class="form-group "> 
+                              <label  class="col-md-2 control-label ">分组名称<span style="color : red">*</span></label>  
+							  <div class="col-md-9">
+	                                <input type="text" class="form-control" name="name" ng-model="addFrom.name" required >
+                              </div>
+                         </div>
+                     <div class="form-group "> 
+                              <label  class="col-md-2 control-label ">上级节点<span style="color : red">*</span></label>  
+							  <div class="col-md-9">
+	                               <input id="btn_easyui_combotree" class="easyui-combotree"  style="display: none;">
+                              </div>
+                         </div>
+                     <div class="form-group "> 
+                              <label  class="col-md-2 control-label ">排序</label>  
+							  <div class="col-md-9">
+	                                <input type="number" class="form-control" name="grpSort" placeholder="值越小越排序越靠前，最小值为1" min="1" ng-model="addFrom.grpSort"  >
+                              </div>
+                         </div>
+                     <div class="form-group "> 
+							  <div class="col-md-6 control-label">
+			                     <button type="submit" class="btn btn-info waves-effect waves-light"  ng-disabled="addGrpForm.$invalid" btn-loading="loadCtl.addGrp">保存并添加</button> 
+			                     <button id="close-add-equ-modal" type="button" class="btn btn-default waves-effect" data-dismiss="modal" ng-click="closeAddGrpModal()" >关闭</button> 
+                              </div>
+                     </div>
+                 </form> 
+                 </div>
+             </div> 
+         </div>
+     </div>
+     
+	<div id="grp-add-btn" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="addGrpModal" aria-hidden="true" style="display: none">
+         <div class="modal-dialog"> 
+             <div class="modal-content"> 
+                 <div class="modal-header"> 
+                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true" ng-click="clearAddGrpBtn()">×</button> 
+                     <h4 class="modal-title" ng-if="dialog_status == 'A'">添加分组</h4> 
+                     <h4 class="modal-title" ng-if="dialog_status == 'E'">编辑分组</h4> 
+                 </div> 
+                 <div class="panel-body">
+                 <form class="form-horizontal" ng-submit="addGrpBtn()" name="addGrpBtnForm" novalidate="novalidate">
+                 
+                     <div class="form-group "> 
+                              <label  class="col-md-2 control-label ">分组名称<span style="color : red">*</span></label>  
+							  <div class="col-md-9">
+	                                <input type="text" class="form-control" name="name" ng-model="addBtnFrom.name" required >
+                              </div>
+                         </div>
+                     <div class="form-group "> 
+                              <label  class="col-md-2 control-label ">上级节点<span style="color : red">*</span></label>  
+							  <div class="col-md-9">
+	                               <input id="row_easyui_combotree" class="easyui-combotree"  style="display: none;">
+                              </div>
+                         </div>
+                     <div class="form-group "> 
+                              <label  class="col-md-2 control-label ">排序</label>  
+							  <div class="col-md-9">
+	                                <input type="number" class="form-control" name="grpSort" placeholder="值越小越排序越靠前，最小值为1" min="1" ng-model="addBtnFrom.grpSort"  >
+                              </div>
+                         </div>
+                     <div class="form-group "> 
+							  <div class="col-md-6 control-label">
+			                     <button type="submit" class="btn btn-info waves-effect waves-light"  ng-disabled="addGrpBtnForm.$invalid" btn-loading="loadCtl.addGrp">保存</button> 
+			                     <button id="close-edt-btn" type="button" class="btn btn-default waves-effect" data-dismiss="modal"  >关闭</button> 
+                              </div>
+                     </div>
+                 </form> 
+                 </div>
+             </div> 
+         </div>
+     </div>
+
+
+ </div>
+<script type="text/ng-template" id="treeView.html" class="ng-scope">
+  <ul>
+    <li ng-repeat="item in treeData" ng-include="'treeItem.html'"></li>
+  </ul>
+</script>
+<script type="text/ng-template" id="treeItem.html" class="ng-scope">
+  <span class="tree_ico" ng-class="{'leaf-node': isLeaf(item), 'expand-node': !isLeaf(item) && item.isExpand,'unexpand-node': !isLeaf(item) && !item.isExpand}" ng-click="toggleExpandStatus(item)"></span>
+  <span ng-class="{'tree_folder': !isLeaf(item) && !item.isExpand,'tree_file': isLeaf(item), 'expand_folder': !isLeaf(item) && item.isExpand,}"></span>
+  <a ng-if="edit_cmp" class="operation" ng-click="warpCallback('delGroup', item, $event)" title="删除"><i class="fa fa-trash-o"></i></a>
+  <a ng-if="edit_cmp" class="operation" ng-click="warpCallback('editGroup', item, $event)" title="编辑"><i class="fa fa-pencil"></i></a>
+  <a ng-if="edit_cmp" class="operation" ng-click="warpCallback('addGroup', item, $event)" title="添加"><i class="md md-add-box"></i></a>
+  <span>{{item.name}}</span>
+  <ul ng-if="!isLeaf(item)" ng-show="item.isExpand">
+    <li ng-repeat="item in item.children" ng-include="'treeItem.html'"></li>
+  </ul>
+</script>

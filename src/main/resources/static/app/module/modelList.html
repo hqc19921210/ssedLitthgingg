@@ -1,0 +1,111 @@
+<div class="container" >
+    <div class="row">
+        <!--<div class="col-md-12">-->
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">模板列表</h3>
+                </div>
+
+                <div class="panel-body">
+                    <form role="form" class="form-horizontal">
+                        <div class="row">
+                            <div class="col-md-12 col-sm-12 col-xs-12">
+                                <label  class="col-sm-1 control-label">模板名称</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" ng-model="quereyData.model_name" placeholder="模糊搜索">
+                                </div>
+                                <div class="col-sm-2">
+                                    <button class="btn btn-primary   waves-effect waves-light" btn-loading="loading" ng-click="init()">搜索</button>
+
+                                </div>
+                            </div>
+                            <div  class="col-md-12 col-sm-12 col-xs-12 m-t-10">
+                                <div class="col-sm-1"></div>
+                                <div class="col-sm-9" ng-if="$root.edit_cmp">
+                                    <button  class="btn btn-primary waves-effect waves-light" ng-click="addModel()"><i class="fa fa-plus"></i>新建模板</button>
+                                    <button type="button" class="btn btn-primary   waves-effect waves-light" btn-loading="loading" ng-click="exportAll()">全部导出</button>
+                                     <file-upload success-function="uploadSuccess()" url="/service/importModel" name="上传模板"  file-accept="application/vnd.ms-excel"></file-upload>
+                                </div>
+                            </div>
+                        </div>
+
+                       <!-- <div class="row">
+                            <div class="col-md-12 col-sm-12 col-xs-12">
+                                <div  class="col-sm-1 "></div>
+                                <div class="col-sm-11">
+                                    <button type="button" class="btn btn-primary waves-effect waves-light" ng-click="addModel()">新建模板 <i class="fa fa-plus"></i></button>
+                                </div>
+                            </div>
+                        </div>-->
+
+                    </form>
+
+                    <div class="row m-t-10">
+                        <div class="col-md-12 col-sm-12 col-xs-12">
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <thead>
+                                    <tr>
+                                        <th>模板名称</th>
+                                        <th>创建时间</th>
+                                        <th>创建人</th>
+                                        <th>最后修改时间</th>
+                                        <th>最后修改人</th>
+                                        <th ng-if="$root.edit_cmp">操作</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr ng-repeat="entity in data"  >
+                                        <td ng-bind="entity.modelName" ></td>
+                                        <td ng-bind="entity.addDate | date:'yyyy-MM-dd HH:mm:ss'"  ></td>
+                                        <td ng-bind="entity.addName"  ></td>
+                                        <td ng-bind="entity.udpDate | date:'yyyy-MM-dd HH:mm:ss'"  ></td>
+                                        <td ng-bind="entity.udpName"  ></td>
+                                        <td  ng-if="$root.edit_cmp">
+                                        <!--   <a ng-click="gotoModel(entity)" class="on-default edit-row" style="cursor:pointer"><i class="fa fa-pencil"></i></a>
+                                            &lt;!&ndash;<a ng-click="deleteModel(entity)" class="on-default edit-row" style="cursor:pointer">删除</a>&ndash;&gt;
+                                           &lt;!&ndash; <a class="on-default edit-row"  ng-if="entity.isEdit != true " ng-click="gotoModel(entity)" ><i class="fa fa-pencil"></i></a>&ndash;&gt;
+                                            <a class="on-default remove-row"  ng-click="deleteModel(entity)"><i class="fa fa-trash-o" style="color: #ef5350"></i></a>
+-->
+                                            <button class="btn btn-icon waves-effect waves-light btn-info btn-sm m-b-5" ng-click="gotoModel(entity)">
+                                                <i class="fa fa-pencil" style="color:  #fff;"></i>
+                                            </button>
+
+                                            <button class="btn btn-icon waves-effect waves-light btn-info btn-sm m-b-5" ng-click="exportModel(entity)">
+                                                <i class="fa  fa-download" style="color:  #fff;"></i>
+                                            </button>
+
+                                            <button class="btn btn-icon waves-effect waves-light btn-danger btn-sm m-b-5" ng-click="deleteModel(entity)">
+                                                <i class="fa fa-trash-o" style="color:  #fff;"></i>
+                                            </button>
+
+                                        </td>
+                                    </tr>
+
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- 分页 -->
+                       <!-- <div class="col-md-12 col-sm-12 col-xs-12">
+                            <div class="" style="text-align: center">
+                                <ul class="pagination m-b-5">
+                                    <li ng-repeat="obj in pageArr">
+                                        <a ng-if="obj.show" ng-click="changePage(obj.num)"  ng-class="{true:'page-put'}[quereyData.page==obj.num]" ng-bind="obj.num"></a>
+                                        <a ng-if="obj.hide" >...</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>-->
+                        <page-info pages="pages" curpage="quereyData.page" total="total" change="changePage(page)"></page-info>
+                    </div>
+                </div>
+            </div>
+<!--        </div>-->
+
+    </div>
+
+
+</div>

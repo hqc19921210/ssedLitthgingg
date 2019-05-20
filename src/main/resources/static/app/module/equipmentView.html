@@ -1,0 +1,223 @@
+ <div class="container" >
+
+<!-- Page-Title -->
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <h4 class="pull-left page-title"><b>设备列表</b></h4>
+                                <ol class="breadcrumb pull-right">
+                                    <li><a href="#">首页</a></li>
+                                    <li class="active">设备列表</li>
+                                </ol>
+                            </div>
+                        </div>
+	
+	<div class="row">
+		<div class="col-md-12">
+			<div class="panel panel-default">
+				<div class="panel-body">
+				<form role="form" class="form-horizontal" >
+                        <div class="row">
+                            <div class="col-md-12 col-sm-12 col-xs-12">
+                                <label  class="col-sm-2 control-label">设备名称或编号：</label>
+                                <div class="col-sm-3">
+                                    <input type="text" class="form-control" ng-model="quereyData.eid" placeholder="模糊搜索">
+                                </div>
+                                <label  class="col-sm-2 control-label">设备类型：</label>
+                                <div class="col-sm-2">
+                                     <select class="form-control"  ng-model="quereyData.type" >
+									<option  value="L">LORA</option>
+									<option  value="N">NBIOT</option>
+									<option  value="G">2G</option>
+									</select>
+                                </div>
+                                <label  class="col-sm-1 control-label">状态：</label>
+                                <div class="col-sm-2">
+                                    <select class="form-control"  ng-model="quereyData.seleStatus" >
+									<option  value="1">在线</option>
+									<option  value="0">离线</option>
+								</select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row-margin-top">
+                            <div class="col-md-12 col-sm-12 col-xs-12">
+                            <button type="button" class="btn btn-info dropdown-toggle waves-effect waves-light" ng-if="edit_cmp" data-toggle="modal" data-target="#file-upload-modal">批量导入</button>
+                                <div class="btn-group">
+                                    <button type="button" class="btn btn-info dropdown-toggle waves-effect waves-light" data-toggle="dropdown" aria-expanded="false">批量导出<span class="caret"></span></button>
+                                    <ul class="dropdown-menu" role="menu">
+                                        <li><a ng-click="exportLora()" >导出Lora设备</a></li>
+                                        <li><a ng-click="exportNbiot()" >导出Nbiot设备</a></li>
+                                        <li><a >导出GPRS设备</a></li>
+                                    </ul>
+                                </div>
+	                             <a href="#/module/equAdd" type="button" ng-if="edit_cmp" class="btn btn-primary waves-effect waves-light" >新增设备 <i class="fa fa-plus"></i></a>
+                                <button  class="btn btn-primary waves-effect waves-light" type="submit"  btn-loading="loadCtl.search" ng-click="init()">搜索</button>
+                                <button class="btn btn-default waves-effect" type="button" ng-click="resetSearch()">重置</button>
+                            </div>
+                        </div>
+                    </form>
+					<div class="row">
+						<div class="col-md-12 col-sm-12 col-xs-12">
+							<div class="table-responsive">
+								<table class="table">
+									<thead>
+									<tr>
+										<th>状态</th>
+										<th>设备名称</th>
+										<th>设备编号</th>
+										<th>设备类型</th>
+										<th>数据模板</th>
+										<th>所属分组</th>
+										<th>所属用户</th>
+										<th>修改时间</th>
+										<th ng-if="edit_cmp">操作</th>
+									</tr>
+									</thead>
+									<tbody>
+									<tr ng-repeat="eqm in equipments"> 
+									<td><img ng-src="{{getStatusImg(eqm.online)}}"/></td>
+									<td>{{ eqm.name }}</td>
+									<td>{{ eqm.devId}}</td>
+									<td>{{ eqm.typeName }}</td>
+									<td>{{ eqm.modelName }}</td>
+									<td>{{ eqm.groupName }}</td>
+									<td>{{ eqm.uName }}</td>
+									<td>{{ eqm.udpDate }}</td>
+									<td ng-if="edit_cmp"> 
+										<a ng-click="gotoDataLog(eqm.devId)"  class="operation" title="历史数据"><i class="fa  fa-tasks"></i></a>
+										<a ng-click="gotoCommandLog(eqm.devId)" ng-if="eqm.validCMD" class="operation" title="历史命令"><i class="fa  fa-clock-o"></i></a>
+										<a ng-click="gotoCommandPost(eqm.devId)" ng-if="eqm.validCMD" class="operation" title="命令下发"><i class="fa  fa-level-down"></i></a>
+										<a href="javascript:void(0)" class="operation" title="详情" data-toggle="modal" data-target="#equ-info-modal" ng-click="selEquInfo(eqm)"><i class="ion-information-circled"></i></a>
+										<a ng-click="gotoEdit(eqm.devId,eqm.id)" class="operation" title="编辑"><i class="fa fa-pencil"></i></a>
+										<a href="javascript:void(0)" class="operation" ng-click="delEqu(eqm)" title="删除"><i class="fa fa-trash-o"></i></a>
+								   </td>
+									</tr>
+									
+
+									</tbody>
+								</table>
+							</div>
+						</div>
+						 <!-- 分页 -->
+                        <page-info pages="pages" curpage="quereyData.page" change="changePage(page)" total="total"></page-info>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div id="equ-info-modal" class="modal fade" tabindex="-1" role="dialog"  aria-hidden="true" style="display: none">
+         <div class="modal-dialog"> 
+             <div class="modal-content"> 
+                 <div class="modal-header"> 
+                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true" ng-click="closeEquModal()">×</button> 
+                     <h5 class="modal-title">设备详情</h5> 
+                 </div> 
+                 <div class="modal-body" >
+               		<div class="form-group clearfix">
+				        <label class="col-sm-5 control-label ng-binding" style="text-align: right">设备名称：</label>
+				        <div class="col-sm-7 ng-binding">{{seleItem.name}}</div>
+			        </div>
+               		<div class="form-group clearfix">
+				        <label class="col-sm-5 control-label ng-binding" style="text-align: right">设备编号：</label>
+				        <div class="col-sm-7 ng-binding">{{seleItem.devId}}</div>
+			        </div>
+               		<div class="form-group clearfix">
+				        <label class="col-sm-5 control-label ng-binding" style="text-align: right">设备类型：</label>
+				        <div class="col-sm-7 ng-binding">{{seleItem.typeName}}</div>
+			        </div>
+               		<div class="form-group clearfix">
+				        <label class="col-sm-5 control-label ng-binding" style="text-align: right">数据模板：</label>
+				        <div class="col-sm-7 ng-binding">{{seleItem.modelName}}</div>
+			        </div>
+               		<div class="form-group clearfix">
+				        <label class="col-sm-5 control-label ng-binding" style="text-align: right">所属分组：</label>
+				        <div class="col-sm-7 ng-binding">{{seleItem.groupName}}</div>
+			        </div>
+               		<div class="form-group clearfix" ng-if="seleItem.typeCd=='N'">
+				        <label class="col-sm-5 control-label ng-binding" style="text-align: right">所属应用：</label>
+				        <div class="col-sm-7 ng-binding">{{$parent.seleItem.appName}}</div>
+			        </div>
+               		<div class="form-group clearfix">
+				        <label class="col-sm-5 control-label ng-binding" style="text-align: right">所属用户：</label>
+				        <div class="col-sm-7 ng-binding">{{seleItem.uName}}</div>
+			        </div>
+               		<div class="form-group clearfix">
+				        <label class="col-sm-5 control-label ng-binding" style="text-align: right">设备地址：</label>
+				        <div class="col-sm-7 ng-binding">{{seleItem.address}}<em class="info_em">{{seleItem.site}}</em></div>
+			        </div>
+               		<div class="form-group clearfix">
+				        <label class="col-sm-5 control-label ng-binding" style="text-align: right">验证码：</label>
+				        <div class="col-sm-7 ng-binding">{{seleItem.verification}}</div>
+			        </div>
+               		<div class="form-group clearfix">
+				        <label class="col-sm-5 control-label ng-binding" style="text-align: right">厂商ID：</label>
+				        <div class="col-sm-7 ng-binding">{{seleItem.supportCode}}</div>
+			        </div>
+               		<div class="form-group clearfix">
+				        <label class="col-sm-5 control-label ng-binding" style="text-align: right">厂商名称：</label>
+				        <div class="col-sm-7 ng-binding">{{seleItem.supporter}}</div>
+			        </div>
+               		<div class="form-group clearfix">
+				        <label class="col-sm-5 control-label ng-binding" style="text-align: right">备注：</label>
+				        <div class="col-sm-7 ng-binding">{{seleItem.remark}}</div>
+			        </div>
+                 </div> 
+             </div> 
+         </div>
+     </div>
+	<div id="file-upload-modal" class="modal fade" tabindex="-1" role="dialog"  aria-hidden="true" style="display: none">
+         <div class="modal-dialog"> 
+             <div class="modal-content"> 
+                 <div class="modal-header"> 
+                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true" >×</button> 
+                     <h5 class="modal-title">批量导入</h5> 
+                 </div> 
+                 <div class="modal-body" >
+                 <div class="row" ng-if="!!uploadRes&&uploadRes.length!=0">
+						<div class="col-md-12 col-sm-12 col-xs-12">
+							<div class="table-responsive" >
+								<table class="table table-bordered" >
+									<thead>
+									<tr>
+										<th>EXCEL行号</th>
+										<th>操作结果</th>
+										<th>操作明细</th>
+									</tr>
+									</thead>
+									<tbody>
+									<tr ng-repeat="res in uploadRes"  > 
+									<td>{{ res.resIndex }}</td>
+									<td style="color:{{res.resStatus == 1?'blue':'red'}}">{{ res.resStatus == 1? '添加成功' : '操作失败'}}</td>
+									<td>{{ res.errReason }}</td>
+									</tr>
+									
+
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+					<div class="row" ng-if="!uploadRes||uploadRes.length==0">
+						<div class="col-md-12 col-sm-12 col-xs-12">
+							<div class="panel panel-color panel-purple">
+								<div class="panel-heading">
+					                    <h3 class="panel-title">导入说明</h3>
+					                </div>
+								<div class="panel-body">
+									<p>请严格按照设备类型导入对应设备，导入的EXCEL模板为批量导出的模板，可先导出设备再以此为模板修改后导入</p>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button ng-if="!!uploadRes&&uploadRes.length!=0" class="btn btn-default waves-effect" type="button" ng-click="clearUploadModal()">清空导入记录</button>
+		                <file-upload success-function="uploadSuccess(data)" url="/service/importLora" name="导入LORA"  file-accept="application/vnd.ms-excel"></file-upload>
+		                <file-upload success-function="uploadSuccess(data)" url="/service/importNbiot" name="导入NBIOT"  file-accept="application/vnd.ms-excel"></file-upload>
+		                <file-upload success-function="uploadSuccess(data)" url="/service/importGPRS" name="导入GPRS"  file-accept="application/vnd.ms-excel"></file-upload>
+	                </div>
+                 </div> 
+             </div> 
+         </div>
+     </div>
+     
+</div>

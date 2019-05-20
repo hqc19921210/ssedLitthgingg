@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+	 <title>DEMO</title>
+	</head>
+<script type="text/javascript" src="static/js/angular-1.5.8.min.js"></script>
+<script>
+		var app = angular.module('myApp', []);
+		app.controller('myCtrl', function($scope,$http,$interval) {
+		    $scope.count= 5;
+		    $http.get("service/getDataChange").success(function(data) {
+				console.log(data);
+				$scope.text = data.resultObj;
+			});
+		    $scope.addUser = function() {
+		        $http.post("service/liangPost",{remark:$scope.remark}).success(function(data) {
+					$scope.res = data.resultObj;
+		        });
+				
+		    };
+
+		    $scope.data=[];
+		    $scope.queryAll=function(){
+				$http.post("service/queryLiteAll").success(function(data) {
+					console.log(data);
+					$scope.count=5;
+					$scope.data=data.resultObj;
+				});
+			}
+
+			$scope.deleteAll = function() {
+				$http.post("service/deleteLiteAll").success(function(data) {
+					$scope.data=[];
+				});
+			};
+			$scope.queryAll();
+			$interval(function() {
+				$scope.queryAll();
+			}, 6*1000);
+			$interval(function() {
+				if($scope.count != 0){
+					$scope.count--;
+				}
+				console.log($scope.count);
+			}, 1000);
+
+		    $scope.reset = function() {
+		    	$http.get("service/getDataChange").success(function(data) {
+					$scope.text = data.resultObj;
+					$scope.queryAll();
+				});
+				
+		    };
+		});
+</script>
+<body>
+<div ng-app="myApp" ng-controller="myCtrl">
+		<!-- <p>deviceDataChanged log</p>
+		<textarea rows="10" cols="30">
+		{{text}}
+		</textarea> -->
+		<p><b>ACCEPT:</b></p>
+		<table class="table">
+			<thead>
+			<tr>
+				<th>Data</th>
+				<th>eventTime</th>
+			</tr>
+			</thead>
+			<tbody>
+			<tr ng-repeat="entity in data">
+				<td ng-bind="entity.currenState"></td>
+				<td ng-bind="entity.eventTime"></td>
+			</tr>
+			</tbody>
+		</table>
+		<small>Refresh after {{count}} second</small><br>
+		<button ng-click="queryAll()">Manual refresh</button>
+		<button ng-click="deleteAll()"  type="button" >clean</button>
+		<br><br>
+		<p><b>COMMAND:</b></p>
+		<form ng-submit="addUser()">
+		Time_state:<br>
+		<input type="number" name="remark" ng-model="remark">
+		<br>
+		<input type="submit" value="Issue command">
+		</form> 
+		<!-- <p>result</p>
+		<textarea rows="10" cols="30">
+		{{res}}
+		</textarea> -->
+
+
+</div>
+
+</body>
+</html>

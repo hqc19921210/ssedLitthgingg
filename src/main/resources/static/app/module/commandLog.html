@@ -1,0 +1,59 @@
+<div class="container" >
+ <div class="row">
+             <div class="col-sm-12">
+                 <h4 class="pull-left page-title"><b>历史命令</b></h4>
+                 <ol class="breadcrumb pull-right">
+                     <li><a href="#">首页</a></li>
+                     <li ><a href="#/module/equView">设备列表</a></li>
+                     <li class="active">历史命令</li>
+                 </ol>
+             </div>
+         </div>
+     <div class="row" ng-show="dataOnReady">
+		<div class="col-md-12 col-sm-12 col-xs-12">
+     	<div class="panel panel-default">
+	     	<div class="panel-heading">
+	                            <h3 class="panel-title">设备：{{devId}}</h3>
+	                        </div>
+			<div class="panel-body">
+					<div class="table-responsive">
+						<table class="table table-bordered">
+							<thead>
+							<tr>
+								<th>下发时间</th>
+								<th>下发ID</th>
+								<th>发送状态</th>
+								<th>发送内容</th>
+								<th>错误原因</th>
+							</tr>
+							</thead>
+							<tbody>
+							<tr ng-repeat="log in data"> 
+								<td>{{ log.addDate }}</td>
+								<td>{{ log.cmdId }}</td>
+								<td>{{ log.cmdStatus }}</td>
+								<td>{{ log.context }}</td>
+								<td>{{ log.cmdStatus == 'FAILED' ? log.callback : '' }}</td>
+							</tr>
+							
+	
+							</tbody>
+						</table>
+					</div>
+					 <!-- 分页 -->
+	               <page-info pages="pages" curpage="quereyData.page" change="changePage(page)" total="total"></page-info>
+				</div>
+		</div>
+			<div class="row" ng-show="!dataOnReady">
+				<div class="panel panel-default" >
+					 <div class="panel-body">
+							<div class="ex-page-content text-center">
+								<h3>Loading...</h3>
+					
+							</div>
+					</div>
+				</div>
+			</div>
+			</div>
+		</div>
+</div>

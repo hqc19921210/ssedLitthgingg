@@ -1,0 +1,105 @@
+<div class="container" >
+		<div class="row" >
+			<div class="panel panel-default">
+				<div class="panel-body">
+					
+					<div ng-show="exportLoading"> 
+						<div class="modal-body" >
+			               		<div class="form-group clearfix">
+			               			<label  class="col-sm-1 control-label">设备：</label>
+							        <div class="col-sm-3 control-label ng-binding" style="text-align: right">
+							         <select  class="form-control" ng-model="postFrom.eid" ng-options="x for (x, y) in selEqus" required>
+												</select></div>
+									<label  class="col-sm-1 control-label">区间：</label>
+	                                <div class="col-sm-4">
+	                                    <div class="input-group">
+	                                        <input type="text" class="form-control" style="z-index: 1"  id="datepickerStrat" ng-model="param.start" >
+	                                        <span class="input-group-addon">到</span>
+	                                        <input type="text" class="form-control"  style="z-index: 1"   id="datepickerEnd"  ng-model="param.end" >
+	                                    </div>
+	                                </div>
+							        <div class="col-sm-3 ng-binding">
+							        	<a type="button" class="btn btn-primary waves-effect waves-light" ng-click="exportPost()" >导出数据点日志</a>
+							        </div>
+						        </div>
+							</div>
+					</div>
+					<div class="panel panel-default" ng-show="!exportLoading">
+						 <div class="panel-body">
+								<div class="ex-page-content text-center">
+									<h3>Loading...</h3>
+						
+								</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="row" >
+			<div class="panel panel-default">
+				<div class="panel-body">
+                                <div class="row">
+                                		<label  class="col-sm-1 control-label">应用：</label>
+										<div class="col-sm-3 control-label ng-binding" style="text-align: right">
+								         <select  class="form-control" ng-model="postApps.aid" ng-options="x for (x, y) in selApps" ng-change="changepApp(postApps.aid)">
+													</select>
+										</div>
+                                        <div class="m-b-10">
+                                            <button  class="btn btn-primary waves-effect waves-light" ng-click="addList()">添加下发命令 <i class="fa fa-plus"></i></button>
+                                        </div>
+                                </div>
+                                <div class="row m-t-10" style="overflow: auto;">
+                                <table class="table  table-bordered table-striped" >
+                                    <thead>
+                                    <tr>
+                                        <th>设备名称</th>
+                                        <th>服务名称</th>
+                                        <th>命令名称</th>
+                                        <th>参数名称</th>
+                                        <th>参数值</th>
+                                        <th>操作</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+
+                                    <tr class="gradeU" ng-repeat="entity in list">
+                                        <td>
+                                            <select  class="form-control" name="$index_commandEid" ng-model="entity.commandEid" ng-options="x for (x, y) in selEqusByApp" required>
+								</select>
+                                        </td>
+                                        <td>
+                                            <input type="text" class="form-control" name="$index_serviceId" ng-model="entity.serviceId" placeholder="服务名称">
+                                        </td>
+                                        <td>
+                                            <input type="text" class="form-control" name="$index_method" ng-model="entity.method"  placeholder="命令名称" >
+                                        </td>
+                                        <td>
+                                            <input type="text" class="form-control" name="$index_paramName" ng-model="entity.paramName" placeholder="参数名称" >
+                                        </td>
+                                        <td>
+                                            <input type="text" class="form-control" name="$index_paramValue" ng-model="entity.paramValue"  placeholder="参数值" >
+                                        </td>
+                                        <td class="actions">
+
+                                            <button class="btn btn-icon waves-effect waves-light btn-info m-b-5 btn-sm" ng-click="postCommand($index)" title="发送">
+                                                <i class="fa  fa-level-down" style="color:  #ffff;"></i>
+                                            </button>
+                                            <button class="btn btn-icon waves-effect waves-light btn-danger m-b-5 btn-sm" ng-click="deleteItem(entity)" title="删除">
+                                                <i class="fa fa-trash-o" style="color:  #fff;"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+
+
+                                    </tbody>
+                                </table>
+                                </div>
+                               <!--  <div class="row m-t-10">
+                                    <button  class="btn btn-primary waves-effect waves-light" btn-loading="loading" ng-click="save()">保存</button>
+                                </div> 
+                                -->
+
+                            </div>
+			</div>
+		</div>
+</div>

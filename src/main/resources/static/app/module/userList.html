@@ -1,0 +1,320 @@
+<div class="container" >
+	<div class="row">
+		<div class="col-md-12">
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					<h3 class="panel-title">用户列表</h3>
+				</div>
+				<div class="panel-body">
+				<form role="form" class="form-horizontal" >
+                        <div class="row">
+                            <div class="col-md-12 col-sm-12 col-xs-12">
+                                <label  class="col-sm-1 control-label">账号：</label>
+                                <div class="col-sm-3">
+                                    <input type="text" class="form-control" ng-model="quereyData.account" placeholder="模糊搜索">
+                                </div>
+                                <label  class="col-sm-2 control-label">公司名称：</label>
+                                <div class="col-sm-3">
+                                    <input type="text" class="form-control" ng-model="quereyData.company" placeholder="模糊搜索">
+                                </div>
+                                <label ng-if="chkCmp == 2" class="col-sm-1 control-label">权限：</label>
+                                <div class="col-sm-2">
+                                    <select class="form-control"  ng-model="quereyData.seleCompetence" >
+									<option  value="3">客户</option>
+									<option  value="4">普通用户</option>
+								</select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row-margin-top">
+                            <div class="col-sm-5 col-md-offset-9 ">
+                             	<button ng-if="user.competence != 4 " type="button" class="btn btn-primary waves-effect waves-light" data-toggle="modal" data-target="#user-add-modal">新增用户 <i class="fa fa-plus"></i></button>
+                                <button  class="btn btn-primary waves-effect waves-light" type="submit"  btn-loading="loadCtl.search" ng-click="init()">搜索</button>
+                                <button class="btn btn-default waves-effect" type="button" ng-click="resetSearch()">重置</button>
+                            </div>
+                        </div>
+                    </form>
+					<div class="row">
+						<div class="col-md-12 col-sm-12 col-xs-12">
+							<div class="table-responsive">
+								<table class="table">
+									<thead>
+									<tr>
+										<th>帐号</th>
+										<th>公司名称</th>
+										<th>联系人</th>
+										<th>联系电话</th>
+										<th>传真</th>
+										<th>邮箱</th>
+										<th>站点</th>
+										<th>备注</th>
+										<th>权限</th>
+										<th>操作</th>
+									</tr>
+									</thead>
+									<tbody>
+									<tr ng-repeat="user in users"> 
+										<td>{{ user.account }}</td>
+										<td>{{ user.company }}</td>
+										<td>{{ user.contact }}</td>
+										<td>{{ user.phone }}</td>
+										<td>{{ user.fax }}</td>
+										<td>{{ user.email }}</td>
+										<td>{{ user.site }}</td>
+										<td>{{ user.remark }}</td>
+										<td>{{ user.competence == 2 ? "管理员" : (user.competence == 3 ? "客户" : "普通用户" ) }}</td>
+										<td>
+										<a href="javascript:void(0)" ng-if="user.id != chkId" data-toggle="modal" data-target="#user-info-modal" ng-click="setInfo(user)">编辑信息</a>
+										<a href="javascript:void(0)" ng-if="user.id != chkId" data-toggle="modal" data-target="#update-pwd-by-id-modal" ng-click="getUid(user.id)">修改密码</a> 
+										<a href="javascript:void(0)" ng-if="user.id != chkId" data-toggle="modal" data-target="#del-by-id-modal" ng-click="delUser(user.id)">删除</a></td>
+									</tr>
+									
+
+									</tbody>
+								</table>
+							</div>
+						</div>
+						 <!-- 分页 -->
+						<page-info pages="pages" curpage="quereyData.page"  total="total" change="changePage(page)"></page-info>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div id="user-add-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="addUserModal" aria-hidden="true" style="display: none">
+         <div class="modal-dialog"> 
+             <div class="modal-content"> 
+                 <div class="modal-header"> 
+                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true" >×</button> 
+                     <h4 class="modal-title">添加用户</h4> 
+                 </div> 
+                 <form id="addUserForm" class="modal-body" ng-submit="addUser()" name="addUserForm" novalidate="novalidate"> 
+                     <div class="row"> 
+                         <div class="col-md-6"> 
+                             <div class="form-group"> 
+                                 <label  class="control-label">帐号<span style="color : red">*</span></label> 
+                                 <input type="text" class="form-control" name="account" ng-model="account" ng-minlength="3" ng-maxlength="16" required />
+                                 <div style="color: red" ng-show="addUserForm.account.$invalid && addUserForm.account.$dirty">
+                      		  		*帐号最小长度为3，最大长度为16
+                   				</div>
+                             </div> 
+                         </div> 
+                         <div class="col-md-6"> 
+                             <div class="form-group"> 
+                                 <label  class="control-label">密码<span style="color : red">*</span></label> 
+                                 <input type="password" class="form-control" name="password" ng-model="password" ng-minlength="6" placeholder="必须由大于6位小于16位数字或字母组成" ng-maxlength="16" required  />
+                                 <div style="color: red" ng-show="addUserForm.password.$invalid && addUserForm.password.$dirty">
+                      		  		*密码最小长度为6，最大长度为16
+                   				</div> 
+                             </div> 
+                         </div> 
+                     </div> 
+                     <div class="row"> 
+                         <div class="col-md-8"> 
+                             <div class="form-group"> 
+                                 <label  class="control-label">公司名称<span style="color : red">*</span></label> 
+                                 <input type="text" class="form-control" name="company" ng-model="company" required /> 
+                             </div> 
+                         </div> 
+                         <div class="col-md-4"> 
+                             <div class="form-group"> 
+                                 <label  class="control-label">联系人<span style="color : red">*</span></label> 
+                                 <input type="text" class="form-control" name="contact" ng-model="contact" required /> 
+                             </div> 
+                         </div> 
+                     </div> 
+                     <div class="row"> 
+                         <div class="col-md-4"> 
+                             <div class="form-group"> 
+                                 <label  class="control-label">联系电话<span style="color : red">*</span></label> 
+                                 <input type="text" class="form-control" name="phone" ng-model="phone" required /> 
+                             </div> 
+                         </div> 
+                         
+                         <div class="col-md-4"> 
+                             <div class="form-group"> 
+                                 <label  class="control-label">权限<span style="color : red">*</span></label> 
+                                 <select class="form-control" ng-change="seleCompetence == 4 && chkCmp == 2 ? seleCompetenceChg() : return" name="seleCompetence" ng-model="seleCompetence" required>
+									<option ng-if="chkCmp == 2" value="3">客户</option>
+									<option  value="4">普通用户</option>
+								</select>
+                             </div> 
+                         </div> 
+                          <div class="col-md-4"> 
+                             <div class="form-group"> 
+                                 <label  class="control-label">站点</label> 
+                                 <input type="text" class="form-control" name="site" ng-model="site"  /> 
+                             </div> 
+                         </div> 
+                     </div> 
+                      <div class="row" ng-show="seleCompetence == 4 && chkCmp == 2"> 
+	                        <div class="col-md-12"> 
+	                            <div class="form-group "> 
+	                                 <label  class="control-label">请选择用户所属客户<span style="color : red">*</span></label>  
+	                                 <select ng-if="seleCompetence == 4 && chkCmp == 2" class="form-control" name="seleCompany"  ng-model="$parent.seleCompany" ng-options="x for (x, y) in selCompanys" required>
+									</select>
+	                            </div> 
+	                        </div> 
+	                    </div>     
+                     <div class="row"> 
+                         <div class="col-md-8"> 
+                             <div class="form-group"> 
+                                 <label  class="control-label">邮箱</label> 
+                                 <input type="email" class="form-control" name="email" ng-model="email"  /> 
+                                 <div style="color: red" ng-show="addUserForm.email.$invalid">
+                      		  		*邮箱格式不正确
+                   				</div>
+                             </div> 
+                         </div> 
+                        <div class="col-md-4"> 
+                             <div class="form-group"> 
+                                 <label  class="control-label">传真</label> 
+                                 <input type="text" class="form-control" name="fax" ng-model="fax"  /> 
+                             </div> 
+                         </div> 
+                     </div> 
+                      <div class="row"> 
+	                        <div class="col-md-12"> 
+	                            <div class="form-group no-margin"> 
+	                                 <label  class="control-label">备注</label>  
+	                                <textarea  class="form-control autogrow" name="remark" ng-model="remark" style="overflow: hidden; word-wrap: break-word; resize: horizontal; height: 75px"></textarea> 
+	                            </div> 
+	                        </div> 
+	                    </div>     
+                 <div class="modal-footer"> 
+                     <button id="close-add-user-modal" type="button" class="btn btn-default waves-effect" data-dismiss="modal" ng-click="closeAddModal()" >关闭</button> 
+                     <button id="addUserSave" type="submit" class="btn btn-info waves-effect waves-light" btn-loading="loadCtl.addUser" ng-disabled="addUserForm.$invalid">保存并添加</button> 
+                 </div> 
+                 </form> 
+             </div> 
+         </div>
+     </div>
+     <div id="update-pwd-by-id-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="pwdByIdModalLabel" aria-hidden="true" style="display: none">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true" ng-click="closePwdById()">×</button>
+						<h4 class="modal-title">修改密码</h4>
+					</div>
+					<form id="updatePWDForm" class="modal-body" ng-submit="updatePwdById()"   name="updatePwdByIdForm" >
+						<div class="row">
+							<div class="col-md-12">
+								<div class="form-group">
+									<label  class="control-label">新密码<span style="color: red">*</span></label>
+									<input type="password" class="form-control" ng-minlength="6" ng-maxlength="16" required  ng-model="newPwd" placeholder="必须由大于6位小于16位数字或字母组成" name="newPwd">
+								</div>
+							</div>
+							<div class="col-md-12">
+								<div class="form-group">
+									<label  class="control-label">确认密码<span style="color: red">*</span></label>
+									<input type="password" class="form-control" ng-minlength="6" ng-maxlength="16" required ng-model="checkPwd" placeholder="两次输入密码必须一致" name="checkPwd">
+								</div>
+								<div style="color: red" ng-show="updatePwdByIdForm.newPwd.$invalid && updatePwdByIdForm.newPwd.$dirty">
+                      		  		*密码最小长度为6，最大长度为16
+                   				</div>
+								<div style="color: red" ng-show="newPwd != checkPwd && newPwd && checkPwd">
+                      		  		*两次密码输入不一致
+                   				</div>
+							</div>
+						</div>
+						<div class="modal-footer">
+							<button id="updatePwdById" type="button" class="btn btn-default waves-effect" data-dismiss="modal" ng-click="closePwdById()">关闭</button>
+							<button id="updatePWDSave" type="submit" class="btn btn-info waves-effect waves-light" btn-loading="loadCtl.upPWD" ng-disabled="updatePwdByIdForm.$invalid || newPwd != checkPwd">保存</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+		<div id="user-info-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="userInfoModal" aria-hidden="true" style="display: none">
+         <div class="modal-dialog"> 
+             <div class="modal-content"> 
+                 <div class="modal-header"> 
+                     <button id="user-info-close" type="button" class="close" data-dismiss="modal" aria-hidden="true" >×</button> 
+                     <h4 class="modal-title">用户信息</h4> 
+                 </div> 
+                 <form class="modal-body" ng-submit="userUpdate()" name="userUpdateForm" novalidate="novalidate"> 
+                     <div class="row"> 
+                         <div class="col-md-8"> 
+                             <div class="form-group"> 
+                                 <label  class="control-label">公司名称<span style="color : red">*</span></label> 
+                                 <input type="text" class="form-control" ng-disabled="userEditable"  ng-model="userInfo.company" required > 
+                             </div> 
+                         </div> 
+                         <div class="col-md-4"> 
+                             <div class="form-group"> 
+                                 <label  class="control-label">联系人<span style="color : red">*</span></label> 
+                                 <input type="text" class="form-control" ng-disabled="userEditable"  ng-model="userInfo.contact" required > 
+                             </div> 
+                         </div> 
+                     </div> 
+                     <div class="row"> 
+                         <div class="col-md-4"> 
+                             <div class="form-group"> 
+                                 <label  class="control-label">联系电话<span style="color : red">*</span></label> 
+                                 <input type="text" class="form-control" ng-disabled="userEditable"  ng-model="userInfo.phone" required > 
+                             </div> 
+                         </div> 
+                         
+                         <div class="col-md-4"> 
+                             <div class="form-group"> 
+                                 <label  class="control-label">权限</label> 
+                                 <select class="form-control" ng-disabled="userEditable" ng-change="seleCompetence == 4 && chkCmp == 2 ? seleCompetenceChg() : return"  ng-model="userInfo.competence" required>
+									<option ng-if="chkCmp == 2" value="3">客户</option>
+									<option  value="4">普通用户</option>
+								</select>
+                             </div> 
+                         </div> 
+                          <div class="col-md-4"> 
+                             <div class="form-group"> 
+                                 <label  class="control-label">站点</label> 
+                                 <input type="text" class="form-control" ng-disabled="userEditable"  ng-model="userInfo.site"  > 
+                             </div> 
+                         </div> 
+                     </div> 
+                     <div class="row" ng-show="seleCompetence == 4 && chkCmp == 2"> 
+	                        <div class="col-md-12"> 
+	                            <div class="form-group "> 
+	                                 <label  class="control-label">请选择用户所属客户<span style="color : red">*</span></label>  
+	                                 <select ng-if="seleCompetence == 4 && chkCmp == 2" class="form-control"  ng-model="$parent.userInfo.parentId" ng-options="x for (x, y) in selCompanys" required>
+									</select>
+	                            </div> 
+	                        </div> 
+	                    </div>
+                     <div class="row"> 
+                         <div class="col-md-8"> 
+                             <div class="form-group"> 
+                                 <label  class="control-label">邮箱</label> 
+                                 <input type="email" class="form-control" ng-disabled="userEditable"  ng-model="userInfo.email"  > 
+                                 <div style="color: red" ng-show="addUserForm.email.$invalid">
+                      		  		*邮箱格式不正确
+                   				</div>
+                             </div> 
+                         </div> 
+                        <div class="col-md-4"> 
+                             <div class="form-group"> 
+                                 <label  class="control-label">传真</label> 
+                                 <input type="text" class="form-control" ng-disabled="userEditable"  ng-model="userInfo.fax"  > 
+                             </div> 
+                         </div> 
+                     </div> 
+                      <div class="row"> 
+	                        <div class="col-md-12"> 
+	                            <div class="form-group no-margin"> 
+	                                 <label  class="control-label">备注</label>  
+	                                <textarea  class="form-control autogrow" ng-disabled="userEditable"  ng-model="userInfo.remark" style="overflow: hidden; word-wrap: break-word; resize: horizontal; height: 75px"></textarea> 
+	                            </div>
+	                            <div style="color: red" ng-show="!userEditable && !userUpdateForm.$dirty">
+                      		  		*未修改任何信息
+                   				</div> 
+	                        </div> 
+	                    </div>     
+                 <div class="modal-footer"> 
+                     <button id="close-user-info-modal" type="button" class="btn btn-default waves-effect" data-dismiss="modal" ng-click="ajxUserInfo(user)" >关闭</button> 
+                     <button type="button" class="btn btn-info waves-effect waves-light" ng-show="userEditable" ng-click="chgUserEdit()" >编辑</button> 
+                     <button type="submit" class="btn btn-info waves-effect waves-light" ng-show="!userEditable" ng-disabled="userUpdateForm.$invalid || !userUpdateForm.$dirty">保存</button> 
+                 </div> 
+                 </form> 
+             </div> 
+         </div>
+     </div>
+</div>

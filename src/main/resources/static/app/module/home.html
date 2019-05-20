@@ -1,0 +1,169 @@
+
+<div class="container">
+	
+
+    <div class="row">
+
+             <div class="col-md-8 col-sm-8 col-lg-3">
+                 <div class="mini-stat clearfix bg-info bx-shadow">
+                     <div class="mini-stat-info text-right">
+                         <span >LORA设备状态</span>
+                     </div>
+                     <div class="tiles-progress">
+                         <div class="m-t-20">
+                             <h5 class="text-uppercase text-white m-0">LORA总数： <span class="pull-right" ng-bind="home.lorNom"></span></h5>
+                             <h5 class="text-uppercase text-white m-0">其中在线：<span class="pull-right" ng-bind="home.lorBrD"></span></h5>
+                         </div>
+                     </div>
+                 </div>
+             </div>
+
+
+        <div class="col-md-8 col-sm-8 col-lg-3" >
+            <div class="mini-stat clearfix bx-shadow bg-success">
+                <div class="mini-stat-info text-right">
+                    <span >NBIOT设备</span>
+                </div>
+                <div class="tiles-progress">
+                    <div class="m-t-20">
+                        <h5 class="text-uppercase text-white m-0">NBIOT总数： <span class="pull-right" ng-bind="home.nbNom"></span></h5>
+                        <h5 class="text-uppercase text-white m-0">其中在线：<span class="pull-right" ng-bind="home.nbBrD"></span></h5>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-8 col-sm-8 col-lg-3">
+            <div class="mini-stat clearfix bg-purple bx-shadow">
+                <div class="mini-stat-info text-right">
+                    <span >GPRS设备状态</span>
+                </div>
+                <div class="tiles-progress">
+                    <div class="m-t-20">
+                        <h5 class="text-uppercase text-white m-0">GPRS总数： <span class="pull-right" ng-bind="home.gprsNom"></span></h5>
+                        <h5 class="text-uppercase text-white m-0">其中在线：<span class="pull-right" ng-bind="home.gprsBrD"></span></h5>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+         <div class="col-md-8 col-sm-8 col-lg-3">
+                 <div class="mini-stat clearfix  bg-primary bx-shadow">
+                     <div class="mini-stat-info text-right">
+                         <span >故障数量</span>
+                     </div>
+                     <div class="tiles-progress">
+                         <div class="m-t-20">
+                             <h5 class="text-uppercase text-white m-0">待处理： <span class="pull-right" ng-bind="$root.faultCount"></span></h5>
+                             <h5 class="text-uppercase text-white m-0" style="visibility:hidden;">111<span class="pull-right">111</span></h5>
+                         </div>
+                     </div>
+                 </div>
+             </div>
+                 
+    </div>
+     <!-- End row-->
+
+
+    <div class="row">
+         <div class="col-lg-8">
+
+             <div class="portlet">
+                 <div class="portlet-heading">
+
+                 <div class="col-md-12 col-sm-12 col-xs-12">
+                                 <div class="col-sm-6"></div>
+                                 <div class="col-sm-6">
+                                     <label  class=" control-label">时间</label>
+                                     <div class="">
+                                         <div class="input-group">
+                                             <input type="text" class="form-control" style="z-index: 1"  id="datepickerStrat1" ng-model="param.start" >
+                                             <span class="input-group-addon">到</span>
+                                             <input type="text" class="form-control"  style="z-index: 1"   id="datepickerEnd1"  ng-model="param.end" >
+                                         </div>
+                                     </div>
+                                 </div>
+                                 <!--<label  class="col-sm-1 control-label">时间</label>
+                                 <div class="col-sm-5">
+                                     <div class="input-group">
+                                         <input type="text" class="form-control" style="z-index: 1"  id="datepickerStrat1" ng-model="param.start" >
+                                         <span class="input-group-addon">到</span>
+                                         <input type="text" class="form-control"  style="z-index: 1"   id="datepickerEnd1"  ng-model="param.end" >
+                                     </div>
+                                 </div>-->
+                             </div>
+
+
+                    <!-- <h3 class="portlet-title text-dark text-uppercase">
+                            故障统计
+                     </h3>-->
+                     <!--<div class="portlet-widgets">
+                         <a href="javascript:;" data-toggle="reload"><i class="ion-refresh"></i></a>
+                     </div>-->
+                     <div class="clearfix"></div>
+                 </div>
+                 <div id="portlet1" class="panel-collapse collapse in">
+                     <div class="portlet-body">
+                         <div class="row">
+                             <div class="col-md-12">
+                                 <div id="website-stats" style="position: relative;height: 320px"></div>
+                                 <div class="row text-center m-t-30">
+                                     <div class="col-sm-4">
+                                        <!-- <h4 class="counter">{{sum}}次</h4>
+                                         <small class="text-muted"> 年雷击总数</small>-->
+                                     </div>
+                                     <div class="col-sm-4">
+                                         <h4 class="counter" >{{alarmSunCount}}次</h4>
+                                         <small class="text-muted">总故障数</small>
+                                     </div>
+                                     <div class="col-sm-4">
+                                        <!-- <h4 class="counter">{{sum/52| number:3}}次</h4>
+                                         <small class="text-muted">周平均雷击数</small>-->
+                                     </div>
+                                 </div>
+                             </div>
+                         </div>
+                     </div>
+                 </div>
+             </div>
+         </div>
+         <!-- end col -->
+
+         <div class="col-lg-4">
+             <div class="portlet">
+                 <div class="portlet-heading">
+                     <h3 class="portlet-title text-dark text-uppercase">
+                            设备统计
+                     </h3>
+                     <div class="portlet-widgets">
+                         <a href="javascript:;" data-toggle="reload"><i class="ion-refresh"></i></a>
+                     </div>
+                     <div class="clearfix"></div>
+                 </div>
+                 <div id="portlet2" class="panel-collapse collapse in">
+                     <div class="portlet-body">
+                         <div class="row">
+                             <div class="col-md-12">
+                                 <div id="pie-chart">
+                                     <div id="pie-chart-container" class="flot-chart" style="height: 320px">
+                                     </div>
+                                 </div>
+
+                                 <div class="row text-center m-t-30">
+                                     <div class="col-sm-12">
+                                         <h4 class="counter">{{home.equAll}}台</h4>
+                                         <small class="text-muted"> 总设备数</small>
+                                     </div>
+                                 </div>
+                             </div>
+                         </div>
+                     </div>
+                 </div>
+             </div>
+         </div>
+         <!-- end col -->
+     </div>
+     <!-- End row -->
+
+
+</div>

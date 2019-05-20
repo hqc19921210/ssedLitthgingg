@@ -1,0 +1,70 @@
+<div  class="container" >
+    <div id="map_box" class="row" style="overflow: hidden">
+    <div class="close_btn hidden-sm  hidden-md hidden-lg" id="close_btn">显示</div>
+       <div id="map" ></div>
+       
+        <div class="list_content" id="test_content" >
+            <ul class="monitor_ul2">
+                <li>
+                    <div class="form-group map_button" style="padding: 0 20px;margin: 0;height: auto;">
+                        <div class="input-group ng-scope" style="margin-top: 10px;">
+                            <input class="form-control with-primary-addon" placeholder="设备编号或名称" ng-model="quereyData.eid">
+                            <span class="input-group-btn" style="float: none;">
+                              <button class="btn btn-primary" type="button" ng-click="getDevList()" style="margin-top: 0px;margin-bottom: 0;">查询</button>
+                              <button id="group_btn" class="btn btn-primary" type="button" style="margin-top: 0px;margin-bottom: 0;">分组</button>
+                            </span>
+                        </div>
+                        <div class="monitor_devGroup">
+                            <input class="easyui-combotree" style="width:90%;" />
+                        </div>
+                    </div>
+                </li>
+                <li ng-repeat="eqm in equipments" >
+                	<div class="pointer-div" ng-click="devidMap(eqm.devId,eqm.site)">
+                    <div class="monitor_line"><img ng-src="{{getStatusImg(eqm.online)}}"/></div>
+                    <div class="monitor_center">
+                        <a title="{{eqm.name}}" >{{eqm.name}}</a><em>{{eqm.devId}}</em>
+                    </div>
+                    </div>
+                </li>
+            </ul>
+            <div class="col-xs-12" style="margin-bottom: 10px;">
+            	<page-info pages="pages" curpage="quereyData.page" change="changePage(page)" total="total"></page-info>
+			</div>
+    </div>
+    <div class="data_list">
+        <div class="panel animated zoomIn row monitor_table" style="box-shadow: 0 -3px 5px 0 rgba(0,0,0,0.15)">
+            <div class="panel-body" id="data_body">
+                <table class="table row map_table">
+                    <thead>
+                    <tr class="ng-scope">
+                        <th>设备编号</th>
+                        <th>设备模板</th>
+                        <th>数据点名称</th>
+                        <th>报警内容</th>
+                        <th>报警时间</th>
+                        <th>处理状态</th>
+                        <th><span id="display_block" class="ion-chevron-up"></span></th>
+                    </tr>
+                    </thead>
+                    <tbody id="device_content">
+                    <tr ng-repeat="alarmItem in alarmItems">
+                        <td>{{alarmItem.dev_id}}</td>
+                        <td>{{alarmItem.model_name}}</td>
+                        <td>{{alarmItem.attr_name}}</td>
+                        <td>当前{{alarmItem.attr_name}}值为{{alarmItem.data_value}}{{alarmItem.unit}}</td>
+                        <td>{{alarmItem.udp_date  | date:'yyyy-MM-dd HH:mm:ss' }}</td>
+                        <td style="color:{{alarmItem.data_status == 'N'?'blue':'red'}}">{{alarmItem.status_name}}</td>
+                        <td></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    </div>
+ </div>
+
+<!--  <div id="add-site-map" style="height: 350px; width: 100%; overflow: hidden; position: relative; z-index: 0; background-color: rgb(243, 241, 236); color: rgb(0, 0, 0); text-align: left;"></div>--> 
+
+

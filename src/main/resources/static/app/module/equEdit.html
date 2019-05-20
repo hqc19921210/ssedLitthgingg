@@ -1,0 +1,155 @@
+<div class="container" >
+
+<!-- Page-Title -->
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <h4 class="pull-left page-title"><b>设备编辑</b></h4>
+                                <ol class="breadcrumb pull-right">
+                                    <li><a href="#">首页</a></li>
+                                    <li ><a href="#/module/equView">设备列表</a></li>
+                                    <li class="active">设备编辑</li>
+                                </ol>
+                            </div>
+                        </div>
+	
+	<div class="row" ng-show="dataOnReady">
+		<div class="col-md-9">
+			<div class="panel panel-default" >
+				<div class="panel-body">
+				<form class="form-horizontal" ng-submit="addEqu()" name="addEquForm" novalidate="novalidate">
+                         <div class="form-group "> 
+                              <label  class="col-md-2 control-label ">所属用户<span style="color : red">*</span></label>  
+							  <div class="col-md-9">
+	                               <select  class="form-control" name="uid"  ng-model="addFrom.uid" ng-options="x for (x, y) in selCompanys" required>
+									</select>
+                              </div>
+                         </div> 
+                         <div class="form-group "> 
+                              <label  class="col-md-2 control-label ">设备名称<span style="color : red">*</span></label>  
+							  <div class="col-md-9">
+	                                <input type="text" class="form-control" name="name" ng-model="addFrom.name" required >
+                              </div>
+                         </div>
+                         <div class="form-group "> 
+                              <label  class="col-md-2 control-label ">设备编号<span style="color : red">*</span></label>  
+							  <div class="col-md-9">
+	                                <input type="text" class="form-control" name="devId" ng-model="addFrom.devId" required >
+                              </div>
+                         </div>
+                         <div class="form-group "> 
+                              <label  class="col-md-2 control-label ">数据模板<span style="color : red">*</span></label>  
+							  <div class="col-md-9">
+	                               <select  class="form-control" name="modelId"  ng-model="addFrom.modelId" ng-options="x for (x, y) in selUserModel" required>
+									</select>
+                              </div>
+                         </div>  
+                         <div class="form-group "> 
+                              <label  class="col-md-2 control-label ">所属分组<span style="color : red">*</span></label>  
+							  <div class="col-md-9">
+	                               <input id="equ_easyui_combotree" class="easyui-combotree"  style="display: none;">
+                              </div>
+                         </div> 
+                         <div class="form-group "> 
+                              <label  class="col-md-2 control-label ">设备类型<span style="color : red">*</span></label>  
+							  <div class="col-md-9">
+	                               <div class="radio radio-info radio-inline">
+				                       <input  ng-click="selEquType('L')" type="radio" id="inlineRadio1"  name="typeCd" >
+				                       <label  for="inlineRadio1">LORA</label>
+				                   </div>
+				                   <div class="radio radio-info radio-inline">
+				                       <input  ng-click="selEquType('N')"  type="radio" id="inlineRadio2"  name="typeCd" >
+				                       <label for="inlineRadio2">NBIOT</label>
+				                   </div>
+				                   <div class="radio radio-info radio-inline">
+				                       <input  ng-click="selEquType('G')"  type="radio" id="inlineRadio3"  name="typeCd" >
+				                       <label for="inlineRadio3">2G</label>
+				                   </div>
+				                   
+                              </div>
+                         </div> 
+                         <div class="form-group " ng-if="chkType"> 
+                              <label  class="col-md-2 control-label ">所属应用<span style="color : red">*</span></label>  
+							  <div class="col-md-6">
+	                               <select  class="form-control" name="appId"  ng-model="$parent.addFrom.appId" ng-options="x for (x, y) in selApps" required>
+									</select>
+                              </div>
+                              <div class="col-md-3">
+									<a href="#/module/liteApp" type="button" class="btn btn-primary waves-effect waves-light" >应用管理</a>
+                         		</div>
+                         </div> 
+                         <div class="form-group "> 
+                              <label  class="col-md-2 control-label ">验证码</label>  
+							  <div class="col-md-9">
+	                                <input type="text" class="form-control" name="verification" ng-model="addFrom.verification"  >
+                              </div>
+                         </div>
+                         <div class="form-group "> 
+                              <label  class="col-md-2 control-label ">厂商ID</label>  
+							  <div class="col-md-9">
+	                                <input type="text" class="form-control" name="supportCode" ng-model="addFrom.supportCode"  >
+                              </div>
+                         </div>
+                         <div class="form-group "> 
+                              <label  class="col-md-2 control-label ">厂商名称</label>  
+							  <div class="col-md-9">
+	                                <input type="text" class="form-control" name="supporter" ng-model="addFrom.supporter"  >
+                              </div>
+                         </div>
+                          <div class="form-group"> 
+                               <label  class="col-md-2 control-label">备注</label>
+                               <div class="col-md-9">  
+                              		<textarea  class="form-control autogrow" name="remark" ng-model="addFrom.remark" style="overflow: hidden; word-wrap: break-word; resize: horizontal; height: 75px"></textarea> 
+                          		</div>
+                          </div> 
+                         <div class="form-group "> 
+                              <label  class="col-md-2 control-label ">设备位置</label>  
+							  <div class="col-md-9" style="background-color: #f5f3f0;">
+							  <div id="add-site-map" style="height: 350px; width: 100%; overflow: hidden; position: relative; z-index: 0; background-color: rgb(243, 241, 236); color: rgb(0, 0, 0); text-align: left;"></div>
+	                          <div class="map_position clearfix">
+			                      <input id="suggest-address" class="form-control ng-valid ng-not-empty ng-dirty ng-touched" ng-model="addFrom.address"  placeholder="" ng-click="searchMap()" autocomplete="off" style="">
+			                    </div>
+			                    <div class="map_position clearfix ng-binding">{{locationPoint}}</div>
+                              </div>
+                         </div>
+	                   
+                 <div class="form-group "> 
+                 	<label  class="col-md-4 control-label">
+                     <button type="submit" class="btn btn-info waves-effect waves-light"   btn-loading="loadCtl.addEnq">保存并添加</button> 
+                 	</label>
+                 </div> 
+                 </form> 
+					</div>
+				</div>
+			</div>
+			<div class="col-md-3">
+				<div class="panel panel-default">
+					<div class="panel-heading">
+		                    <h3 class="panel-title">LORA设备说明</h3>
+		                </div>
+					<div class="panel-body">
+					添加LORA设备之前请确保已在LORA服务器对应的网关下添加了该LORA设备节点
+					</div>
+				</div>
+				<div class="panel panel-default">
+					<div class="panel-heading">
+		                    <h3 class="panel-title">NBIOT设备说明</h3>
+		                </div>
+					<div class="panel-body">
+					添加NBIOT设备之前请确定该设备对应的应用和设备已在电信云开发平台添加，并为应用添加了订阅数据变化
+					</div>
+				</div>
+			</div>
+	</div>
+	<div class="row" ng-show="!dataOnReady">
+	<div class="col-md-12">
+	<div class="panel panel-default" >
+				 <div class="panel-body">
+						<div class="ex-page-content text-center">
+							<h3>Loading...</h3>
+				
+						</div>
+				</div>
+			</div>
+		</div>	
+	</div>
+</div>

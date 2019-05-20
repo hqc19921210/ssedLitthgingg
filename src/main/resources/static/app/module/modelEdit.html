@@ -1,0 +1,210 @@
+<div class="container" >
+    <div class="row">
+        <div class="col-md-12 col-sm-12 col-xs-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">雷击记录列表</h3>
+                </div>
+
+                <div class="panel-body">
+                   <!-- <form role="form" class="form-horizontal">
+
+                        <div class="row">
+                            <div class="col-lg-offset-1 col-lg-11">
+                                <button class="btn btn-primary   waves-effect waves-light" btn-loading="loading" ng-click="init()">搜索</button>
+                                <button class="btn btn-default waves-effect waves-light" type="button" btn-loading="loading" ng-click="clear()">重置</button>
+                                <button class="btn btn-default waves-effect waves-light"  type="button" btn-loading="loading"  ng-click="deleteLog()">清空数据</button>
+                            </div>
+                        </div>
+                    </form>
+    -->
+                    <form   class="form-horizontal">
+                    <div class="row">
+                        <div class="col-md-12 col-sm-12 col-xs-12">
+                            <label  class="col-sm-1 control-label">模板名称</label>
+                            <div class="col-sm-5">
+                                <input type="text" class="form-control" ng-model="modelName" maxlength="20">
+                            </div>
+                            <div  class="col-sm-6 "></div>
+                        </div>
+                    </div>
+                    </form>
+                    <div class="row m-t-10" >
+                        <div class="col-md-12 col-sm-12 col-xs-12">
+                            <div class="panel">
+
+                                <div class="panel-body">
+                                    <div class="row">
+                                            <div class="m-b-10">
+                                                <button id="addToTable" class="btn btn-primary waves-effect waves-light" ng-click="addList()">添加数据点 <i class="fa fa-plus"></i></button>
+                                            </div>
+                                    </div>
+                                    <div class="row m-t-10" style="overflow: auto;">
+                                    <table class="table  table-bordered table-striped" id="datatable-editable">
+                                        <thead>
+                                        <tr>
+                                            <th>名称<span style="color: red">*</span></th>
+                                            <th>数据类型<span style="color: red">*</span></th>
+                                            <th>数值类型</th>
+                                            <th>小数位数</th>
+                                            <th>单位</th>
+                                            <th>公式</th>
+                                            <th>备注</th>
+                                            <th>操作</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+
+                                        <tr class="gradeU" ng-repeat="entity in list">
+                                            <td>
+                                                <input type="text" class="form-control" name="$index_attrName" ng-model="entity.attrName" maxlength="20" placeholder="属性名称">
+                                            </td>
+                                            <td>
+                                                <select name="$index_dataType" ng-model="entity.dataType" aria-controls="datatable-editable" class="form-control input-sm" ng-change="changepType(entity)"  required>
+                                                    <!--<option value="{{key}}"  ng-repeat="(key, val) in types" >{{val}}</option>-->
+                                                    <option value=""></option>
+                                                    <option value="INT_TYPE">数值型&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option>
+                                                    <option value="ALARM_TYPE">报警型&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option>
+                                                    <option value="DATE_TYPE">时间型&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option>
+                                                    <option value="SWITCH_TYPE">开关型&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option>
+                                                    <option value="ENUMERATION_TYPE">枚举型&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option>
+                                                    <option value="WAVE_TYPE">波形&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option>
+                                                </select>
+                                            <!--    <select name="datatable-editable_length" aria-controls="datatable-editable" class="form-control input-sm">
+                                                    <option value="10">10</option><option value="25">25</option><option value="50">50</option><option value="100">100</option>
+                                                </select>-->
+                                            </td>
+                                            <td>
+                                                <select name="$index_valueType"class="form-control input-sm" ng-model="entity.valueType" required ng-disabled="'INT_TYPE'!=entity.dataType">
+                                                    <!--<option value="{{key}}"  ng-repeat="(key, val) in subTypes" >{{val}}</option>-->
+                                                  <!--  <option value=""></option>-->
+                                                    <option value="TWO_UNSIGNED">2字节无符号整数</option>
+                                                    <option value="TWO_SIGNED">2字节有符号整数</option>
+                                                    <option value="FOUR_NOSIGNED_ABCD">4字节无符号整数(AB CD)</option>
+                                                    <option value="FOUR_NOSIGNED_CDAB">4字节无符号整数(CD AB)</option>
+                                                    <option value="FOUR_SIGNED_ABCD">4字节有符号整数(AB CD)</option>
+                                                    <option value="FOUR_SIGNED_CDAB">4字节有符号整数(CD AB)</option>
+                                                    <option value="FOUR_FLOAT_ABCD">4字节浮点型(AB CD)</option>
+                                                    <option value="FOUR_FLOAT_CDAB">4字节浮点型(CD AB)</option>
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <input type="number" class="form-control" onkeyup="this.value=this.value.replace(/\D/g,'')" oninput="if(value.length>1)value=value.slice(0,1)" onafterpaste="this.value=this.value.replace(/\D/g,'')" name="$index_numberFormat" ng-model="entity.numberFormat" min="0"   maxlength="1" placeholder="小数位数" ng-disabled="'INT_TYPE'!=entity.dataType">
+                                            </td>
+                                            <td>
+                                                <input type="text" class="form-control" name="$index_unit" ng-model="entity.unit" maxlength="20"  placeholder="单位" ng-disabled="'INT_TYPE'!=entity.dataType">
+                                            </td>
+                                            <td>
+                                                <input type="text" class="form-control" ng-if="'ENUMERATION_TYPE' != entity.dataType" name="$index_expression" ng-model="$parent.entity.expression" maxlength="20"  placeholder="如(x+1)*2" ng-disabled="'INT_TYPE'!=entity.dataType">
+                                                <input type="text" class="form-control" ng-if="'ENUMERATION_TYPE' == entity.dataType" name="$index_expression" ng-model="$parent.entity.expression"  placeholder="枚举1,枚举2,枚举3" ng-disabled="'ENUMERATION_TYPE'!=entity.dataType">
+                                            </td>
+                                            <td>
+                                                <input type="text" class="form-control" name="$index_memo" ng-model="entity.memo"  placeholder="备注" maxlength="20">
+                                            </td>
+                                            <td class="actions">
+                                              <!--  <a class=" on-editing save-row" ng-if="entity.isEdit == true "><i class="fa fa-save"></i></a>
+                                                &lt;!&ndash;   <a class=" on-editing cancel-row"><i class="fa fa-times"></i></a>&ndash;&gt;
+                                                <a class="on-default edit-row"  ng-if="entity.isEdit != true " ng-click="edit(entity)" ><i class="fa fa-pencil"></i></a>-->
+                                              <!--  <a class="on-default remove-row"  ng-click="deleteItem(entity)"><i class="fa fa-trash-o"></i></a>-->
+
+                                                <button class="btn btn-icon waves-effect waves-light btn-danger m-b-5 btn-sm" ng-click="deleteItem(entity)">
+                                                    <i class="fa fa-trash-o" style="color:  #fff;"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+
+
+                                        </tbody>
+                                    </table>
+                                    </div>
+
+                                </div>
+                                <div class="panel-body">
+                                    <div class="row">
+                                            <div class="m-b-10">
+                                                <button id="addToCMDTable" class="btn btn-primary waves-effect waves-light" ng-click="addCMDList()">添加命令 <i class="fa fa-plus"></i></button>
+                                            </div>
+                                    </div>
+                                    <div class="row m-t-10" style="overflow: auto;">
+                                    <table class="table  table-bordered table-striped" id="cmdtable-editable">
+                                        <thead>
+                                        <tr>
+                                            <th>命令名称<span style="color: red">*</span></th>
+                                            <th>命令类型<span style="color: red">*</span></th>
+                                            <th>数值类型</th>
+                                            <th>单位</th>
+                                            <th>最小值</th>
+                                            <th>最大值</th>
+                                            <th>公式</th>
+                                            <th>备注</th>
+                                            <th>操作</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+
+                                        <tr class="gradeU" ng-repeat="entity in cmdlist">
+                                            <td>
+                                                <input type="text" class="form-control" name="$index_attrName" ng-model="entity.attrName" maxlength="20" placeholder="命令名称">
+                                            </td>
+                                            <td>
+                                                <select name="$index_dataType" ng-model="entity.dataType" aria-controls="datatable-editable" class="form-control input-sm" ng-change="changeCMDType(entity)"  required>
+                                                    <option value="INT_TYPE">数值型&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option>
+                                                    <option value="DATE_TYPE">时间型&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option>
+                                                    <option value="SWITCH_TYPE">开关型&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option>
+                                                     <option value="ENUMERATION_TYPE">枚举型&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option> 
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <select name="$index_valueType"class="form-control input-sm" ng-model="entity.valueType" required ng-disabled="'INT_TYPE'!=entity.dataType">
+                                                    <option value="TWO_UNSIGNED">2字节无符号整数</option>
+                                                    <option value="FOUR_NOSIGNED_ABCD">4字节无符号整数(AB CD)</option>
+                                                    <option value="FOUR_NOSIGNED_CDAB">4字节无符号整数(CD AB)</option>
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <input type="text" class="form-control" name="$index_unit" ng-model="entity.unit" maxlength="20"  placeholder="单位" ng-disabled="'INT_TYPE'!=entity.dataType">
+                                            </td>
+                                            <td>
+                                                <input type="number"  class=" form-control"  name="$index_num_min" ng-model="entity.numMin" min="0"  max="2147483647" placeholder="最小值" ng-disabled="'INT_TYPE'!=entity.dataType">
+                                            </td>
+                                            <td>
+                                                <input type="number" class=" form-control"  name="$index_num_max" ng-model="entity.numMax" min="0"  max="2147483647" placeholder="最大值" ng-disabled="'INT_TYPE'!=entity.dataType">
+                                            </td>
+                                            <td>
+                                                <input type="text" class="form-control"  name="$index_eum" ng-model="entity.expression"   placeholder="枚举1,枚举2,枚举3" ng-show="'ENUMERATION_TYPE' == entity.dataType" ng-disabled="'ENUMERATION_TYPE'!=entity.dataType">
+                                                <input type="text" class="form-control"  ng-show="'ENUMERATION_TYPE'!=entity.dataType" ng-disabled="true">
+                                            </td>
+                                            <td>
+                                                <input type="text" class="form-control" name="$index_memo" ng-model="entity.memo"  placeholder="备注" maxlength="20">
+                                            </td>
+                                            <td class="actions">
+
+                                                <button class="btn btn-icon waves-effect waves-light btn-danger m-b-5 btn-sm" ng-click="deleteCMDItem(entity)">
+                                                    <i class="fa fa-trash-o" style="color:  #fff;"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+
+
+                                        </tbody>
+                                    </table>
+                                    </div>
+
+                                </div>
+                                <div class="panel-body">
+                                    <div class="row m-t-10">
+                                        <button  class="btn btn-primary waves-effect waves-light" btn-loading="loading" ng-click="save()">保存</button>
+                                        <button  class="btn btn-primary waves-effect waves-light" btn-loading="loading" ng-click="cancel()">取消</button>
+                                    </div>
+								</div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+  </div>

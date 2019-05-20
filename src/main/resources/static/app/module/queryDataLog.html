@@ -1,0 +1,62 @@
+<div class="container" >
+		<div class="row" ng-show="dataOnReady">
+			<div ng-show="exportLoading"> 
+				<div class="modal-body" >
+	               		<div class="form-group clearfix">
+					        <div class="col-sm-7 control-label ng-binding" style="text-align: right">
+					         <select  class="form-control" ng-model="postFrom.eid" ng-options="x for (x, y) in selEqus" required>
+										</select></div>
+					        <div class="col-sm-5 ng-binding">
+					        	<a type="button" class="btn btn-primary waves-effect waves-light" ng-click="exportPost()" >导出选择设备日志</a>
+					        </div>
+				        </div>
+					</div>
+			</div>
+			<div class="panel panel-default" ng-show="!exportLoading">
+				 <div class="panel-body">
+						<div class="ex-page-content text-center">
+							<h3>Loading...</h3>
+				
+						</div>
+				</div>
+			</div>
+		</div>
+     <div class="row" ng-show="dataOnReady">
+				<div class="col-md-12 col-sm-12 col-xs-12">
+					<div class="table-responsive">
+						<table class="table table-bordered">
+							<thead>
+							<tr>
+								<th>时间</th>
+								<th>设备编号</th>
+								<th>转码信息</th>
+								<th>处理后信息</th>
+								<th>状态</th>
+							</tr>
+							</thead>
+							<tbody>
+							<tr ng-repeat="user in data"> 
+								<td>{{ user.addDate }}</td>
+								<td>{{ user.devId }}</td>
+								<td>{{ user.data }}</td>
+								<td>{{ user.mainData }}</td>
+								<td>{{ user.dataStatus }}</td>
+							</tr>
+							
+	
+							</tbody>
+						</table>
+					</div>
+				</div>
+		</div>
+		<div class="row" ng-show="!dataOnReady">
+			<div class="panel panel-default" >
+				 <div class="panel-body">
+						<div class="ex-page-content text-center">
+							<h3>Loading...</h3>
+				
+						</div>
+				</div>
+			</div>
+		</div>
+</div>

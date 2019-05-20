@@ -1,0 +1,190 @@
+
+<div class="container">
+
+            <div class="row">
+                <div class="col-md-8 col-sm-8 col-lg-8">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">数据图</h3>
+                        </div>
+
+                        <div class="panel-body">
+                            <form role="form" class="form-horizontal">
+                                <div class="form-group">
+                                    <div class="col-md-12 col-sm-12 col-xs-12">
+                                        <label  class="col-sm-1 control-label">设备</label>
+                                        <div class="col-sm-2">
+                                            <select name="$index_valueType"class="form-control input-sm" ng-model="param.devId" ng-change="changeDevId()">
+                                                <option value="{{val.dev_id}}"  ng-repeat="(key, val) in devList" >{{val.name}}</option>
+                                            </select>
+                                        </div>
+
+                                        <label  class="col-sm-1 control-label">属性</label>
+                                        <div class="col-sm-2">
+                                            <select name="$index_valueType"class="form-control input-sm" ng-model="param.attrId"  ng-change="changeAttr()">
+                                                <option value="{{vall.id}}"  ng-repeat="(key, vall) in attrList" >{{vall.attrName}}</option>
+                                             <!--   <option value="{{val.attrName}}"  ng-repeat="(key, val) in attrList" >{{val.attrName}}</option>-->
+                                            </select>
+                                        </div>
+
+                                        <label  class="col-sm-1 control-label">时间</label>
+                                        <div class="col-sm-5">
+                                            <div class="input-group">
+                                                <input type="text" class="form-control" style="z-index: 1"  id="datepickerStrat" ng-model="param.start" >
+                                                <span class="input-group-addon">到</span>
+                                                <input type="text" class="form-control"  style="z-index: 1"   id="datepickerEnd"  ng-model="param.end" >
+                                            </div>
+                                        </div>
+
+
+                                    </div>
+                                </div>
+                               <!-- <div class="form-group">
+                                    <div class="col-lg-offset-1 col-lg-11">
+                                        <button class="btn btn-primary   waves-effect waves-light" btn-loading="loading" ng-click="init()">搜索</button>
+
+                                    </div>
+                                </div>-->
+                            </form>
+
+                            <div class="row">
+                                <div class="col-md-12 col-sm-12 col-xs-12">
+                                    <div id="website-stats2" style="position: relative;height: 320px"></div>
+                                </div>
+
+
+                            </div>
+                        </div>
+
+
+
+                    </div>
+
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title" ng-bind="attrKey"></h3>
+                        </div>
+
+                        <div class="panel-body">
+                            <div class="row">
+                                <div class="col-md-12 col-sm-12 col-xs-12">
+                                    <div class="table-responsive">
+                                        <table class="table">
+                                            <thead>
+                                            <tr >
+                                                <th ng-if="attrType != 'WAVE_TYPE'">数值</th>
+                                                <th>时间</th>
+                                                <th ng-if="attrType == 'WAVE_TYPE'">雷击次数</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr ng-repeat="entity in logArr" ng-click="showWave(entity)">
+                                                <td  ng-if="attrType != 'WAVE_TYPE'">
+                                                    <span ng-if="attrType != 'ALARM_TYPE' && attrType != 'SWITCH_TYPE'">{{entity.dataValue}}{{entity.unit}}</span>
+                                                    <span  ng-if="attrType == 'ALARM_TYPE'">
+                                                        <span ng-if="entity.dataValue == '0000'">正常</span>
+                                                        <span ng-if="entity.dataValue == '0001'">报警</span>
+                                                        <span ng-if="entity.dataValue == 'ERR'">异常数据</span>
+                                                    </span>
+                                                    <span  ng-if="attrType == 'SWITCH_TYPE'">
+                                                        <span ng-if="entity.dataValue == '0000'">开</span>
+                                                        <span ng-if="entity.dataValue == '0001'">关</span>
+                                                        <span ng-if="entity.dataValue == 'ERR'">异常数据</span>
+                                                    </span>
+                                                </td>
+                                                <td  ><span ng-bind="entity.addDate"></span></td>
+                                                <td  ng-if="attrType == 'WAVE_TYPE'"><span ng-bind="log.length - $index"></span></td>
+                                            </tr>
+
+                                            </tbody>
+
+                                        </table>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <page-info pages="pages" curpage="curpage" total="log.length" change="changePage(page)"></page-info>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="col-md-8 col-sm-8 col-lg-4">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">设备信息</h3>
+                        </div>
+                        <div class="panel-body">
+                                <div class="form-group">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <div><strong>设备编号：</strong><span class=" about-info-p text-muted"  ng-bind="equip.devId"></span></div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <div><strong>设备名称：</strong><span class=" about-info-p text-muted"  ng-bind="equip.name"></span></div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <div><strong>设备类型：</strong><span class=" about-info-p text-muted"  ng-bind="equip.typeName"></span></div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <div><strong>分组名称：</strong><span class=" about-info-p text-muted"  ng-bind="equip.groupName"></span></div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <div><strong>验证码：</strong><span class=" about-info-p text-muted"  ng-bind="equip.verification"></span></div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <div><strong>厂商ID：</strong><span class=" about-info-p text-muted"  ng-bind="equip.supportCode"></span></div>
+                                        </div>
+                                    </div>
+
+
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <div><strong>厂商名称：</strong><span class=" about-info-p text-muted"  ng-bind="equip.supporter"></span></div>
+                                        </div>
+                                    </div>
+                                   <!--  <div class="col-md-12">
+                                        <div class="form-group">
+                                            <div><strong>所属用户：</strong><span class=" about-info-p text-muted"  ng-bind="equip.uName"></span></div>
+                                        </div>
+                                    </div>-->
+                                  <!--  <div class="col-md-12">
+                                        <div class="form-group">
+                                            <div><strong>在离线：</strong><span class=" about-info-p text-muted"  ng-bind="equip.online"></span></div>
+                                        </div>
+                                    </div>-->
+
+                                </div>
+                        </div>
+                    </div>
+
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">地图</h3>
+                        </div>
+                        <div class="panel-body">
+                        <div id="map" style="height:300px;" >
+                			</div>
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+    </div>
+
+
+<!--
+</div>-->
