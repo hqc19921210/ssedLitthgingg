@@ -33,6 +33,7 @@ public class Equipment extends BaseEntity  {
     private String site;//经纬度
     private String address;//位置
     private String remark;
+    private String secRemark;// 灰色备注
     private String online;//在离线
     private String valid;//有效标志
     private boolean validCMD;//是否存在下发命令
@@ -54,6 +55,7 @@ public class Equipment extends BaseEntity  {
     	this.site = StringUtil.getStringByMap(map,"site");
     	this.address = StringUtil.getStringByMap(map,"address");
     	this.remark = StringUtil.getStringByMap(map,"remark");
+    	this.secRemark = StringUtil.getStringByMap(map,"secRemark");
     	this.uid = StringUtil.getIntegerByMap(map,"uid");
     }
     
@@ -70,6 +72,7 @@ public class Equipment extends BaseEntity  {
     	this.site = StringUtil.getStringByMap(map,"site");
     	this.appName = StringUtil.getStringByMap(map,"appName");
     	this.remark = StringUtil.getStringByMap(map,"remark");
+    	this.secRemark = StringUtil.getStringByMap(map,"secRemark");
     	this.uName = StringUtil.getStringByMap(map,"uName");
     }
     
@@ -169,6 +172,13 @@ public class Equipment extends BaseEntity  {
 	}
 	public void setRemark(String remark) {
 		this.remark = remark;
+	}
+	
+	public String getSecRemark() {
+		return secRemark;
+	}
+	public void setSecRemark(String secRemark) {
+		this.secRemark = secRemark;
 	}
 	public String getOnline() {
 		return online;

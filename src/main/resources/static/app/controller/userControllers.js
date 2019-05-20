@@ -27,6 +27,7 @@ function userCtrl($scope, $http, $rootScope) {
 			$scope.total=data.resultObj.total;
     		$scope.pageArr=data.resultObj.navigatepageNums;
     		$scope.quereyData.page=data.resultObj.pageNum;
+    		$scope.userEditable = true;
     		$scope.loadCtl.search = false;
     	});
     }

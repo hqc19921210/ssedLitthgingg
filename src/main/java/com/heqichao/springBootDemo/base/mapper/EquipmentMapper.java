@@ -71,13 +71,12 @@ public interface EquipmentMapper {
 	public List<String> getEquipmentIdListAll();
 	
 	@Select("<script>SELECT e.id,e.name,e.dev_id,e.type_cd,e.model_id,e.group_id,e.group_adm_id,e.app_id," + 
-			" e.verification,e.support_code,e.supporter,e.site,e.address,e.remark,e.online,e.uid,e.udp_date," + 
+			" e.verification,e.support_code,e.supporter,e.site,e.address,e.remark,e.sec_remark,e.online,e.uid,e.udp_date," + 
 			" u.company uName,m.model_name,a.app_name,g.name groupName," + 
 			" case e.type_cd when 'L' then 'Lora' when 'N' then 'Nbiot' when 'G' then '2G' else null end as typeName, " + 
 			" (select count(1)>0 from model_attr ma where ma.model_id=e.model_id and model_type='W') as validCMD " + 
 			"  FROM group_equ g,equipments e" + 
 			"  left join users u on e.uid=u.id" + 
-//			"  left join group_equ g on e.group_id=g.id" + 
 			"  left join model m on e.model_id=m.id" + 
 			"  left join applications a on e.app_id=a.id" + 
 			"  where e.valid = 'N'  "
@@ -103,13 +102,13 @@ public interface EquipmentMapper {
 	@Select("<script>SELECT e.id,e.name,e.dev_id,e.type_cd,e.model_id,e.group_id,e.group_adm_id,e.app_id," + 
 			" e.verification,e.support_code,e.supporter,e.site,e.address,e.remark,e.online,e.uid,e.udp_date," + 
 			" u.company uName,m.model_name,a.app_name,g.name groupName," + 
-			" t2.mx_date,"+
+			" e.data_point_date mx_date,"+
 			" case e.type_cd when 'L' then 'Lora' when 'N' then 'Nbiot' when 'G' then '2G' else null end as typeName " + 
 			"  FROM group_equ g,equipments e" + 
 			"  left join users u on e.uid=u.id" + 
 			"  left join model m on e.model_id=m.id" + 
 			"  left join applications a on e.app_id=a.id" + 
-			" LEFT JOIN (select  max(vd.add_date) mx_date,vd.dev_id from data_detail vd where vd.data_status='N' GROUP BY vd.dev_id ) t2 on t2.dev_id=e.dev_id"+
+//			" LEFT JOIN (select  max(vd.add_date) mx_date,vd.dev_id from data_detail vd where vd.data_status='N' GROUP BY vd.dev_id ) t2 on t2.dev_id=e.dev_id"+
 			"  where e.valid = 'N'  "
 			+ "<if test=\"competence == 2 \"> and e.group_adm_id=g.id"
 			+ "<if test=\"gid !=null \"> and e.group_adm_id = #{gid}  </if> </if>"
@@ -120,7 +119,7 @@ public interface EquipmentMapper {
 			+ "<if test =\"sEid !=null  and sEid!='' \"> and (e.dev_id like CONCAT('%',#{sEid},'%') or e.name like CONCAT('%',#{sEid},'%'))  </if>"
 			+ "<if test =\"sType !=null  and sType!='' \"> and e.type_cd like CONCAT(CONCAT('%',#{sType}),'%')  </if>"
 			+ "<if test =\"sStatus !=null  and sStatus!='' \"> and e.online = #{sStatus}  </if>"
-			+ " order by t2.mx_date desc </script>")
+			+ " order by e.data_point_date desc,e.online desc </script>")
 	public List<Equipment> getEquipmentsForDevLstOrderBy(
 			@Param("competence")Integer competence,
 			@Param("id")Integer id,
@@ -140,11 +139,11 @@ public interface EquipmentMapper {
 	//获取最新数据点集合
 	@Select("<script>"
 			+" SELECT d.id,d.data_type,d.udp_date,d.dev_id,d.unit,d.data_name,d.data_value,d.attr_id " +
-			" FROM data_detail d,(select  max(vd.add_date) mx_date,vd.dev_id from data_detail vd where vd.data_status='N' GROUP BY vd.dev_id) t "  
+			" FROM data_detail d,equipments e "  
 			+ "<if test=\"competence == 2 \"> where 1=1 </if>"
-			+ "<if test=\"competence == 3 \"> ,equipments e where 1=1 and e.dev_id=d.dev_id and e.uid = #{id} </if>"
-			+ "<if test=\"competence == 4 \"> ,equipments e where 1=1 and e.dev_id=d.dev_id and e.uid = #{parentId} </if>"
-			+" and d.add_date=t.mx_date AND d.dev_id=t.dev_id and d.data_status='N' and d.dev_id in"
+			+ "<if test=\"competence == 3 \">  where 1=1  and e.uid = #{id} </if>"
+			+ "<if test=\"competence == 4 \">  where 1=1  and e.uid = #{parentId} </if>"
+			+" and d.add_date=e.data_point_date AND d.dev_id=e.dev_id and d.data_status='N' and e.valid='N' and d.dev_id in"
 			+ "<foreach  collection=\"list\" open=\"(\" close=\")\" separator=\",\" item=\"equ\" >"
 			+ "#{equ.devId}"
 			+ "</foreach>"
@@ -154,6 +153,7 @@ public interface EquipmentMapper {
 			@Param("competence")Integer competence,
 			@Param("id")Integer id,
 			@Param("parentId")Integer parentId);
+	
 	
 	@Select("<script>SELECT e.id,e.name,e.dev_id,e.type_cd,e.model_id,e.group_id,e.group_adm_id,e.app_id," + 
 			" e.verification,e.support_code,e.supporter,e.site,e.address,e.remark,e.online,e.uid,e.udp_date," + 
@@ -251,15 +251,24 @@ public interface EquipmentMapper {
 			+ " from upload_result where res_key=#{key} ")
 	public List<UploadResultEntity> getUploadResult(@Param("key")String key);
 	
-	@Insert("insert into equipments (name,dev_id,type_cd,model_id,group_id,group_adm_id,app_id,verification,support_code,supporter,site,address,remark,uid,valid,add_uid,udp_uid,online)"
-			+ " values(#{name},#{devId},#{typeCd},#{modelId},#{groupId},#{groupAdmId},#{appId},#{verification},#{supportCode},#{supporter},#{site},#{address},#{remark},#{uid},#{valid},#{addUid},#{addUid},0) ")
+	@Insert("insert into equipments (name,dev_id,type_cd,model_id,group_id,group_adm_id,app_id,verification,support_code,supporter,site,address,remark,sec_remark,uid,valid,add_uid,udp_uid,online)"
+			+ " values(#{name},#{devId},#{typeCd},#{modelId},#{groupId},#{groupAdmId},#{appId},#{verification},#{supportCode},#{supporter},#{site},#{address},#{remark},#{secRemark},#{uid},#{valid},#{addUid},#{addUid},0) ")
 	public int insertEquipment(Equipment equ);
 	
 	@Update("update equipments set name=#{name},dev_id=#{devId},type_cd=#{typeCd},model_id=#{modelId},"
 			+ "group_id=#{groupId},group_adm_id=#{groupAdmId},app_id=#{appId},verification=#{verification},support_code=#{supportCode},"
-			+ "supporter=#{supporter},site=#{site},address=#{address},remark=#{remark},uid=#{uid},valid=#{valid},udp_uid=#{udpUid},udp_date=sysdate()"
+			+ "supporter=#{supporter},site=#{site},address=#{address},remark=#{remark},sec_remark=#{secRemark},uid=#{uid},valid=#{valid},udp_uid=#{udpUid},udp_date=sysdate()"
 			+ " where id=#{id}")
 	public int editEquipment(Equipment equ);
+	
+	@Update("<script>"
+			+"update equipments set data_point_date=#{addDate}"
+			+ " where valid = 'N' and dev_id in "
+			+ "<foreach  collection=\"list\" open=\"(\" close=\")\" separator=\",\" item=\"equ\" >"
+			+ "#{equ.devId}"
+			+ "</foreach>"
+			+"</script>")
+	public int updateEquDataPointDate(@Param("list")List<DataDetail> list,@Param("addDate")Date addDate);
 	
 
 	@Select("<script>"
@@ -280,7 +289,7 @@ public interface EquipmentMapper {
 	@Update("update equipments set  udp_date = sysdate(), udp_uid = #{udid}, valid = 'D' where id=#{id} and valid = 'N' ")
 	public int delEquById(@Param("id")Integer eid,@Param("udid")Integer udid);
 	
-	@Update("update equipments set  e_valid = #{status} where eid=#{eid} and valid = 'N' ")
+	@Update("update equipments set  valid = #{status} where eid=#{eid} and valid = 'N' ")
 	public int setEquStatus(@Param("eid")String eid,@Param("status")String status);
 	
 	@Select("select count(1)>0 from equipments where dev_id = #{devId} and valid = 'N' ")

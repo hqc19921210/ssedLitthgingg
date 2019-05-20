@@ -9,7 +9,7 @@
 
 		<link rel="shortcut icon" href="assets/images/favicon_1.ico">
 
-	 <title>圣斯尔物联网监测平台</title>
+	 <title ng-bind="!user.titleName ? '圣斯尔物联网监测平台' : user.titleName"></title>
 
 		<!-- notify -->
 		<link href="assets/plugins/notifications/notification.css" rel="stylesheet">
@@ -57,7 +57,7 @@
 				<div class="text-center">
 					<a href="/" class="logo">
 					<!-- <i class="md md-terrain"></i>  -->
-					<span>圣斯尔物联网监测平台 </span></a>
+					<span>{{!user.titleName ? '圣斯尔物联网监测平台' : user.titleName}} </span></a>
 				</div>
 			</div>
 			<!-- Button mobile view to collapse sidebar menu -->
@@ -557,6 +557,7 @@
 					$scope.currEmail=user.email;
 					$scope.currSite=user.site;
 					$scope.currRemark=user.remark;
+					$scope.currTitleName=user.titleName;
 					$scope.currCompetence=user.competence+"";
 					$scope.userEditable = true;
 				}
@@ -578,7 +579,8 @@
 			    			fax:$scope.currFax,
 			    			email:$scope.currEmail,
 			    			site:$scope.currSite,
-			    			remark:$scope.currRemark
+			    			remark:$scope.currRemark,
+			    			titleName:$scope.currTitleName
 			    			}).success(function(data) {
 						    	if(data.resultObj == "errorMsg"){
 						    		$scope.closeUserInfoModal();
@@ -787,6 +789,14 @@
                              <div class="form-group"> 
                                  <label  class="control-label">传真</label> 
                                  <input type="text" class="form-control" ng-disabled="userEditable" name="currFax" ng-model="currFax"  > 
+                             </div> 
+                         </div> 
+                     </div> 
+                     <div class="row" ng-show="$rootScope.edit_cmp"> 
+                         <div class="col-md-12"> 
+                             <div class="form-group"> 
+                                 <label  class="control-label">网站名称</label> 
+                                 <input type="text" class="form-control" name="currTitleName" maxlength="10" placeholder="名称长度10个汉字内" ng-model="currTitleName"  > 
                              </div> 
                          </div> 
                      </div> 

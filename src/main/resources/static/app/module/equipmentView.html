@@ -77,7 +77,7 @@
 									<tr ng-repeat="eqm in equipments"> 
 									<td><img ng-src="{{getStatusImg(eqm.online)}}"/></td>
 									<td>{{ eqm.name }}</td>
-									<td>{{ eqm.devId}}</td>
+									<td>{{ eqm.devId}}<p/><span class="help-inline" ng-if="!!eqm.secRemark" style="color:gray;" >{{eqm.secRemark}}</span></td>
 									<td>{{ eqm.typeName }}</td>
 									<td>{{ eqm.modelName }}</td>
 									<td>{{ eqm.groupName }}</td>
