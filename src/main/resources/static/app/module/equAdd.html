@@ -73,7 +73,7 @@
 	                               <select  class="form-control" name="appId"  ng-model="$parent.addFrom.appId" ng-options="x for (x, y) in selApps" required>
 									</select>
                               </div>
-                              <div class="col-md-3">
+                              <div class="col-md-3" ng-if="globalCMP == 2">
 									<a href="#/module/liteApp" type="button" class="btn btn-primary waves-effect waves-light" >应用管理</a>
                          		</div>
                          </div> 
