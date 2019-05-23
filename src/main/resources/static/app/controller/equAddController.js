@@ -13,7 +13,7 @@ function equAddCtrl($scope, $http,$rootScope,$location,$timeout) {
 			typeCd : 'L'
 	}
 	$scope.chkType=false;
-	
+	$scope.globalCMP=$rootScope.user.competence;
 	//获取设备分组列表
     $scope.getDevGroupsList = function () {
     	$http.get("service/getEquGroups").success(function(data) {

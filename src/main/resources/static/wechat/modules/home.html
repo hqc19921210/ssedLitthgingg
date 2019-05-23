@@ -1,14 +1,14 @@
 <ons-page id="HomeTab" ng-controller="homeCtrl">
 	<ons-row>
-		<ons-col>
+		<ons-col vertical-align="left">
 			<select class="select-input select-input--underbar" placeholder="设备状态"  ng-model="quereyData.seleStatus" >
-				<option  value="1">全部</option>
+				<option  value="A">全部</option>
 				<option  value="1">在线</option>
 				<option  value="0">离线</option>
 			</select>
 		</ons-col>
-		<ons-col>
-			<ons-search-input placeholder="设备名称或编号"></ons-search-input>
+		<ons-col vertical-align="center" style="text-align: center;">
+			<ons-search-input placeholder="设备名称或编号" ng-model="quereyData.eid"></ons-search-input>
 		</ons-col>
 		<ons-col vertical-align="right" style="text-align: right;">
 			<button class="button--cta" btn-loading="loadCtl.search" ng-click="init()">搜索</button>

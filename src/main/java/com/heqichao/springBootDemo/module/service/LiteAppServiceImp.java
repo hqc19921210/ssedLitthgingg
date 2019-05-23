@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import com.heqichao.springBootDemo.module.entity.AlarmSetting;
 import com.heqichao.springBootDemo.module.entity.CommandLog;
 import com.heqichao.springBootDemo.module.entity.LiteApplication;
 import com.heqichao.springBootDemo.module.liteNA.JsonUtil;

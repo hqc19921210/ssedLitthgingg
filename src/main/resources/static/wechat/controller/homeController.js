@@ -2,6 +2,7 @@ wechatApp.controller("homeCtrl", function($scope, $http, $rootScope, $timeout) {
 	  $scope.quereyData={
 	        page:1, //当前页码 初始化为1
 	        size:defaultSize, //每页数据量 defaultSize全局变量
+	        seleStatus:"A"
 	    };
 		$scope.pages=0;
 		$scope.total=0;
@@ -15,12 +16,18 @@ wechatApp.controller("homeCtrl", function($scope, $http, $rootScope, $timeout) {
 		$scope.edit_cmp=$rootScope.edit_cmp;
 	    $scope.init=function(){
 	    	$scope.loadCtl.search = true;
+	    	if($scope.quereyData.seleStatus == "A"){
+	    		$scope.quereyData.seleStatus = null;
+	    	}
 	    	$http.post("service/getEquipments",$scope.quereyData).success(function(data) {
 	    		$scope.equipments = data.resultObj.list;
 	    		$scope.pages=data.resultObj.pages;//总页数
 	    		$scope.currPage=data.resultObj.pageNum;//当前页
 	    		$scope.total=data.resultObj.total;//总记录数
 	    		$scope.quereyData.page=data.resultObj.pageNum;
+	    		if($scope.quereyData.seleStatus == null){
+		    		$scope.quereyData.seleStatus = "A";
+		    	}
 	    		$scope.loadCtl.search = false;
 	    	});
 	    }
@@ -46,7 +53,7 @@ wechatApp.controller("homeCtrl", function($scope, $http, $rootScope, $timeout) {
 	   };
 	   
 	   $scope.nextPage = function(pageNum) {
-		 if(!(pageNum<1) && pageNum<$scope.pages && $scope.currPage !== pageNum){
+		 if(!(pageNum<1) && !(pageNum>$scope.pages) && $scope.currPage !== pageNum){
 			 $scope.quereyData.page=pageNum;
 			 $scope.init();
 		 }

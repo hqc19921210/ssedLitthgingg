@@ -8,6 +8,7 @@ function equEditCtrl($scope, $http,$rootScope,$location,$timeout,$routeParams) {
 	$scope.loadCtl={
     		addEnq:false
     };
+	$scope.globalCMP=$rootScope.user.competence;
 	$scope.addFrom = {};
 	$scope.dataOnReady=false;
 	$scope.typeChk='checked';
