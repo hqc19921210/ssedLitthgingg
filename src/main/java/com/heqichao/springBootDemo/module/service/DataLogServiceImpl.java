@@ -8,10 +8,7 @@ import com.heqichao.springBootDemo.base.exception.ResponeException;
 import com.heqichao.springBootDemo.base.param.ApplicationContextUtil;
 import com.heqichao.springBootDemo.base.service.EquipmentService;
 import com.heqichao.springBootDemo.base.service.UserService;
-import com.heqichao.springBootDemo.base.util.Base64Encrypt;
-import com.heqichao.springBootDemo.base.util.ServletUtil;
-import com.heqichao.springBootDemo.base.util.StringUtil;
-import com.heqichao.springBootDemo.base.util.UserUtil;
+import com.heqichao.springBootDemo.base.util.*;
 import com.heqichao.springBootDemo.module.entity.*;
 import com.heqichao.springBootDemo.module.mapper.DataDetailMapper;
 import com.heqichao.springBootDemo.module.mapper.DataLogMapper;
@@ -59,7 +56,29 @@ public class DataLogServiceImpl implements DataLogService {
     	}
     	return null;
     }
-    
+
+    @Override
+    public void save(List<DataDetail> dataDetails, String devId) {
+        dataDetailMapper.save(dataDetails);
+        DataCacheUtil.del(DataCacheUtil.LASTEST_DATADETAIL,devId);
+    }
+
+    @Override
+    public List<Map>  getLastestDetail(String devId) {
+
+        Object data= DataCacheUtil.get(DataCacheUtil.LASTEST_DATADETAIL,devId);
+        if(data == null){
+            List<Map> dataDetails = dataDetailMapper.queryLastestDataDetail(devId);
+            if(CollectionUtil.isNotEmpty(dataDetails)){
+                DataCacheUtil.set(DataCacheUtil.LASTEST_DATADETAIL,devId,dataDetails);
+                return dataDetails;
+            }
+        }else{
+            return (List<Map>) data;
+        }
+        return Collections.EMPTY_LIST;
+    }
+
     @Override
     public void saveDataLog(String devId,String data, String srcData,String devType){
         Date date =new Date();
@@ -210,7 +229,8 @@ public class DataLogServiceImpl implements DataLogService {
                 for(DataDetail dataDetail :dataDetails){
                     dataDetail.setLogId(dataLog.getId());
                 }
-                dataDetailMapper.save(dataDetails);
+                DataLogService dataLogService = (DataLogService) ApplicationContextUtil.getApplicationContext().getBean("dataLogService");
+                dataLogService.save(dataDetails,devId);
                 equipmentService.updateEquDataPointDate(dataDetails, date);
             }
             //保存报警数据
@@ -268,10 +288,12 @@ public class DataLogServiceImpl implements DataLogService {
         }
         if(devId!=null && devId.length>0){
             Date date =new Date();
-           List<String > ids = Arrays.asList(devId);
+            List<String > ids = Arrays.asList(devId);
             dataLogMapper.updateStatus(UN_ENABLE_STATUS,ids,date);
             dataDetailMapper.updateStatus(UN_ENABLE_STATUS,ids,date);
             alarmLogService.deleteAlarmLog(devId);
+            //删除最新的接收数据缓存
+            DataCacheUtil.del(DataCacheUtil.LASTEST_DATADETAIL,devId);
         }
     }
 

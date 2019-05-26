@@ -34,7 +34,7 @@ public interface DataLogMapper {
     void updateStatus( @Param("status")String status ,@Param("list") List<String> list, @Param("date")Date date);
     
     // Muzzy 
-    @Select("select * from data_log d where data_status != 'D' order by add_date desc limit 100")
+    @Select("select * from data_log d where data_status = 'N' order by add_date desc limit 100")
     public List<DataLog> queryDataLog();
     // End Muaay
 }

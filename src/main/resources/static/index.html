@@ -427,14 +427,12 @@
 
 					$http.post("service/queryAlarm",{"queryChange":isFirst}).success(function(data) {
 						if(data.success){
-
 							$rootScope.faultCount =data.resultObj.alarmCount;
 							$rootScope.faultAlarmList =data.resultObj.alarmList;
 							if(data.resultObj.chaneList){
 								for(var i=0;i<data.resultObj.chaneList.length;i++){
 									var mes =data.resultObj.chaneList[i];
 									var value="";
-
 									if("A"==mes.data_status){
 										if(mes.data_type != 'ALARM_TYPE' && mes.data_type != 'SWITCH_TYPE'){
 											value =mes.data_value;
@@ -461,7 +459,6 @@
 										$.Notification.notify('warning', 'top right', '设备数据点故障', mes.name+"的"+mes.attr_name+"报警,当前值为："+value);
 
 									}else if("N" == mes.data_status){
-
 										if(mes.data_type != 'ALARM_TYPE' && mes.data_type != 'SWITCH_TYPE'){
 											value =mes.new_value;
 											if(mes.unit){
@@ -486,22 +483,17 @@
 										}
 										$.Notification.notify('info', 'top right', '设备数据点恢复', mes.name+"的"+mes.attr_name+"恢复正常,当前值为："+value);
 									}
-
-
-
 								}
 							}
-
-
+							$timeout(function(){$scope.queryFaultCount("TRUE");}, 30*1000);
 						}
+					}).error(function (data) {
+						$timeout(function(){$scope.queryFaultCount("TRUE");}, 30*1000);
 					});
 				}
 
 				$scope.queryFaultCount("FALSE");
-				//每30s刷新一次
-				$interval(function() {
-					$scope.queryFaultCount("TRUE");
-				}, 30*1000);
+
 
                 $scope.gotoWarningLog =function (entity) {
                     $location.path("/module/alarmLogList/"+entity.dev_id+"/"+entity.attr_id+"/A");
