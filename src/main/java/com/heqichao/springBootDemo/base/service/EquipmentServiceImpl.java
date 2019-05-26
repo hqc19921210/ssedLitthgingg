@@ -90,32 +90,24 @@ public class EquipmentServiceImpl implements EquipmentService {
 //    	List<Equipment> eLst = eMapper.getEquipmentsForDevLstOrderBy(cmp,uid,pid,gid,eid,type,seleStatus);
 		//重构返回数据格式
     	List<Equipment> eLst = (List<Equipment>)pageInfo.getList();
-    	List<DataDetail> pLst =eMapper.queryDetailPointList(eLst,cmp,uid,pid);
-//    	// 将list转为Map,这里key一定要为唯一值
-//        Map<String, Equipment> eLstMap = eLst.stream().collect(
-//                Collectors.toMap(e -> e.getDevId(),
-//                        e -> e));
-//     // 设备匹配数据点
-//        newLst = pLst.stream().map(p -> {
-//            return toEquipmentShow(eLstMap.get(p.getDevId()), p);
-//        }).collect(Collectors.toList());
+    	//List<DataDetail> pLst =eMapper.queryDetailPointList(eLst,cmp,uid,pid);
+
     	for (Equipment equ : eLst) {
     		Map<String,Object> newClu= new HashMap<String,Object>();
     		newClu.put("name", equ.getName());
     		newClu.put("devId", equ.getDevId());
     		newClu.put("type", equ.getTypeName());
     		newClu.put("online", equ.getOnline());
-    		List<DataDetail> currPoint = new ArrayList<>();
+    		List<Map> currPoint = new ArrayList<>();
     		try {
-    			for (DataDetail point : pLst) {
+    			/*for (DataDetail point : pLst) {
     				if(equ.getDevId().equals(point.getDevId())) {
     					currPoint.add(point);
     				}
-    			}
-    			
+    			}*/
+				currPoint=dataLogService.getLastestDetail(equ.getDevId());
     		}catch (Exception e) {
     			e.printStackTrace();
-    			
 			}
     		newClu.put("dataPoints",currPoint);
     		newLst.add(newClu);

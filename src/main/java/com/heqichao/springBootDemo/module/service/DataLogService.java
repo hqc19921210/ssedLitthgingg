@@ -59,4 +59,13 @@ public interface DataLogService {
     List<String> checkOnLineDev(String type,  Date date);
 
 	List<DataLog> queryDataLog();
+
+    void save(List<DataDetail> dataDetails ,String devId);
+
+    /**
+     * 获取设备的最新数据
+     * @param devId
+     * @return
+     */
+    List<Map>  getLastestDetail(String devId);
 }
