@@ -1,5 +1,9 @@
 package com.heqichao.springBootDemo.base.util;
 
+import com.heqichao.springBootDemo.base.entity.Equipment;
+import com.heqichao.springBootDemo.base.param.ApplicationContextUtil;
+import com.heqichao.springBootDemo.base.service.EquipmentService;
+
 import java.util.Map;
 
 /**
@@ -13,7 +17,15 @@ public class DataCacheUtil {
      */
     private static String SSET_CACHE_KEY_ ="SSET_";
 
+    /**
+     * 获取最新设备数据 缓存Key
+     */
     public static String LASTEST_DATADETAIL = "LASTEST_DATA";
+
+    /**
+     * 设备信息缓存
+     */
+    public static String EQUIPMENT_INFO ="EQUIPMENT_INFO";
 
     /**
      * 缓存放入 永久
@@ -124,5 +136,36 @@ public class DataCacheUtil {
             return null;
         }
         return RedisUtil.hget(SSET_CACHE_KEY_+prefix+key,item);
+    }
+
+    /**
+     * 获取设备缓存
+     * @param devId
+     * @return
+     */
+    public static Equipment getEquipmentCache(String devId){
+        if(StringUtil.isNotEmpty(devId)){
+            Object obj = DataCacheUtil.get(EQUIPMENT_INFO,devId);
+            if(obj!=null){
+                return (Equipment) obj;
+            }else{
+                EquipmentService equipmentService = (EquipmentService) ApplicationContextUtil.getApplicationContext().getBean("equipmentServiceImpl");
+                Equipment equipment =equipmentService.getEquipmentInfo(devId);
+                if(equipment != null){
+                    DataCacheUtil.set(EQUIPMENT_INFO,devId,equipment);
+                    return equipment;
+                }
+            }
+
+        }
+        return null;
+    }
+
+    /**
+     * 删除设备缓存
+     * @param devId
+     */
+    public static void removeEquipmentCache(String devId){
+        del(EQUIPMENT_INFO,devId);
     }
 }

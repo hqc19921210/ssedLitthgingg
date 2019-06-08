@@ -48,7 +48,7 @@ public interface EquipmentService {
 	ResponeResult deleteEquByID(Map map);
 
 
-	void setEquStatus(String eid, String status);
+	void setEquStatus(String devId, String status);
 
 	List<String> getEquipmentByStatus(String status);
 
