@@ -80,6 +80,19 @@ public class DataLogServiceImpl implements DataLogService {
     }
 
     @Override
+    public void sendToOneNet(String devId, String devType, String srcData) {
+
+    }
+
+    @Override
+    public boolean checkSendForOneNet(String devId, String devType) {
+        if(EquipmentService.EQUIPMENT_NB.equals(devType)){
+
+        }
+        return false;
+    }
+
+    @Override
     public void saveDataLog(String devId,String data, String srcData,String devType){
         Date date =new Date();
         //报警恢复映射
@@ -99,7 +112,7 @@ public class DataLogServiceImpl implements DataLogService {
             dataLog.setDevId(devId);
             dataLog.setDevType(devType);
             //先查找该设备所绑定的模板属性
-            Equipment equipment = equipmentService.getEquipmentInfo(devId);
+            Equipment equipment = DataCacheUtil.getEquipmentCache(devId);
             Integer modId=null;
             List<ModelAttr> attrList =new ArrayList<>();
             if(equipment!=null && equipment.getModelId() !=null){
@@ -302,7 +315,7 @@ public class DataLogServiceImpl implements DataLogService {
         Map map= new HashMap();
         if(StringUtil.isNotEmpty(devId) && attrId!=null){
             map.put("log",queryDataDetail(devId, attrId, startTime, endTime));
-            Equipment equipment =equipmentService.getEquipmentInfo(devId);
+            Equipment equipment =DataCacheUtil.getEquipmentCache(devId);
             if(equipment.getUid()!=null){
                 User user = userService.querById(equipment.getUid());
                 if(user!=null){

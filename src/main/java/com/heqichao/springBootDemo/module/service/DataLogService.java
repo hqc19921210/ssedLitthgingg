@@ -68,4 +68,20 @@ public interface DataLogService {
      * @return
      */
     List<Map>  getLastestDetail(String devId);
+
+
+    /**
+     * 发送到onenet
+     * @param devId
+     * @param srcData
+     */
+    void sendToOneNet(String devId,String devType,String srcData);
+
+    /**
+     * 检查是否发送到onenet
+     * @param devId
+     * @param devType
+     * @return
+     */
+    boolean checkSendForOneNet(String devId,String devType);
 }
