@@ -13,19 +13,19 @@ import java.util.Map;
 public class DataCacheUtil {
 
     /**
-     * 缓存前缀
+     * 所有系统缓存的前缀
      */
     private static String SSET_CACHE_KEY_ ="SSET_";
 
     /**
      * 获取最新设备数据 缓存Key
      */
-    public static String LASTEST_DATADETAIL = "LASTEST_DATA";
+    public static String LASTEST_DATADETAIL = "LASTEST_DATA_";
 
     /**
      * 设备信息缓存
      */
-    public static String EQUIPMENT_INFO ="EQUIPMENT_INFO";
+    public static String EQUIPMENT_INFO ="EQUIPMENT_";
 
     /**
      * 缓存放入 永久

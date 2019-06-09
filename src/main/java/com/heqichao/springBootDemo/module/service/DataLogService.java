@@ -72,10 +72,12 @@ public interface DataLogService {
 
     /**
      * 发送到onenet
-     * @param devId
-     * @param srcData
+     * @param devId 设备ID
+     * @param devType 设备类型
+     * @param data 数据
+     * @param dataLogId dataLogId
      */
-    void sendToOneNet(String devId,String devType,String srcData);
+    void sendToOneNet(String devId,String devType,String data,Integer dataLogId);
 
     /**
      * 检查是否发送到onenet
