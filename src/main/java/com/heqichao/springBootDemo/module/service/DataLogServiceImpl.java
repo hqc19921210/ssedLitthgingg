@@ -311,7 +311,7 @@ public class DataLogServiceImpl implements DataLogService {
                 for(DataDetail dataDetail :dataDetails){
                     dataDetail.setLogId(dataLog.getId());
                 }
-                DataLogService dataLogService = (DataLogService) ApplicationContextUtil.getApplicationContext().getBean("dataLogService");
+                DataLogService dataLogService = ApplicationContextUtil.getApplicationContext().getBean(DataLogService.class);
                 dataLogService.save(dataDetails,devId);
                 equipmentService.updateEquDataPointDate(dataDetails, date);
                 dataLogService.sendToOneNet(devId,devType,dataLog.getData(),dataLog.getId());
