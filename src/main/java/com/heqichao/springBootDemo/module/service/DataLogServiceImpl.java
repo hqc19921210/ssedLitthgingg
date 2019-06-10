@@ -149,7 +149,7 @@ public class DataLogServiceImpl implements DataLogService {
     @Override
     public boolean checkSendForOneNet(String devId, String devType) {
         //用于判断是否为sset设备
-        Integer ssedUserId =4;
+        Integer ssedUserId =13;
         if(EquipmentService.EQUIPMENT_NB.equals(devType)){
             Equipment equipment =DataCacheUtil.getEquipmentCache(devId);
             if(equipment != null){
