@@ -19,6 +19,8 @@ import com.heqichao.springBootDemo.module.mapper.DataLogMapper;
 import com.heqichao.springBootDemo.module.model.AlarmEnum;
 import com.heqichao.springBootDemo.module.model.AttrEnum;
 import com.heqichao.springBootDemo.module.model.ModelUtil;
+import com.heqichao.springBootDemo.module.wechat.entity.AccessToken;
+import com.heqichao.springBootDemo.module.wechat.untils.WechatUntils;
 import com.heqichao.springBootDemo.module.onenet.OneNetConfig;
 import com.heqichao.springBootDemo.module.onenet.api.cmds.SendCmdsApi;
 import com.heqichao.springBootDemo.module.onenet.response.BasicResponse;
@@ -238,6 +240,17 @@ public class DataLogServiceImpl implements DataLogService {
 
                 //查找报警设置
                 Map<Integer,AlarmSetting>  settingMap =alarmSettingService.queryEnableByModelId(equipment.getModelId());
+                //检查是否绑定微信
+                AccessToken baseToken = null;
+                AccessToken webToken = null;
+                if(equipment.getValidWechat() != null) {
+                	try {
+                		baseToken = WechatUntils.getAccessToken();
+                		webToken = userService.getTokenByOpenId(equipment.getValidWechat());
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+                }
                 for(int i=0;i<attrList.size();i++){
                     ModelAttr attr=attrList.get(i);
                     AttrEnum attrEnum =AttrEnum.getAttrByType(attr.getDataType(),attr.getValueType());
@@ -287,6 +300,15 @@ public class DataLogServiceImpl implements DataLogService {
                                 log.setUdpDate(date);
                                 log.setDataStatus(AlarmLogService.ALARM_STATUS);
                                 alarmLogs.add(log);
+                                if(equipment.getValidWechat() != null && baseToken != null && webToken != null) {
+                                	try {
+                                		WechatUntils.postMessgae(baseToken.getAccessToken(),
+                                				webToken.getOpenid(), setting.getName(),
+                                				equipment.getName(), date, attr.getAttrName(), res);
+									} catch (Exception e) {
+										e.printStackTrace();
+									}
+                                }
                             }else{
                                 //解除报警
                                 alramNewValue.put(attr.getId(),res);

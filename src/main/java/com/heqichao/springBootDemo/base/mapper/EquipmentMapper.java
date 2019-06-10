@@ -48,7 +48,8 @@ public interface EquipmentMapper {
 	@Select("SELECT e.id,e.name,e.dev_id,e.type_cd,e.model_id,e.group_id,e.group_adm_id,e.app_id,"+
 			" e.verification,e.support_code,e.supporter,e.site,e.address,e.remark,e.online,e.uid,e.udp_date," + 
 			" u.company uName,m.model_name,a.app_name," + 
-			" case e.type_cd when 'L' then 'Lora' when 'N' then 'Nbiot' when 'G' then '2G' else null end as typeName " + 
+			" case e.type_cd when 'L' then 'Lora' when 'N' then 'Nbiot' when 'G' then '2G' else null end as typeName, " +
+			" (select u2.open_id from users u2 where u2.valid = 'N' and u2.open_id is not null and  (u2.id=e.id or u2.parent_uid=e.id) limit 1) as validWechat "+
 			"  FROM equipments e" + 
 			"  left join users u on e.uid=u.id" + 
 			"  left join model m on e.model_id=m.id" + 

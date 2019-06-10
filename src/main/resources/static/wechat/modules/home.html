@@ -1,30 +1,42 @@
 <ons-page id="HomeTab" ng-controller="homeCtrl">
+	<ons-toolbar>
+	    <div class="center">设备管理</div>
+	  </ons-toolbar>
 	<ons-row>
-		<ons-col vertical-align="left">
+		<ons-col vertical-align="left" style="padding-left: 5px;" width="25%">
 			<select class="select-input select-input--underbar" placeholder="设备状态"  ng-model="quereyData.seleStatus" >
 				<option  value="A">全部</option>
 				<option  value="1">在线</option>
 				<option  value="0">离线</option>
 			</select>
 		</ons-col>
-		<ons-col vertical-align="center" style="text-align: center;">
+		<ons-col vertical-align="center" style="text-align: center;" width="50%">
 			<ons-search-input placeholder="设备名称或编号" ng-model="quereyData.eid"></ons-search-input>
 		</ons-col>
-		<ons-col vertical-align="right" style="text-align: right;">
+		<ons-col vertical-align="right" style="text-align: right;padding-right: 5px;" width="25%">
 			<button class="button--cta" btn-loading="loadCtl.search" ng-click="init()">搜索</button>
 		</ons-col>
 	</ons-row>
-    <p style="text-align: center;" >
+    <div style="text-align: center;" >
     
-      <ul class="list" >
-		<li class="list-item" ng-repeat="eqm in equipments">
+      <ul class="list" ng-show="equipments.length != 0">
+		<li class="list-item" tappable ng-repeat="eqm in equipments" >
 		<div class="list-item__left">
 		<img class="list-item__thumbnail" style="width:20px; height:20px;" src="{{getStatusImg(eqm.online)}}" >
 		</div>
 		
 		<div class="list-item__center">
 		<div class="list-item__title">{{ eqm.name }}</div>
-		<div class="list-item__subtitle">{{ eqm.devId}}</div>
+		<div class="list-item__subtitle">
+			<ons-row>
+				<ons-col>{{ eqm.devId}}</ons-col>
+				<ons-col>类型：{{ eqm.typeName }}</ons-col>
+			</ons-row>
+			<ons-row>
+				<ons-col>{{ eqm.modelName}}</ons-col>
+				<ons-col>分组：{{ eqm.groupName }}</ons-col>
+			</ons-row>
+		</div>
 		</div>
 		
 		<div class="list-item__right">
@@ -48,5 +60,11 @@
 				</ons-col>
 			</ons-row>
 		</ons-bottom-toolbar>
-    </p>
+		<ons-card ng-show="equipments.length == 0"  >
+	    <div  style="color:#cbcbd1; text-align: center;">
+		     ---- 暂无数据 ----
+	    </div>
+	  </ons-card>
+    </div>
+    
   </ons-page>

@@ -280,8 +280,8 @@ function logShowCtrl($scope, $http, $rootScope,$routeParams,$location) {
         Dashboard.prototype.init = function() {
     	    var points=angular.fromJson(angular.toJson($scope.plotDownloads));
     	    var keys=angular.fromJson(angular.toJson($scope.param.attrKey));
-    	    console.log("points",points);
-    	    console.log("keys",keys);
+//    	    console.log("points",points);
+//    	    console.log("keys",keys);
             this.createPlotGraph("#website-stats2", points , keys , pcolors, borderColor, bgColor);
         },
 

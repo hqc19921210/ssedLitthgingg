@@ -10,6 +10,9 @@ import com.heqichao.springBootDemo.base.util.ServletUtil;
 import com.heqichao.springBootDemo.base.util.StringUtil;
 
 import com.heqichao.springBootDemo.base.util.UserCache;
+import com.heqichao.springBootDemo.module.wechat.entity.AccessToken;
+import com.heqichao.springBootDemo.module.wechat.untils.WechatUntils;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -171,5 +174,29 @@ public class UserServiceImpl implements UserService {
     	}
     	return  new ResponeResult(true,"Delete user fail","errorMsg");
     }
+    @Override
+    public ResponeResult updateOpenIdById(Map map) throws Exception {
+    	String code = StringUtil.getStringByMap(map,"code");
+    	Integer uid = ServletUtil.getSessionUser().getId();
+    	AccessToken token = WechatUntils.getCodeToken(code);
+    	token.setAddUid(uid);
+    	token.setUdpUid(uid);
+    	if(  uid == null ||token == null) {
+    		return new ResponeResult(true,"绑定获取用户信息失败","errorMsg");
+    	}else {
+    		userMapper.insertAccessToken(token);
+    		if(token.getId() != null && userMapper.updateOpenIdById(uid,token.getId())>0) {
+    			return new ResponeResult();
+    		}
+    	}
+    	return  new ResponeResult(true,"绑定失败","errorMsg");
+    }
+    
+    @Override
+    public AccessToken getTokenByOpenId(Integer openId) throws Exception {
+    	String reToken = userMapper.getRefreshToken(openId);
+    	return  WechatUntils.refreshToken(reToken);
+    }
 
+    
 }

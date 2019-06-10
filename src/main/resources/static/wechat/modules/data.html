@@ -1,5 +1,61 @@
-<ons-page id="DataTab">
-    <p style="text-align: center;">
-      This is the first page.
-    </p>
+<ons-page id="DataTab" ng-controller="dataCtrl as list">
+	<ons-toolbar>
+		    <div class="center">历史数据</div>
+		  </ons-toolbar>
+	<ons-row>
+    	<div id="container" style="width:100%; height:400px;"></div>
+    </ons-row>
+	<ons-row>
+		<ons-col vertical-align="left" style="padding-left: 5px;" width="45%">
+			<ons-input  modifier="underbar" type="date" placeholder="开始时间" ng-model="param.start" ng-change="init()"></ons-input>
+		</ons-col>
+		
+		<ons-col vertical-align="center"   width="10%">
+			<p>到</p>
+		</ons-col>
+		<ons-col vertical-align="right"  width="45%">
+			<ons-input  modifier="underbar" type="date" placeholder="结束时间" ng-model="param.end" ng-change="init()"></ons-input>
+		</ons-col>
+	</ons-row>
+	<ons-row>
+		<ons-col vertical-align="left" style="padding-left: 5px;" >
+			<select class="select-input select-input--underbar" name="$index_valueType" ng-model="param.devId" ng-change="changeDevId()">
+                <option value="{{val.dev_id}}"  ng-repeat="(key, val) in devList" >{{val.name}}</option>
+            </select>
+		</ons-col>
+		<ons-col vertical-align="right" style="text-align: right;padding-right: 5px;" >
+            <select class="select-input select-input--underbar" name="$index_valueType"class="form-control input-sm" ng-model="param.attrId"  ng-change="changeAttr()">
+                <option value="{{vall.id}}"  ng-repeat="(key, vall) in attrList" >{{vall.attrName}}</option>
+            </select>
+		</ons-col>
+	</ons-row>
+    <ons-list ng-show="logArr.length != 0">
+	    <ons-list-item ons-lazy-repeat="list.delegate">
+	    <div class="left">
+			<div class="list-item__title">{{ item.addDate }}</div>
+		</div>
+	    <div class="center">
+			<div class="list-item__title" ng-if="attrType != 'WAVE_TYPE'">
+               <span ng-if="attrType != 'ALARM_TYPE' && attrType != 'SWITCH_TYPE'">{{item.dataValue}}{{item.unit}}</span>
+               <span  ng-if="attrType == 'ALARM_TYPE'">
+                   <span ng-if="item.dataValue == '0000'">正常</span>
+                   <span ng-if="item.dataValue == '0001'">报警</span>
+                   <span ng-if="item.dataValue == 'ERR'">异常数据</span>
+               </span>
+               <span  ng-if="attrType == 'SWITCH_TYPE'">
+                   <span ng-if="item.dataValue == '0000'">开</span>
+                   <span ng-if="item.dataValue == '0001'">关</span>
+                   <span ng-if="item.dataValue == 'ERR'">异常数据</span>
+               </span>
+           </div>
+           <div  ng-if="attrType == 'WAVE_TYPE'"><span ng-bind="log.length - item.index"></span></div>
+		</div>
+		</ons-list-item>
+	  </ons-list>
+	<ons-card ng-show="logArr.length == 0"  >
+	    <div  style="color:#cbcbd1; text-align: center;">
+		     ---- 暂无数据 ----
+	    </div>
+	  </ons-card>
+	 
   </ons-page>

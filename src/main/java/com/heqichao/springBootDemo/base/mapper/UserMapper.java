@@ -3,11 +3,13 @@ package com.heqichao.springBootDemo.base.mapper;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Insert;
+import org.apache.ibatis.annotations.Options;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
 import com.heqichao.springBootDemo.base.entity.User;
+import com.heqichao.springBootDemo.module.wechat.entity.AccessToken;
 
 /**
  * @author Muzzy Xu.
@@ -16,7 +18,7 @@ import com.heqichao.springBootDemo.base.entity.User;
  */
 public interface UserMapper {
 	
-	@Select("SELECT u.id,u.parent_uid parentId,u.account,u.company,u.contact,u.phone,u.fax,u.email,u.site,u.remark,"
+	@Select("SELECT u.id,u.parent_uid parentId,u.account,u.company,u.contact,u.phone,u.fax,u.email,u.site,u.remark,open_id,"
 			+ "case competence when 4 then (select u2.title_name from users u2 where u2.id = u.parent_uid) else u.title_name end as title_name,"
 			+ " u.competence"
 			+ " FROM users u "
@@ -25,7 +27,7 @@ public interface UserMapper {
 			+ " and u.valid = 'N' ")
 	public User getUserInfo(@Param("account") String account,@Param("password") String password);
 
-	@Select("SELECT id,parent_uid parentId,account,company,contact,phone,fax,email,site,remark,title_name,competence"
+	@Select("SELECT id,parent_uid parentId,account,company,contact,phone,fax,email,site,remark,title_name,open_id,competence"
 			+ " FROM users "
 			+ "where id = #{uid}  "
 			+ "and valid = 'N' ")
@@ -72,5 +74,15 @@ public interface UserMapper {
 	
 	@Update("update users set  udp_date = sysdate(), udp_uid = #{udid}, valid = 'D' where id=#{id} and valid = 'N' ")
 	public int delUserById(@Param("id")Integer uid,@Param("udid")Integer udid);
+	
+	@Update("update users set  udp_date = sysdate(), udp_uid = #{id}, open_id = #{openId} where id=#{id} and valid = 'N' ")
+	public int updateOpenIdById(@Param("id")Integer id,@Param("openId")Integer openId);
 
+	@Insert("insert into access_token (add_uid,udp_uid,access_token,openid,expires_in,refresh_token,token_type)"
+			+ " values(#{addUid},#{udpUid},#{accessToken},#{openid},#{expiresIn},#{refreshToken},#{tokenType}) ")
+	@Options(useGeneratedKeys=true, keyProperty="id", keyColumn="id")
+	public int insertAccessToken(AccessToken token);
+	
+	@Select(" select refresh_token from access_token where id = #{id}")
+	public String getRefreshToken(Integer id);
 }

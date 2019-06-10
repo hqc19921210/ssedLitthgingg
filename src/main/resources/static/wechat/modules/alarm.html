@@ -1,0 +1,68 @@
+<ons-page id="AlarmTab" ng-controller="ListController as list">
+    <ons-toolbar>
+    <div class="center">历史报警记录</div>
+    <div class="right">
+      <ons-toolbar-button ng-click="list.delegate.refresh()">刷新</ons-toolbar-button>
+    </div>
+  </ons-toolbar>
+<ons-row>
+		<ons-col vertical-align="left" style="padding-left: 5px;" width="25%">
+			<select class="select-input select-input--underbar" ng-model="quereyData.status" ng-change="init()">
+                <option value=""  >全部</option>
+                <option value="A"  >报警</option>
+                <option value="N"  >已处理</option>
+            </select>
+		</ons-col>
+	</ons-row>
+  <ons-list ng-show="data.length != 0">
+    <ons-list-item ons-lazy-repeat="list.delegate">
+    	<div class="left">
+		</div>
+		
+		<div class="center" >
+			<div class="list-item__title">{{ item.name }}</div>
+			<div class="list-item__subtitle">
+				<ons-row>
+					<ons-col>{{ item.dev_id}}</ons-col>
+					<ons-col><span ng-bind="item.udp_date | date:'yyyy-MM-dd HH:mm:ss'"></span></ons-col>
+				</ons-row>
+				<ons-row>
+					<ons-col>{{ item.attr_name}}</ons-col>
+					<ons-col>
+					<span  ng-if="item.data_type == 'ALARM_TYPE'">
+                                   <span ng-if="$parent.item.data_value == '0000'">正常</span>
+                                   <span ng-if="$parent.item.data_value == '0001'">报警</span>
+                                   <span ng-if="$parent.item.data_value == 'ERR'">异常数据</span>
+                               </span>
+                   <span  ng-if="item.data_type == 'SWITCH_TYPE'">
+                                   <span ng-if="$parent.item.data_value == '0000'">开</span>
+                                   <span ng-if="$parent.item.data_value == '0001'">关</span>
+                                   <span ng-if="$parent.item.data_value == 'ERR'">异常数据</span>
+                               </span>
+                   <span ng-if="item.data_type != 'ALARM_TYPE' && item.data_type != 'SWITCH_TYPE'">{{$parent.item.data_value}}{{$parent.item.unit}}</span>
+					</ons-col>
+				</ons-row>
+			</div>
+		</div>
+		
+		<div class="right">
+		<button ng-if="item.data_status == 'A' " class="toolbar-button toolbar-button--outline" 
+				style="color:red" ng-click="list.showDialog(item)">
+		  <i class="fa fa-bell" style="font-size:17px"></i> 报警
+		</button>
+		<button ng-if="item.data_status == 'N' " class="toolbar-button toolbar-button--outline" style="color:#cbcbd1">
+		  <i class="fa fa-bell-slash" style="font-size:17px"></i> 已处理
+		</button>
+		<button ng-if="item.data_status == 'ERR' " class="toolbar-button toolbar-button--outline" style="color:red">
+		  		 数据异常
+		</button>
+		</div>
+    </ons-list-item>
+  </ons-list>
+  <ons-card ng-show="data.length == 0"  >
+	    <div  style="color:#cbcbd1; text-align: center;">
+		     ---- 暂无数据 ----
+	    </div>
+	  </ons-card>
+  </ons-page>
+  

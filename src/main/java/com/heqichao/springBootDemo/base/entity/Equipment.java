@@ -37,6 +37,7 @@ public class Equipment extends BaseEntity  {
     private String online;//在离线
     private String valid;//有效标志
     private boolean validCMD;//是否存在下发命令
+    private Integer validWechat;//是否绑定微信
     
     public Equipment() {
     	
@@ -216,6 +217,13 @@ public class Equipment extends BaseEntity  {
 	public void setValidCMD(boolean validCMD) {
 		this.validCMD = validCMD;
 	}
+	public Integer getValidWechat() {
+		return validWechat;
+	}
+	public void setValidWechat(Integer validWechat) {
+		this.validWechat = validWechat;
+	}
+	
     
     
 	
