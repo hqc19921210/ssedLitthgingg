@@ -1,0 +1,22 @@
+<ons-dialog id="alarmDialog-3" >
+    <div style="text-align: center; padding: 10px;">
+    <form  ng-submit="updateAlarm()"   name="updateAlarmForm" >
+      <label class="radio-button radio-button--material">
+		  <input type="radio" class="radio-button__input radio-button--material__input" name="a" value="A" ng-change="changeA('A')" ng-model="alarmStatus">
+		  <div class="radio-button__checkmark radio-button--material__checkmark"></div>
+		  报警
+	</label>
+	<label class="radio-button radio-button--material">
+		  <input type="radio" class="radio-button__input radio-button--material__input" name="a" value="N" ng-change="changeA('N')" ng-model="alarmStatus">
+		  <div class="radio-button__checkmark radio-button--material__checkmark"></div>
+		  已处理 
+	</label>
+	<br><label  class="control-label">描述<span style="color: red">*</span></label>
+   	<input type="text" class="form-control"   required  ng-model="record" ng-change="changeRecord(record)" name="record" maxlength="100">
+      <p>
+        <ons-button id="alarmDialog-close" ng-click="list.dialog.hide()">关闭</ons-button>
+        <ons-button type="submit" ng-disabled="updateAlarmForm.$invalid" ng-click="updateAlarm();list.dialog.hide();">保存</ons-button>
+      </p>
+      </form>
+    </div>
+  </ons-dialog>

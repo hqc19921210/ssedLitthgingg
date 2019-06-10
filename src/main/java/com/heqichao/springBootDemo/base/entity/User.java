@@ -34,6 +34,7 @@ public class User implements Serializable {
     private String site;
     private String remark;
     private String titleName;
+    private String openId;
     private String status;
     private Integer competence;
     
@@ -193,6 +194,14 @@ public class User implements Serializable {
 	public boolean getCmp() {
 		return this.competence!=4;
 	}
+	
+	public String getOpenId() {
+		return openId;
+	}
+	public void setOpenId(String openId) {
+		this.openId = openId;
+	}
+	
 
 
 

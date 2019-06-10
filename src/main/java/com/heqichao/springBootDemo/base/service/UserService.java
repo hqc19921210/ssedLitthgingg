@@ -3,6 +3,7 @@ package com.heqichao.springBootDemo.base.service;
 import com.github.pagehelper.PageInfo;
 import com.heqichao.springBootDemo.base.entity.User;
 import com.heqichao.springBootDemo.base.param.ResponeResult;
+import com.heqichao.springBootDemo.module.wechat.entity.AccessToken;
 
 import java.util.Map;
 
@@ -45,4 +46,8 @@ public interface UserService {
 	User querById(Integer uid);
 
 	ResponeResult updateUserById(Map map);
+
+	ResponeResult updateOpenIdById(Map map) throws Exception;
+
+	AccessToken getTokenByOpenId(Integer openId) throws Exception;
 }

@@ -69,5 +69,10 @@ public class UserController extends BaseController{
     public ResponeResult deleteUserById(@RequestBody Map map) throws Exception {
     	return userService.deleteUserByID(map);
     }
+    @RequestMapping(value = "/updateOpenIdById" )
+    @ResponseBody
+    public ResponeResult updateOpenIdById(@RequestBody Map map) throws Exception {
+    	return userService.updateOpenIdById(map);
+    }
 
 }

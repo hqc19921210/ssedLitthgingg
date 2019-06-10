@@ -1,18 +1,22 @@
-<ons-page id="UserTab" >
+<ons-page id="UserTab" ng-controller="userCtrl">
+	<ons-toolbar>
+	    <div class="center">用户设置</div>
+	  </ons-toolbar>
     <ons-card>
     <div class="list-item">
 	     <div class="list-item__left">
 	        <img class="list-item__thumbnail" src="assets/images/small/bg.jpg" width="40px" height="40px">
 	      </div>
 	    <div class="list-item__center">
-	      {{username}}
+	      {{username}} 
 	    </div>
     </div>
   </ons-card>
     <ons-card>
     <div class="content">
-      <ons-list>
-        <ons-list-item modifier="chevron" tappable>绑定微信</ons-list-item>
+      <ons-list modifier="inset">
+        <ons-list-item ng-if="checkOpenId" modifier="chevron" tappable ng-click="weAccess()">绑定微信</ons-list-item>
+        <ons-list-item ng-if="!checkOpenId" modifier="chevron" tappable disabled style="color:#a2a2a2">已绑定微信</ons-list-item>
         <ons-list-item modifier="chevron" tappable ng-click="logout()" >退出登录</ons-list-item>
       </ons-list>
     </div>
