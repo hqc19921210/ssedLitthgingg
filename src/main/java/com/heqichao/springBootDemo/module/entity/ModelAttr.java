@@ -30,10 +30,8 @@ public class ModelAttr extends BaseEntity {
     private String dataType;
    //数值类型
     private String valueType;
-    //数据类型名称
-    private String dataName;
-    //数值类型名称
-    private String valueName;
+
+
     //小数位数
     private Integer numberFormat;
     //整型最大值
@@ -49,7 +47,7 @@ public class ModelAttr extends BaseEntity {
     //排序
     private int orderNo;
     
-    private Map<String,Integer> eumSelect;
+
     
     
 
@@ -95,21 +93,8 @@ public class ModelAttr extends BaseEntity {
     
     
 
-    public String getDataName() {
-		return dataName;
-	}
 
-	public void setDataName(String dataName) {
-		this.dataName = dataName;
-	}
 
-	public String getValueName() {
-		return valueName;
-	}
-
-	public void setValueName(String valueName) {
-		this.valueName = valueName;
-	}
 
 	public Integer getNumberFormat() {
         return numberFormat;
@@ -135,22 +120,7 @@ public class ModelAttr extends BaseEntity {
         this.expression = expression;
     }
 
-    
-    public Integer getNumMax() {
-		return numMax;
-	}
 
-	public void setNumMax(Integer numMax) {
-		this.numMax = numMax;
-	}
-
-	public Integer getNumMin() {
-		return numMin;
-	}
-
-	public void setNumMin(Integer numMin) {
-		this.numMin = numMin;
-	}
 
 	public int getOrderNo() {
         return orderNo;
@@ -160,30 +130,6 @@ public class ModelAttr extends BaseEntity {
         this.orderNo = orderNo;
     }
 
-	public List<Map<String, Object>> getEumSelect() {
-		if(this.expression == null) {
-			return new ArrayList<Map<String, Object>>();
-		}
-		List<Map<String, Object>> res = new ArrayList<Map<String, Object>>();
-		String[] strLst = this.expression.split(",");
-		for (int i = 0; i < strLst.length; i++) {
-			HashMap<String, Object> map = new HashMap<String, Object>();
-			map.put("key", strLst[i]);
-			map.put("value", i);
-			res.add(map);
-		}
-		return res;
-		// 解决多线程问题的ListToMap方法
-//		List<String> strLst = Arrays.asList(this.expression.split(","));
-//		Map<String, Integer> res = IntStream.range(0, strLst.size())
-//                .boxed()
-//                .collect(Collectors.toMap(strLst::get, Function.identity()));
-	}
 
-	public void setEumSelect(Map<String, Integer> eumSelect) {
-		this.eumSelect = eumSelect;
-	}
-
-    
     
 }

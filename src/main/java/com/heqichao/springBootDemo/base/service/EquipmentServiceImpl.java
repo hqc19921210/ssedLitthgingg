@@ -9,12 +9,7 @@ import com.heqichao.springBootDemo.base.entity.ParamObject;
 import com.heqichao.springBootDemo.base.entity.UploadResultEntity;
 import com.heqichao.springBootDemo.base.entity.User;
 import com.heqichao.springBootDemo.base.exception.ResponeException;
-import com.heqichao.springBootDemo.base.util.CollectionUtil;
-import com.heqichao.springBootDemo.base.util.ExcelWriter;
-import com.heqichao.springBootDemo.base.util.FileUtil;
-import com.heqichao.springBootDemo.base.util.PageUtil;
-import com.heqichao.springBootDemo.base.util.ServletUtil;
-import com.heqichao.springBootDemo.base.util.StringUtil;
+import com.heqichao.springBootDemo.base.util.*;
 import com.heqichao.springBootDemo.module.entity.DataDetail;
 import com.heqichao.springBootDemo.module.mqtt.MqttUtil;
 import com.heqichao.springBootDemo.module.service.DataLogService;
@@ -90,32 +85,24 @@ public class EquipmentServiceImpl implements EquipmentService {
 //    	List<Equipment> eLst = eMapper.getEquipmentsForDevLstOrderBy(cmp,uid,pid,gid,eid,type,seleStatus);
 		//重构返回数据格式
     	List<Equipment> eLst = (List<Equipment>)pageInfo.getList();
-    	List<DataDetail> pLst =eMapper.queryDetailPointList(eLst,cmp,uid,pid);
-//    	// 将list转为Map,这里key一定要为唯一值
-//        Map<String, Equipment> eLstMap = eLst.stream().collect(
-//                Collectors.toMap(e -> e.getDevId(),
-//                        e -> e));
-//     // 设备匹配数据点
-//        newLst = pLst.stream().map(p -> {
-//            return toEquipmentShow(eLstMap.get(p.getDevId()), p);
-//        }).collect(Collectors.toList());
+    	//List<DataDetail> pLst =eMapper.queryDetailPointList(eLst,cmp,uid,pid);
+
     	for (Equipment equ : eLst) {
     		Map<String,Object> newClu= new HashMap<String,Object>();
     		newClu.put("name", equ.getName());
     		newClu.put("devId", equ.getDevId());
     		newClu.put("type", equ.getTypeName());
     		newClu.put("online", equ.getOnline());
-    		List<DataDetail> currPoint = new ArrayList<>();
+    		List<Map> currPoint = new ArrayList<>();
     		try {
-    			for (DataDetail point : pLst) {
+    			/*for (DataDetail point : pLst) {
     				if(equ.getDevId().equals(point.getDevId())) {
     					currPoint.add(point);
     				}
-    			}
-    			
+    			}*/
+				currPoint=dataLogService.getLastestDetail(equ.getDevId());
     		}catch (Exception e) {
     			e.printStackTrace();
-    			
 			}
     		newClu.put("dataPoints",currPoint);
     		newLst.add(newClu);
@@ -129,6 +116,13 @@ public class EquipmentServiceImpl implements EquipmentService {
     @Override
     public void updateEquDataPointDate(List<DataDetail> list,Date addDate) {
     	eMapper.updateEquDataPointDate(list, addDate);
+		//删除缓存
+		if(CollectionUtil.isNotEmpty(list)){
+			for(DataDetail dataDetail : list){
+				DataCacheUtil.removeEquipmentCache(dataDetail.getDevId());
+			}
+		}
+
     }
     // 设备匹配数据点
     public Map<String,Object> toEquipmentShow(Equipment equ,DataDetail point){
@@ -159,6 +153,7 @@ public class EquipmentServiceImpl implements EquipmentService {
     }
     /**
      * 根据dev_id查找设备信息
+	 *  建议直接使用缓存api DataCacheUtil.getEquipmentCache(devId);
      */
     @Override
     public Equipment getEquipmentInfo(String  devId) {
@@ -169,13 +164,13 @@ public class EquipmentServiceImpl implements EquipmentService {
     public Equipment getEquById() {
     	Map map = RequestContext.getContext().getParamMap();
     	String devId = StringUtil.getStringByMap(map,"devId");
-    	return eMapper.getEquById(devId);
+    	return DataCacheUtil.getEquipmentCache(devId);
     }
     
     //传参获取设备信息
     @Override
     public Equipment getEquById(String devId) {
-    	return eMapper.getEquById(devId);
+    	return DataCacheUtil.getEquipmentCache(devId);
     }
 
 	@Override
@@ -189,6 +184,10 @@ public class EquipmentServiceImpl implements EquipmentService {
 			return;
 		}
 		eMapper.updateOnlineStatus(online,list,date);
+		//删除缓存
+		for(String devId :list){
+			DataCacheUtil.removeEquipmentCache(devId);
+		}
 	}
 
 	/**
@@ -200,8 +199,10 @@ public class EquipmentServiceImpl implements EquipmentService {
     }
     // 根据杆塔ID设置状态
     @Override
-    public void setEquStatus(String eid,String status) {
-    	 eMapper.setEquStatus(eid,status);
+    public void setEquStatus(String devId,String status) {
+    	 eMapper.setEquStatus(devId,status);
+		//删除缓存
+		DataCacheUtil.removeEquipmentCache(devId);
     }
     // 根据状态获取有效设备杆塔ID数组
     @Override
@@ -211,7 +212,10 @@ public class EquipmentServiceImpl implements EquipmentService {
 
 	@Override
 	public int updateRange(String eid, Integer range) {
-		return eMapper.updateRange(eid, range);
+		int rang = eMapper.updateRange(eid, range);
+		//删除缓存
+		DataCacheUtil.removeEquipmentCache(eMapper.queryDevId(eid));
+		return rang;
 	}
 
 	@Override
@@ -241,6 +245,8 @@ public class EquipmentServiceImpl implements EquipmentService {
 		equ.setAddUid(uid);
 		equ.setValid("N");
 		if(eMapper.insertEquipment(equ)>0) {
+			//删除缓存
+			DataCacheUtil.removeEquipmentCache(equ.getDevId());
 			if("L".equals(equ.getTypeCd())) {
 				List<String> mqId = new ArrayList<String>();
 				mqId.add(equ.getDevId());
@@ -282,6 +288,8 @@ public class EquipmentServiceImpl implements EquipmentService {
 		equ.setUdpUid(uid);
 		equ.setValid("N");
 		if(eMapper.editEquipment(equ)>0) {
+			//删除缓存
+			DataCacheUtil.removeEquipmentCache(equ.getDevId());
 			if(chgDevId&&"L".equals(equ.getTypeCd())) {
 				List<String> omqId = new ArrayList<String>();
 				omqId.add(oId);
@@ -333,6 +341,8 @@ public class EquipmentServiceImpl implements EquipmentService {
 				dataLogService.deleteDataLog(devId);
 			}
     		if(eMapper.delEquById(eid,udid)>0) {
+				//删除缓存
+				DataCacheUtil.removeEquipmentCache(devId);
     			return new ResponeResult();
     		}
 
@@ -538,6 +548,8 @@ public class EquipmentServiceImpl implements EquipmentService {
                         Map rowMap =  CollectionUtil.listStringTranToMap(row,typecode,true);
                         Equipment equ = new Equipment(rowMap,type);
                         checkUploadRow(equ, uid, cmp, i+1, resKey);
+						//删除缓存
+						DataCacheUtil.removeEquipmentCache(equ.getDevId());
                     }
                 }
             }
@@ -613,7 +625,7 @@ public class EquipmentServiceImpl implements EquipmentService {
     		equ.setAppId(appId);
     	}
     	Integer currId = eMapper.getUserIdByName(equ.getuName());
-    	if(cmp==3 && uid!=currId) {
+    	if(cmp==3 && !uid.equals(currId)) {
     		res.setResIndex(index);
     		res.setResStatus(UPLOAD_FAIL);
     		res.setErrReason("操作账户无法为该用户添加设备");
@@ -655,6 +667,8 @@ public class EquipmentServiceImpl implements EquipmentService {
 		res.setResStatus(UPLOAD_SUCCESS);
     	eMapper.insertUploadResult(res);
     	eMapper.insertEquipment(equ);
+		//删除缓存
+		DataCacheUtil.removeEquipmentCache(equ.getDevId());
     }
     
     protected void download(File file){

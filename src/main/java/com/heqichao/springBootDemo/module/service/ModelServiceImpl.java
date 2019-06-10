@@ -13,6 +13,7 @@ import com.heqichao.springBootDemo.module.liteNA.LiteNAStringUtil;
 import com.heqichao.springBootDemo.module.mapper.ModelMapper;
 import com.heqichao.springBootDemo.module.model.AttrEnum;
 import com.heqichao.springBootDemo.module.model.ModelUtil;
+import com.heqichao.springBootDemo.module.vo.ModelAttrVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -104,7 +105,7 @@ public class ModelServiceImpl implements ModelService {
         		Map cmdMap=cmdlst.get(i);
         		ModelAttr modelCMDAttr =new ModelAttr();
         		BeanUtil.copyProperties(modelCMDAttr,cmdMap);
-        		if("ENUMERATION_TYPE".equals(modelCMDAttr.getDataType()) ) {
+        		if(AttrEnum.ENUMERATION_TYPE.getType().equals(modelCMDAttr.getDataType()) ) {
                 	if(modelCMDAttr.getExpression() == null) {
                 		throw new ResponeException("下发枚举型枚举公式为空");
                 	}else {
@@ -193,7 +194,7 @@ public class ModelServiceImpl implements ModelService {
         if(modelId!=null){
             List<Model> models =modelMapper.queryByModelId(modelId);
             List<ModelAttr> attrs =modelAttrService.queryByModelId(modelId);
-            List<ModelAttr> cmds =modelAttrService.queryCMDAttrByModelId(modelId);
+            List<ModelAttrVo> cmds =modelAttrService.queryCMDAttrByModelId(modelId);
             if(models !=null && models.size()>0){
                 map.put("model",models.get(0));
             }else{

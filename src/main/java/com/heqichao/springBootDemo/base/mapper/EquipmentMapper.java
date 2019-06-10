@@ -289,8 +289,8 @@ public interface EquipmentMapper {
 	@Update("update equipments set  udp_date = sysdate(), udp_uid = #{udid}, valid = 'D' where id=#{id} and valid = 'N' ")
 	public int delEquById(@Param("id")Integer eid,@Param("udid")Integer udid);
 	
-	@Update("update equipments set  valid = #{status} where eid=#{eid} and valid = 'N' ")
-	public int setEquStatus(@Param("eid")String eid,@Param("status")String status);
+	@Update("update equipments set  valid = #{status} where dev_id=#{devId} and valid = 'N' ")
+	public int setEquStatus(@Param("devId")String eidevIdd,@Param("status")String status);
 	
 	@Select("select count(1)>0 from equipments where dev_id = #{devId} and valid = 'N' ")
 	public boolean duplicatedEid(@Param("devId")String devId,@Param("uid")Integer uid);
@@ -303,6 +303,9 @@ public interface EquipmentMapper {
 
 	@Select("select e_range from equipments where eid = #{eid} and valid = 'N'")
 	Integer queryRange(@Param("eid")String eid);
+
+	@Select("select dev_id from equipments where eid = #{eid} and valid = 'N'")
+	String queryDevId(@Param("eid")String eid);
 	
 	@Select("select u.id from users u where u.company=#{uName} and valid = 'N' ")
 	Integer getUserIdByName(@Param("uName")String uName);
