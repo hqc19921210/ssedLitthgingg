@@ -1,6 +1,7 @@
 package com.heqichao.springBootDemo.module.service;
 
 import com.heqichao.springBootDemo.module.entity.ModelAttr;
+import com.heqichao.springBootDemo.module.vo.ModelAttrVo;
 
 import java.util.List;
 import java.util.Map;
@@ -21,7 +22,7 @@ public interface ModelAttrService {
 	List<ModelAttr> queryAttrByModelId(Integer modelId);
 	void saveCMDModelAttr(List<ModelAttr> list);
 	void updateCMDModelAttr(List<ModelAttr> list);
-	List<ModelAttr> queryCMDAttrByModelId(Integer modelId);
+	List<ModelAttrVo> queryCMDAttrByModelId(Integer modelId);
 	Map<String, Object> queryCMDAttrByModelIdFMT(String equId);
 	ModelAttr getUserAttrByAttrId(Integer modelId);
 

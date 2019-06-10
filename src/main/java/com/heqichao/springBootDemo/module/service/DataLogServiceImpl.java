@@ -3,16 +3,17 @@ package com.heqichao.springBootDemo.module.service;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.heqichao.springBootDemo.base.entity.Equipment;
+import com.heqichao.springBootDemo.base.entity.SendRequestLogEntity;
 import com.heqichao.springBootDemo.base.entity.User;
 import com.heqichao.springBootDemo.base.exception.ResponeException;
 import com.heqichao.springBootDemo.base.param.ApplicationContextUtil;
 import com.heqichao.springBootDemo.base.service.EquipmentService;
+import com.heqichao.springBootDemo.base.service.SendRequestLogService;
 import com.heqichao.springBootDemo.base.service.UserService;
-import com.heqichao.springBootDemo.base.util.Base64Encrypt;
-import com.heqichao.springBootDemo.base.util.ServletUtil;
-import com.heqichao.springBootDemo.base.util.StringUtil;
-import com.heqichao.springBootDemo.base.util.UserUtil;
+import com.heqichao.springBootDemo.base.util.*;
 import com.heqichao.springBootDemo.module.entity.*;
+import com.heqichao.springBootDemo.module.liteNA.Crc16Util;
+import com.heqichao.springBootDemo.module.liteNA.LiteNAStringUtil;
 import com.heqichao.springBootDemo.module.mapper.DataDetailMapper;
 import com.heqichao.springBootDemo.module.mapper.DataLogMapper;
 import com.heqichao.springBootDemo.module.model.AlarmEnum;
@@ -20,7 +21,10 @@ import com.heqichao.springBootDemo.module.model.AttrEnum;
 import com.heqichao.springBootDemo.module.model.ModelUtil;
 import com.heqichao.springBootDemo.module.wechat.entity.AccessToken;
 import com.heqichao.springBootDemo.module.wechat.untils.WechatUntils;
-
+import com.heqichao.springBootDemo.module.onenet.OneNetConfig;
+import com.heqichao.springBootDemo.module.onenet.api.cmds.SendCmdsApi;
+import com.heqichao.springBootDemo.module.onenet.response.BasicResponse;
+import com.heqichao.springBootDemo.module.onenet.response.cmds.NewCmdsResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -53,6 +57,9 @@ public class DataLogServiceImpl implements DataLogService {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private SendRequestLogService sendRequestLogService;
+
     @Override
     public List<DataLog> queryDataLog(){
     	Integer cmp = ServletUtil.getSessionUser().getCompetence();
@@ -62,7 +69,100 @@ public class DataLogServiceImpl implements DataLogService {
     	}
     	return null;
     }
-    
+
+    @Override
+    public void save(List<DataDetail> dataDetails, String devId) {
+        dataDetailMapper.save(dataDetails);
+        DataCacheUtil.del(DataCacheUtil.LASTEST_DATADETAIL,devId);
+    }
+
+    @Override
+    public List<Map>  getLastestDetail(String devId) {
+
+        Object data= DataCacheUtil.get(DataCacheUtil.LASTEST_DATADETAIL,devId);
+        if(data == null){
+            List<Map> dataDetails = dataDetailMapper.queryLastestDataDetail(devId);
+            if(CollectionUtil.isNotEmpty(dataDetails)){
+                DataCacheUtil.set(DataCacheUtil.LASTEST_DATADETAIL,devId,dataDetails);
+                return dataDetails;
+            }
+        }else{
+            return (List<Map>) data;
+        }
+        return Collections.EMPTY_LIST;
+    }
+
+    @Override
+    public void sendToOneNet(String devId, String devType, String data,Integer dataLogId) {
+        if(checkSendForOneNet(devId,devType)){
+            Equipment equipment =DataCacheUtil.getEquipmentCache(devId);
+            if(StringUtil.isEmpty(equipment.getVerification())){
+               // return;
+            }
+            int dataSizt =data.length();
+            Date date =new Date();
+            //判断数据是否有波形 aabbccddeeffgghh
+            //0. 设备地址 功能码
+            String pref = data.substring(0,4);
+            //1. 先获取cc的值（数据区长度校验）
+            String dataLenStr =data.substring(4,6);
+            //主数据内容 + 15位验证码
+            String mainData = data.substring(6,dataSizt-4)+equipment.getVerification();
+            Integer dataLenInt = Math.toIntExact(Long.parseLong(dataLenStr, 16));
+            //新字节数等于原来的字节数+15
+            dataLenStr=LiteNAStringUtil.int2HexString(dataLenInt+15);
+            //只取后2位
+            dataLenStr=dataLenStr.substring(2,4);
+            String newData=pref+dataLenStr+mainData;
+            String crc =  Crc16Util.getRestultByString(newData);
+            newData=newData+crc;
+            String key= OneNetConfig.getMasterKey();
+            String onenetDevId= OneNetConfig.getOnenetDevId();
+            SendCmdsApi api = new SendCmdsApi(onenetDevId,1,0,0,newData,key);
+            SendRequestLogEntity logEntity =new SendRequestLogEntity();
+            logEntity.setUrl(api.url+"?device_id="+onenetDevId);
+            logEntity.setParam(newData);
+            logEntity.setMemo(dataLogId+"");
+            logEntity.setUdpDate(date);
+            logEntity.setAddDate(date);
+            try {
+                BasicResponse<NewCmdsResponse> response = api.executeApi();
+                if(response != null){
+                    if(response.getErrno() == 0){
+                        logEntity.setStatus(SendRequestLogService.RESPONE_SUCCESS);
+                        logEntity.setRespone(response.getData().getCmduuid());
+                    }else{
+                        logEntity.setStatus(SendRequestLogService.RESPONE_FAILURE);
+                        logEntity.setRespone(response.getError());
+                    }
+                }else{
+                    logEntity.setStatus(SendRequestLogService.RESPONE_FAILURE);
+                }
+            }catch (Exception e){
+                logEntity.setStatus(SendRequestLogService.RESPONE_FAILURE);
+                logEntity.setRespone(e.getMessage());
+            }
+            //保存请求日志
+            sendRequestLogService.saveLog(logEntity);
+
+        }
+    }
+
+    @Override
+    public boolean checkSendForOneNet(String devId, String devType) {
+        //用于判断是否为sset设备
+        Integer ssedUserId =4;
+        if(EquipmentService.EQUIPMENT_NB.equals(devType)){
+            Equipment equipment =DataCacheUtil.getEquipmentCache(devId);
+            if(equipment != null){
+                if(ssedUserId.equals(equipment.getUid())){
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     @Override
     public void saveDataLog(String devId,String data, String srcData,String devType){
         Date date =new Date();
@@ -83,7 +183,7 @@ public class DataLogServiceImpl implements DataLogService {
             dataLog.setDevId(devId);
             dataLog.setDevType(devType);
             //先查找该设备所绑定的模板属性
-            Equipment equipment = equipmentService.getEquipmentInfo(devId);
+            Equipment equipment = DataCacheUtil.getEquipmentCache(devId);
             Integer modId=null;
             List<ModelAttr> attrList =new ArrayList<>();
             if(equipment!=null && equipment.getModelId() !=null){
@@ -233,8 +333,10 @@ public class DataLogServiceImpl implements DataLogService {
                 for(DataDetail dataDetail :dataDetails){
                     dataDetail.setLogId(dataLog.getId());
                 }
-                dataDetailMapper.save(dataDetails);
+                DataLogService dataLogService = (DataLogService) ApplicationContextUtil.getApplicationContext().getBean("dataLogService");
+                dataLogService.save(dataDetails,devId);
                 equipmentService.updateEquDataPointDate(dataDetails, date);
+                dataLogService.sendToOneNet(devId,devType,dataLog.getData(),dataLog.getId());
             }
             //保存报警数据
             if(alarmLogs.size()>0){
@@ -291,10 +393,12 @@ public class DataLogServiceImpl implements DataLogService {
         }
         if(devId!=null && devId.length>0){
             Date date =new Date();
-           List<String > ids = Arrays.asList(devId);
+            List<String > ids = Arrays.asList(devId);
             dataLogMapper.updateStatus(UN_ENABLE_STATUS,ids,date);
             dataDetailMapper.updateStatus(UN_ENABLE_STATUS,ids,date);
             alarmLogService.deleteAlarmLog(devId);
+            //删除最新的接收数据缓存
+            DataCacheUtil.del(DataCacheUtil.LASTEST_DATADETAIL,devId);
         }
     }
 
@@ -303,7 +407,7 @@ public class DataLogServiceImpl implements DataLogService {
         Map map= new HashMap();
         if(StringUtil.isNotEmpty(devId) && attrId!=null){
             map.put("log",queryDataDetail(devId, attrId, startTime, endTime));
-            Equipment equipment =equipmentService.getEquipmentInfo(devId);
+            Equipment equipment =DataCacheUtil.getEquipmentCache(devId);
             if(equipment.getUid()!=null){
                 User user = userService.querById(equipment.getUid());
                 if(user!=null){

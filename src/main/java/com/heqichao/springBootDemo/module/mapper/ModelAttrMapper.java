@@ -1,6 +1,7 @@
 package com.heqichao.springBootDemo.module.mapper;
 
 import com.heqichao.springBootDemo.module.entity.ModelAttr;
+import com.heqichao.springBootDemo.module.vo.ModelAttrVo;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
@@ -32,7 +33,7 @@ public interface ModelAttrMapper {
     @Select("<script>"
     		+"select * from model_attr  where model_id = #{modelID} and model_type='W' order by order_no"
     		+"</script>")
-    List<ModelAttr> queryCMDAttrByModelId(@Param("modelID") Integer modelID);
+    List<ModelAttrVo> queryCMDAttrByModelId(@Param("modelID") Integer modelID);
     
     //查询命令模板列表带格式
     @Select("<script>"
@@ -42,7 +43,7 @@ public interface ModelAttrMapper {
     		+ " left join option_tree ot2 on ma.value_type=ot2.param_key and ot2.code='ModelAttrValueType' "
     		+ " where ma.model_id = #{modelID} and ma.model_type='W' order by ma.order_no"
     		+"</script>")
-    List<ModelAttr> queryCMDAttrByModelIdFMT(@Param("modelID") Integer modelID);
+    List<ModelAttrVo> queryCMDAttrByModelIdFMT(@Param("modelID") Integer modelID);
     
     // Muzzy
     @Select("<script>"

@@ -59,4 +59,31 @@ public interface DataLogService {
     List<String> checkOnLineDev(String type,  Date date);
 
 	List<DataLog> queryDataLog();
+
+    void save(List<DataDetail> dataDetails ,String devId);
+
+    /**
+     * 获取设备的最新数据
+     * @param devId
+     * @return
+     */
+    List<Map>  getLastestDetail(String devId);
+
+
+    /**
+     * 发送到onenet
+     * @param devId 设备ID
+     * @param devType 设备类型
+     * @param data 数据
+     * @param dataLogId dataLogId
+     */
+    void sendToOneNet(String devId,String devType,String data,Integer dataLogId);
+
+    /**
+     * 检查是否发送到onenet
+     * @param devId
+     * @param devType
+     * @return
+     */
+    boolean checkSendForOneNet(String devId,String devType);
 }

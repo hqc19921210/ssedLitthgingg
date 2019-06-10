@@ -28,7 +28,7 @@ public interface ModelMapper {
     Integer queryCountByModelName(@Param("modelID") Integer modelID,@Param("modelName") String modelName);
 
     @Insert("<script>"
-            +"insert into model (add_date,udp_date,add_uid,udp_uid,model_name) values (#{addDate},#{udpDate},#{addUid},#{udpUid},#{modelName})"
+            +"insert into model (id,add_date,udp_date,add_uid,udp_uid,model_name) values (#{id},#{addDate},#{udpDate},#{addUid},#{udpUid},#{modelName})"
             +"</script>")
     @Options(useGeneratedKeys=true, keyProperty="id", keyColumn="id")
     int saveModel(Model model);

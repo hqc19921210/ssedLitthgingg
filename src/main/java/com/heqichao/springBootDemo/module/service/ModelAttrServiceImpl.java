@@ -6,6 +6,7 @@ import com.heqichao.springBootDemo.base.service.EquipmentService;
 import com.heqichao.springBootDemo.base.util.UserUtil;
 import com.heqichao.springBootDemo.module.entity.ModelAttr;
 import com.heqichao.springBootDemo.module.mapper.ModelAttrMapper;
+import com.heqichao.springBootDemo.module.vo.ModelAttrVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -64,7 +65,7 @@ public class ModelAttrServiceImpl implements ModelAttrService {
     
     //查询命令模板列表
     @Override
-    public List<ModelAttr> queryCMDAttrByModelId(Integer modelId) {
+    public List<ModelAttrVo> queryCMDAttrByModelId(Integer modelId) {
     	return modelAttrMapper.queryCMDAttrByModelId(modelId);
     }
     

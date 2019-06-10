@@ -4,6 +4,7 @@ import com.heqichao.springBootDemo.base.control.BaseController;
 import com.heqichao.springBootDemo.base.entity.Equipment;
 import com.heqichao.springBootDemo.base.param.ResponeResult;
 import com.heqichao.springBootDemo.base.service.EquipmentService;
+import com.heqichao.springBootDemo.base.util.DataCacheUtil;
 import com.heqichao.springBootDemo.base.util.ServletUtil;
 import com.heqichao.springBootDemo.base.util.StringUtil;
 import com.heqichao.springBootDemo.module.entity.ModelAttr;
@@ -93,7 +94,7 @@ public class AlarmLogController extends BaseController{
         //属性列表 初始化属性key为第一个
         if(attrId == null || "TRUE".equals(initOption)){
             List<ModelAttr> attrList =new ArrayList<>();
-            Equipment equipment  =equipmentService.getEquipmentInfo(devId);
+            Equipment equipment  = DataCacheUtil.getEquipmentCache(devId);
             if(equipment!=null && equipment.getModelId() !=null){
                 attrList =modelAttrService.queryAttrByModelId(equipment.getModelId());
                 if(attrList!=null && attrList.size()>0){
