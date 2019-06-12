@@ -107,15 +107,16 @@ public class DataLogServiceImpl implements DataLogService {
             //1. 先获取cc的值（数据区长度校验）
             String dataLenStr =data.substring(4,6);
             //主数据内容 + 15位验证码
-            String mainData = data.substring(6,dataSizt-4)+equipment.getVerification();
+            String ver= LiteNAStringUtil.convertStringToHex(equipment.getVerification());
+            String mainData = data.substring(6,dataSizt-4)+ver;
             Integer dataLenInt = Math.toIntExact(Long.parseLong(dataLenStr, 16));
             //新字节数等于原来的字节数+15
             dataLenStr=LiteNAStringUtil.int2HexString(dataLenInt+15);
             //只取后2位
             dataLenStr=dataLenStr.substring(2,4);
             String newData=pref+dataLenStr+mainData;
-            String crc =  Crc16Util.getRestultByString(newData);
-            newData=newData+crc;
+//            String crc =  Crc16Util.getRestultByString(newData);
+            newData=Crc16Util.getRestultByString(newData);
             String key= OneNetConfig.getMasterKey();
             String onenetDevId= OneNetConfig.getOnenetDevId();
             SendCmdsApi api = new SendCmdsApi(onenetDevId,1,0,0,newData,key);
