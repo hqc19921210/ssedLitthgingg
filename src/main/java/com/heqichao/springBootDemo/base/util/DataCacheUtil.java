@@ -3,6 +3,7 @@ package com.heqichao.springBootDemo.base.util;
 import com.heqichao.springBootDemo.base.entity.Equipment;
 import com.heqichao.springBootDemo.base.param.ApplicationContextUtil;
 import com.heqichao.springBootDemo.base.service.EquipmentService;
+import com.heqichao.springBootDemo.base.vo.EquipmentVO;
 
 import java.util.Map;
 
@@ -143,14 +144,14 @@ public class DataCacheUtil {
      * @param devId
      * @return
      */
-    public static Equipment getEquipmentCache(String devId){
+    public static EquipmentVO getEquipmentCache(String devId){
         if(StringUtil.isNotEmpty(devId)){
             Object obj = DataCacheUtil.get(EQUIPMENT_INFO,devId);
             if(obj!=null){
-                return (Equipment) obj;
+                return (EquipmentVO) obj;
             }else{
                 EquipmentService equipmentService = (EquipmentService) ApplicationContextUtil.getApplicationContext().getBean("equipmentServiceImpl");
-                Equipment equipment =equipmentService.getEquipmentInfo(devId);
+                EquipmentVO equipment =equipmentService.getEquipmentInfo(devId);
                 if(equipment != null){
                     DataCacheUtil.set(EQUIPMENT_INFO,devId,equipment);
                     return equipment;

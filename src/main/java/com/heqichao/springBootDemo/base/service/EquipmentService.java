@@ -4,6 +4,7 @@ import com.github.pagehelper.PageInfo;
 import com.heqichao.springBootDemo.base.entity.Equipment;
 import com.heqichao.springBootDemo.base.entity.UploadResultEntity;
 import com.heqichao.springBootDemo.base.param.ResponeResult;
+import com.heqichao.springBootDemo.base.vo.EquipmentVO;
 import com.heqichao.springBootDemo.module.entity.DataDetail;
 
 import java.util.Date;
@@ -69,7 +70,7 @@ public interface EquipmentService {
 
 	Integer getUserParent(Integer uid);
 
-	Equipment getEquipmentInfo(String devId);
+	EquipmentVO getEquipmentInfo(String devId);
 
 	List<String> getEquipmentIdListAll();
 

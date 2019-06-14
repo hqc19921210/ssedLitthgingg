@@ -62,30 +62,21 @@ function equEditCtrl($scope, $http,$rootScope,$location,$timeout,$routeParams) {
     		}
     	});
     };
-    //获取模板列表
-    $scope.seleUserModelLst = function(){
-    	$http.get("service/queryUserModel").success(function(data) {
+  //获取产品列表
+    $scope.getProductsList = function(uid){
+    	$http.post("service/getProductsList",).success(function(data) {
     		if(data.resultObj == "errorMsg"){
     			swal(data.message, null, "error");
     		}else{
-    			$scope.selUserModel = data.resultObj;
-    			$scope.dataOnReady=true;
+    			$scope.selProducts = data.resultObj;
     		}
     	});
     };
-    //获取应用列表
-    $scope.seleAppLst = function(){
-		$http.get("service/getAppSeleList").success(function(data) {
-			$scope.selApps = data.resultObj;
-			
-		});
-	};
 	//初始化
     $scope.init = function() {
     	$scope.getDevGroupsList();
     	$scope.seleUsersLst();
-    	$scope.seleUserModelLst();
-    	$scope.seleAppLst();
+    	$scope.getProductsList();
     }
 	$scope.addEqu = function() {
     	$scope.loadCtl.addEnq = true;

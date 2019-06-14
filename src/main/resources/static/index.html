@@ -212,6 +212,9 @@
 									<li ng-if="user.competence == 2">
                                         <a href="#/module/dataDownload/"><span>迭代功能</span></a>
                                     </li>
+									<li ng-if="user.competence == 2">
+                                        <a href="#/module/products/"><span>产品管理</span></a>
+                                    </li>
 									<li  ng-if="user.competence != 4">
 										<a ng-click="clearData()" style=" cursor: pointer;"><span>清空数据</span></a>
 									</li>
@@ -376,6 +379,7 @@
 		<script src="app/controller/queryDataLogController.js"></script>
 		<script src="app/controller/dataDownloadController.js"></script>
 		<script src="app/controller/commandPostController.js"></script>
+		<script src="app/controller/productsControllers.js"></script>
 		<script src="app/controller/commandLogController.js"></script>
 		<script type="text/javascript">
 			jQuery(document).ready(function($) {

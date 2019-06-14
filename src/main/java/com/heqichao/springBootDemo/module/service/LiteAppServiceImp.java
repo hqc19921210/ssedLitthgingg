@@ -170,11 +170,10 @@ public class LiteAppServiceImp implements LiteAppService {
     public ResponeResult getAppSelectList() {
     	Integer cmp = ServletUtil.getSessionUser().getCompetence();
     	Integer uid = ServletUtil.getSessionUser().getId();
-    	Integer pid = ServletUtil.getSessionUser().getParentId();
-    	if(uid == null || cmp == null) {
+    	if(uid == null || cmp != 2) {
     		return  new ResponeResult(false,"");
     	}
-		Map<String, Integer> res =  liteAppMapper.getAppSelectList(uid,pid,cmp).stream().collect(
+		Map<String, Integer> res =  liteAppMapper.getAppSelectList().stream().collect(
 						Collectors.toMap(LiteApplication::getAppName,LiteApplication::getId, (k1,k2)->k1)
 					);
 		return new ResponeResult(res);

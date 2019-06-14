@@ -11,6 +11,7 @@ import com.heqichao.springBootDemo.base.service.EquipmentService;
 import com.heqichao.springBootDemo.base.service.SendRequestLogService;
 import com.heqichao.springBootDemo.base.service.UserService;
 import com.heqichao.springBootDemo.base.util.*;
+import com.heqichao.springBootDemo.base.vo.EquipmentVO;
 import com.heqichao.springBootDemo.module.entity.*;
 import com.heqichao.springBootDemo.module.liteNA.Crc16Util;
 import com.heqichao.springBootDemo.module.liteNA.LiteNAStringUtil;
@@ -184,7 +185,7 @@ public class DataLogServiceImpl implements DataLogService {
             dataLog.setDevId(devId);
             dataLog.setDevType(devType);
             //先查找该设备所绑定的模板属性
-            Equipment equipment = DataCacheUtil.getEquipmentCache(devId);
+            EquipmentVO equipment = DataCacheUtil.getEquipmentCache(devId);
             Integer modId=null;
             List<ModelAttr> attrList =new ArrayList<>();
             if(equipment!=null && equipment.getModelId() !=null){
