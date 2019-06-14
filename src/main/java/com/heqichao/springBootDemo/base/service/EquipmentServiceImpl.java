@@ -3,6 +3,7 @@ package com.heqichao.springBootDemo.base.service;
 import com.heqichao.springBootDemo.base.mapper.EquipmentMapper;
 import com.heqichao.springBootDemo.base.param.RequestContext;
 import com.heqichao.springBootDemo.base.param.ResponeResult;
+import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageInfo;
 import com.heqichao.springBootDemo.base.entity.Equipment;
 import com.heqichao.springBootDemo.base.entity.ParamObject;
@@ -10,7 +11,9 @@ import com.heqichao.springBootDemo.base.entity.UploadResultEntity;
 import com.heqichao.springBootDemo.base.entity.User;
 import com.heqichao.springBootDemo.base.exception.ResponeException;
 import com.heqichao.springBootDemo.base.util.*;
+import com.heqichao.springBootDemo.base.vo.EquipmentVO;
 import com.heqichao.springBootDemo.module.entity.DataDetail;
+import com.heqichao.springBootDemo.module.entity.Products;
 import com.heqichao.springBootDemo.module.mqtt.MqttUtil;
 import com.heqichao.springBootDemo.module.service.DataLogService;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -84,10 +87,10 @@ public class EquipmentServiceImpl implements EquipmentService {
 		List<Map<String,Object>> newLst = new ArrayList<Map<String,Object>>();
 //    	List<Equipment> eLst = eMapper.getEquipmentsForDevLstOrderBy(cmp,uid,pid,gid,eid,type,seleStatus);
 		//重构返回数据格式
-    	List<Equipment> eLst = (List<Equipment>)pageInfo.getList();
+    	List<EquipmentVO> eLst = (List<EquipmentVO>)pageInfo.getList();
     	//List<DataDetail> pLst =eMapper.queryDetailPointList(eLst,cmp,uid,pid);
 
-    	for (Equipment equ : eLst) {
+    	for (EquipmentVO equ : eLst) {
     		Map<String,Object> newClu= new HashMap<String,Object>();
     		newClu.put("name", equ.getName());
     		newClu.put("devId", equ.getDevId());
@@ -125,7 +128,7 @@ public class EquipmentServiceImpl implements EquipmentService {
 
     }
     // 设备匹配数据点
-    public Map<String,Object> toEquipmentShow(Equipment equ,DataDetail point){
+    public Map<String,Object> toEquipmentShow(EquipmentVO equ,DataDetail point){
     	Map<String,Object> newClu= new HashMap<String,Object>();
     	if(equ == null) {
     		return newClu;
@@ -156,7 +159,7 @@ public class EquipmentServiceImpl implements EquipmentService {
 	 *  建议直接使用缓存api DataCacheUtil.getEquipmentCache(devId);
      */
     @Override
-    public Equipment getEquipmentInfo(String  devId) {
+    public EquipmentVO getEquipmentInfo(String  devId) {
     	return eMapper.getEquById(devId);
     }
     
@@ -225,7 +228,7 @@ public class EquipmentServiceImpl implements EquipmentService {
 
 	@Override
     public ResponeResult insertEqu(Map map) {
-    	Equipment equ = new Equipment(map);
+    	Equipment equ = JSONObject.parseObject(JSONObject.toJSONString(map), Equipment.class);
     	Integer uid = ServletUtil.getSessionUser().getId();
     	Integer cmp = ServletUtil.getSessionUser().getCompetence();
     	Integer gid = equ.getGroupId();
@@ -266,7 +269,7 @@ public class EquipmentServiceImpl implements EquipmentService {
     }
 	@Override
 	public ResponeResult editEqu(Map map) {
-		Equipment equ = new Equipment(map);
+		Equipment equ = JSONObject.parseObject(JSONObject.toJSONString(map), Equipment.class);
 		Integer uid = ServletUtil.getSessionUser().getId();
 		Integer cmp = ServletUtil.getSessionUser().getCompetence();
 		Integer gid = equ.getGroupId();
@@ -546,7 +549,8 @@ public class EquipmentServiceImpl implements EquipmentService {
                         List<String> row = (List<String>) attrs.get(i);
                         //获取行数据Map
                         Map rowMap =  CollectionUtil.listStringTranToMap(row,typecode,true);
-                        Equipment equ = new Equipment(rowMap,type);
+                        EquipmentVO equ = JSONObject.parseObject(JSONObject.toJSONString(rowMap), EquipmentVO.class);
+                        equ.setTypeCd(type);
                         checkUploadRow(equ, uid, cmp, i+1, resKey);
 						//删除缓存
 						DataCacheUtil.removeEquipmentCache(equ.getDevId());
@@ -566,7 +570,7 @@ public class EquipmentServiceImpl implements EquipmentService {
     }
 
     
-    public void checkUploadRow(Equipment equ,Integer uid,Integer cmp,Integer index,String resKey ) {
+    public void checkUploadRow(EquipmentVO equ,Integer uid,Integer cmp,Integer index,String resKey ) {
     	UploadResultEntity res = new UploadResultEntity();
     	res.setResKey(resKey);
     	res.setAddUid(uid);

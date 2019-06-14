@@ -13,6 +13,7 @@ import org.apache.ibatis.mapping.StatementType;
 
 import com.heqichao.springBootDemo.base.entity.Equipment;
 import com.heqichao.springBootDemo.base.entity.UploadResultEntity;
+import com.heqichao.springBootDemo.base.vo.EquipmentVO;
 import com.heqichao.springBootDemo.module.entity.DataDetail;
 
 /**
@@ -22,9 +23,6 @@ import com.heqichao.springBootDemo.module.entity.DataDetail;
  */
 public interface EquipmentMapper {
 	
-	@Select("SELECT id,dev_id,type,amount,range,alarms,IFNULL((select max(ligntningCount) from lightning_log where devEUI = equipment.eid and lightning_log.valid = '1111'),0) as total,e_status,online_time,remark,uid"
-			+ " FROM equipments where id = #{id}  and valid = 'N' ")
-	public Equipment getEquipmentById(@Param("id") Integer id);
 	
 	@Select("<script>select equipments.dev_id,equipments.name from equipments where valid = 'N'  " + 
 			"and uid like (" + 
@@ -55,9 +53,15 @@ public interface EquipmentMapper {
 			"  left join model m on e.model_id=m.id" + 
 			"  left join applications a on e.app_id=a.id" + 
 			"  where e.valid = 'N' and e.dev_id = #{devId} ")
-	public Equipment getEquById(@Param("devId") String  devId);
+	public EquipmentVO getEquById(@Param("devId") String  devId);
 	
-	@Select("SELECT e.id,e.name,e.dev_id,e.type_cd,e.model_id,e.group_id,e.group_adm_id,e.app_id,"+
+	/**
+	 * 设备编辑获取设备信息
+	 * @param devId
+	 * @param id
+	 * @return
+	 */
+	@Select("SELECT e.id,e.name,e.dev_id,e.type_cd,,e.group_id,e.group_adm_id,pro_id,"+
 			" e.verification,e.support_code,e.supporter,e.site,e.address,e.remark,e.online,e.uid,e.udp_date," + 
 			" u.company uName,m.model_name,a.app_name," + 
 			" case e.type_cd when 'L' then 'Lora' when 'N' then 'Nbiot' when 'G' then '2G' else null end as typeName " + 
@@ -66,20 +70,30 @@ public interface EquipmentMapper {
 			"  left join model m on e.model_id=m.id" + 
 			"  left join applications a on e.app_id=a.id" + 
 			"  where e.valid = 'N' and e.dev_id = #{devId} and e.id=#{id}")
-	public Equipment getEquEditById(@Param("devId") String  devId,@Param("id") Integer  id);
+	public EquipmentVO getEquEditById(@Param("devId") String  devId,@Param("id") Integer  id);
 	
 	@Select("SELECT dev_id FROM equipments where valid = 'N' ")
 	public List<String> getEquipmentIdListAll();
 	
-	@Select("<script>SELECT e.id,e.name,e.dev_id,e.type_cd,e.model_id,e.group_id,e.group_adm_id,e.app_id," + 
+	/**
+	 * 设备列表查询SQL
+	 * @param competence
+	 * @param id
+	 * @param parentId
+	 * @param gid
+	 * @param sEid
+	 * @param sType
+	 * @param sStatus
+	 * @return
+	 */
+	@Select("<script>SELECT e.id,e.name,e.dev_id,e.type_cd,e.group_id,e.group_adm_id,e.pro_id," + 
 			" e.verification,e.support_code,e.supporter,e.site,e.address,e.remark,e.sec_remark,e.online,e.uid,e.udp_date," + 
-			" u.company uName,m.model_name,a.app_name,g.name groupName," + 
+			" u.company uName,g.name groupName,p.name proName," + 
 			" case e.type_cd when 'L' then 'Lora' when 'N' then 'Nbiot' when 'G' then '2G' else null end as typeName, " + 
 			" (select count(1)>0 from model_attr ma where ma.model_id=e.model_id and model_type='W') as validCMD " + 
 			"  FROM group_equ g,equipments e" + 
 			"  left join users u on e.uid=u.id" + 
-			"  left join model m on e.model_id=m.id" + 
-			"  left join applications a on e.app_id=a.id" + 
+			"  left join products p on e.pro_id=p.id" + 
 			"  where e.valid = 'N'  "
 			+ "<if test=\"competence == 2 \"> and e.group_adm_id=g.id"
 			+ "<if test=\"gid !=null \"> and e.group_adm_id = #{gid}  </if> </if>"
@@ -91,7 +105,7 @@ public interface EquipmentMapper {
 			+ "<if test =\"sType !=null  and sType!='' \"> and e.type_cd like CONCAT(CONCAT('%',#{sType}),'%')  </if>"
 			+ "<if test =\"sStatus !=null  and sStatus!='' \"> and e.online = #{sStatus}  </if>"
 			+ " order by e.add_date desc </script>")
-	public List<Equipment> getEquipments(
+	public List<EquipmentVO> getEquipments(
 			@Param("competence")Integer competence,
 			@Param("id")Integer id,
 			@Param("parentId")Integer parentId,
@@ -121,7 +135,7 @@ public interface EquipmentMapper {
 			+ "<if test =\"sType !=null  and sType!='' \"> and e.type_cd like CONCAT(CONCAT('%',#{sType}),'%')  </if>"
 			+ "<if test =\"sStatus !=null  and sStatus!='' \"> and e.online = #{sStatus}  </if>"
 			+ " order by e.data_point_date desc,e.online desc </script>")
-	public List<Equipment> getEquipmentsForDevLstOrderBy(
+	public List<EquipmentVO> getEquipmentsForDevLstOrderBy(
 			@Param("competence")Integer competence,
 			@Param("id")Integer id,
 			@Param("parentId")Integer parentId,
@@ -252,12 +266,12 @@ public interface EquipmentMapper {
 			+ " from upload_result where res_key=#{key} ")
 	public List<UploadResultEntity> getUploadResult(@Param("key")String key);
 	
-	@Insert("insert into equipments (name,dev_id,type_cd,model_id,group_id,group_adm_id,app_id,verification,support_code,supporter,site,address,remark,sec_remark,uid,valid,add_uid,udp_uid,online)"
-			+ " values(#{name},#{devId},#{typeCd},#{modelId},#{groupId},#{groupAdmId},#{appId},#{verification},#{supportCode},#{supporter},#{site},#{address},#{remark},#{secRemark},#{uid},#{valid},#{addUid},#{addUid},0) ")
+	@Insert("insert into equipments (name,dev_id,type_cd,group_id,group_adm_id,pro_id,verification,support_code,supporter,site,address,remark,sec_remark,uid,valid,add_uid,udp_uid,online)"
+			+ " values(#{name},#{devId},#{typeCd},#{groupId},#{groupAdmId},#{proId},#{verification},#{supportCode},#{supporter},#{site},#{address},#{remark},#{secRemark},#{uid},#{valid},#{addUid},#{addUid},0) ")
 	public int insertEquipment(Equipment equ);
 	
-	@Update("update equipments set name=#{name},dev_id=#{devId},type_cd=#{typeCd},model_id=#{modelId},"
-			+ "group_id=#{groupId},group_adm_id=#{groupAdmId},app_id=#{appId},verification=#{verification},support_code=#{supportCode},"
+	@Update("update equipments set name=#{name},dev_id=#{devId},type_cd=#{typeCd},pro_id=#{proId},"
+			+ "group_id=#{groupId},group_adm_id=#{groupAdmId},verification=#{verification},support_code=#{supportCode},"
 			+ "supporter=#{supporter},site=#{site},address=#{address},remark=#{remark},sec_remark=#{secRemark},uid=#{uid},valid=#{valid},udp_uid=#{udpUid},udp_date=sysdate()"
 			+ " where id=#{id}")
 	public int editEquipment(Equipment equ);

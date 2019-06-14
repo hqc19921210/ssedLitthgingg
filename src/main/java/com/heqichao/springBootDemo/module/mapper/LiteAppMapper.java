@@ -91,13 +91,8 @@ public interface LiteAppMapper {
     
     @Select("<script>"
 			+"select id ,app_name from applications a where 1=1 "
-//			+ "<if test =\"cmp == 3 \"> and  a.uid= #{uid}  </if>"
-//            + "<if test =\"cmp == 4 \"> and  a.uid= #{pId}  </if>"
 			+ "and valid = 'N' "
 			+"</script>")
-	public List<LiteApplication> getAppSelectList(
-		@Param("uid") Integer uid,
-   		 @Param("pId") Integer pId,
-   		 @Param("cmp") Integer cmp);
+	public List<LiteApplication> getAppSelectList();
 
 }

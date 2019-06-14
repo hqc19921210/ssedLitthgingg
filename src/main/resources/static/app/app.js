@@ -32,6 +32,9 @@ var demoApp =angular.module("demoApp", ["ngRoute"]);
 	}).when("/module/commandPost/:devId", {
 		templateUrl: "app/module/commandPost.html",
 		controller: commandPostCtrl
+	}).when("/module/products", {
+		templateUrl: "app/module/products.html",
+		controller: productsCtrl
 	}).when("/module/commandLog/:devId", {
 		templateUrl: "app/module/commandLog.html",
 		controller: commandLogCtrl

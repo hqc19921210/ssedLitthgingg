@@ -1,0 +1,149 @@
+<div class="container" >
+	<div class="row">
+       <div class="col-sm-12">
+           <h4 class="pull-left page-title"><b>产品管理</b></h4>
+           <ol class="breadcrumb pull-right">
+               <li><a href="#">首页</a></li>
+               <li class="active">产品管理</li>
+           </ol>
+       </div>
+   </div>
+	<div class="row">
+		<div class="col-md-12">
+			<div class="panel panel-default">
+				<div class="panel-body">
+				<form role="form" class="form-horizontal" >
+                        <div class="row">
+                            <div class="col-md-12 col-sm-12 col-xs-12">
+                                <label  class="col-sm-1 control-label">名称：</label>
+                                <div class="col-sm-2">
+                                    <input type="text" class="form-control" ng-model="quereyData.name" placeholder="模糊搜索">
+                                </div>
+                                <label  class="col-sm-1 control-label">模板：</label>
+                                <div class="col-sm-3">
+                                	<select  class="form-control"  ng-model="quereyData.modelId" ng-options="x for (x, y) in selUserModel">
+									</select>
+                                </div>
+                                <label  class="col-sm-1 control-label">应用：</label>
+                                <div class="col-sm-3">
+                                <select  class="form-control"   ng-model="quereyData.appId" ng-options="x for (x, y) in selApps" >
+									</select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row-margin-top">
+                            <div class="col-sm-5 col-md-6 ">
+	                             <button type="button" class="btn btn-primary waves-effect waves-light" data-toggle="modal" data-target="#equ-add-modal" ng-click="editChg('A')">新增产品 <i class="fa fa-plus"></i></button>
+	                             <a href="#/module/liteApp" type="button" class="btn btn-primary waves-effect waves-light" >应用管理</a>
+                                <button  class="btn btn-primary waves-effect waves-light" type="submit"  btn-loading="loadCtl.search" ng-click="init()">搜索</button>
+                                <button class="btn btn-default waves-effect" type="button" ng-click="resetSearch()">重置</button>
+                            </div>
+                        </div>
+                    </form>
+					<div class="row">
+						<div class="col-md-12 col-sm-12 col-xs-12">
+							<div class="table-responsive">
+								<table class="table">
+									<thead>
+									<tr>
+										<th>产品名称</th>
+										<th>数据模板</th>
+										<th>所属应用</th>
+										<th>可见用户</th>
+										<th>产品描述</th>
+										<th>修改时间</th>
+										<th>操作</th>
+									</tr>
+									</thead>
+									<tbody>
+									<tr ng-repeat="pro in products"> 
+									<td>{{ pro.name }}</td>
+									<td>{{ pro.modelName }}</td>
+									<td>{{ pro.appName }}</td>
+									<td>{{ !pro.vuId ? '全部' : pro.company }}</td>
+									<td>{{ pro.remark }}</td>
+									<td>{{ pro.udpDate }}</td>
+									<td> 
+										<a href="javascript:void(0)" data-toggle="modal" data-target="#equ-add-modal" ng-click="selProdut(pro)" >修改 </a>
+										<a href="javascript:void(0)" ng-click="delEqu(pro.id)">删除</a>
+									</td>
+									</tr>
+									
+
+									</tbody>
+								</table>
+							</div>
+						</div>
+						 <!-- 分页 -->
+                        <page-info pages="pages" curpage="quereyData.page" change="changePage(page)"></page-info>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div id="equ-add-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="addEquModal" aria-hidden="true" style="display: none">
+         <div class="modal-dialog"> 
+             <div class="modal-content"> 
+                 <div class="modal-header"> 
+                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true" ng-click="closeAddEquModal()">×</button> 
+                     <h4 ng-show="addFrom.edit == 'A'" class="modal-title">添加产品</h4> 
+                     <h4 ng-show="addFrom.edit == 'U'" class="modal-title">产品修改</h4> 
+                 </div> 
+                 <form class="modal-body" ng-submit="addEqu()" name="addEquForm" novalidate="novalidate">
+                     <div class="row"> 
+                         <div class="col-md-12"> 
+                             <div class="form-group"> 
+                                 <label  class="control-label">产品名称<span style="color : red">*</span></label> 
+                                 <input type="text" class="form-control" ng-model="addFrom.name" ng-disabled="addFrom.edit == 'U'" required >
+                             </div> 
+                         </div> 
+                        </div> 
+                        <div class="row"> 
+                            <div class="col-md-12"> 
+                                <div class="form-group"> 
+                                    <label  class="control-label">数据模板<span style="color : red">*</span></label> 
+                                    <select  class="form-control" name="modelId"  ng-model="addFrom.modelId" ng-options="x for (x, y) in selUserModel" required>
+									</select>
+                                </div> 
+                            </div> 
+                          </div> 
+                        <div class="row">  
+                         <div class="col-md-12"> 
+                             <div class="form-group"> 
+                                 <label  class="control-label">所属应用</label> 
+                                 <select  class="form-control" name="appId"  ng-model="addFrom.appId" ng-options="x for (x, y) in selApps" >
+									</select>
+                             </div> 
+                         </div> 
+                         </div> 
+                        <div class="row">
+                         <div class="col-md-12"> 
+                             <div class="form-group"> 
+                                 <label  class="control-label">指定可见用户</label> 
+                                  <select class="form-control" placeholder="不填写全部用户可见，填写后仅该用户可见" ng-model="addFrom.vuId" ng-options="x for (x, y) in selCompanys" >
+								</select>
+                             </div> 
+                         </div> 
+                     </div> 
+                      <div class="row"> 
+	                        <div class="col-md-12"> 
+	                            <div class="form-group no-margin"> 
+	                                 <label  class="control-label">产品描述</label>  
+	                                <textarea  class="form-control autogrow" ng-model="addFrom.remark" style="overflow: hidden; word-wrap: break-word; resize: horizontal; height: 75px"></textarea> 
+	                            </div> 
+	                            <div style="color: red" ng-show="addFrom.edit == 'U' && !addEquForm.$dirty">
+                      		  		*未修改任何信息
+                   				</div> 
+	                        </div> 
+	                    </div>     
+                 <div class="modal-footer"> 
+                     <button id="close-add-equ-modal" type="button" class="btn btn-default waves-effect" data-dismiss="modal" ng-click="closeAddEquModal()" >关闭</button> 
+                     <button type="submit" class="btn btn-info waves-effect waves-light"  ng-disabled="addEquForm.$invalid || !addEquForm.$dirty" btn-loading="loadCtl.addEnq">保存并添加</button> 
+                 </div> 
+                 </form> 
+             </div> 
+         </div>
+     </div>
+     
+     
+</div>
