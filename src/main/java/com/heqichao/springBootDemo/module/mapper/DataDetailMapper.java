@@ -72,7 +72,7 @@ public interface DataDetailMapper {
      * @return
      */
     @Select("<script>" +
-            "select DISTINCT dev_id from equipments where  online =#{onLine} and type_cd= #{type} and dev_id not in (select DISTINCT dev_id from data_log where data_status = 'N' and add_date > #{date} and dev_type=#{type} )" +
+            "select DISTINCT dev_id from equipments where  online =#{onLine} and type_cd= #{type} and dev_id not in (select DISTINCT dev_id from data_log where  add_date > #{date} and dev_type=#{type} )" +
             "</script>")
     List<String> checkOffLineDev(@Param("type") String type,@Param("onLine") String onLine,@Param("date")Date date);
 
@@ -83,7 +83,7 @@ public interface DataDetailMapper {
      * @return
      */
     @Select("<script>" +
-            "select DISTINCT dev_id from data_log where data_status = 'N' and dev_type=#{type} and add_date > #{date} " +
+            "select DISTINCT dev_id from data_log where  dev_type=#{type} and add_date > #{date} " +
             "</script>")
     List<String> checkOnLineDev(@Param("type") String type,@Param("date")Date date);
 
