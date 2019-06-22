@@ -88,16 +88,89 @@ function logShowCtrl($scope, $http, $rootScope,$routeParams,$location) {
         map.addOverlay(marker);               // 将标注添加到地图中
 
     };
-
+    //图表初始化
+    var dom = document.getElementById("container");
+    var myChart = echarts.init(dom);
+    option = {
+        tooltip: {
+            trigger: 'axis',
+            position: function (pt) {
+                return [pt[0], '10%'];
+            }
+        },
+        title: {
+            left: 'center',
+            text: '历史数据点',
+        },
+        toolbox: {
+            feature: {
+                dataZoom: {
+                    yAxisIndex: 'none'
+                },
+                restore: {},
+                saveAsImage: {}
+            }
+        },
+        xAxis: {
+            type: 'category',
+            boundaryGap: false,
+        },
+        yAxis: {
+            type: 'value',
+            boundaryGap: [0, '100%']
+        },
+        dataZoom: [ 
+        	//start 滚轮缩放 
+        	{
+	            type: 'inside',
+	            start: 0,//组件起始位置（影响下方区域组件）
+	            end: 100//组件结束位置（影响下方区域组件）
+	        },
+	      //end 滚轮缩放 
+	      //下方区域组件
+        {
+	        
+            start: 0,//组件起始位置
+            end: 100,//组件结束位置
+            handleIcon: 'M10.7,11.9v-1.3H9.3v1.3c-4.9,0.3-8.8,4.4-8.8,9.4c0,5,3.9,9.1,8.8,9.4v1.3h1.3v-1.3c4.9-0.3,8.8-4.4,8.8-9.4C19.5,16.3,15.6,12.2,10.7,11.9z M13.3,24.4H6.7V23h6.6V24.4z M13.3,19.6H6.7v-1.4h6.6V19.6z',
+            handleSize: '50%',
+            handleStyle: {
+                color: '#fff',
+                shadowBlur: 3,
+                shadowColor: 'rgba(0, 0, 0, 0.6)',
+                shadowOffsetX: 2,
+                shadowOffsetY: 2
+            }
+        }],
+        series: [
+            {
+                name:'数据值',
+                type:'line',
+                smooth:true,
+                symbol: 'none',
+                sampling: 'average',
+                itemStyle: {
+                    color: 'rgb(49, 158, 203)'
+                },
+//                data: data 注释等待动态加载数据
+            }
+        ]
+    };
+    if (option && typeof option === "object") {
+        myChart.setOption(option, true);
+    }
+    
+    
     //初始化数据
     $scope.init=function(){
+    	myChart.showLoading();
         $http.post("/service/queryEquAttrLog",$scope.param).success(function(data) {
             $scope.param.initOption='FALSE';
             if(data.resultObj.devList){
                 $scope.devList = data.resultObj.devList;
             }
             $scope.param.devId=data.resultObj.devId;
-            $scope.param.attrId=""+data.resultObj.attrId.toString();
+            $scope.param.attrId=""+data.resultObj.attrId;
            if(data.resultObj.attrList){
                $scope.attrList= data.resultObj.attrList;
            }
@@ -151,7 +224,10 @@ function logShowCtrl($scope, $http, $rootScope,$routeParams,$location) {
         }
     }
 
-
+    $scope.asynLinePointData=function(){
+    	console.log("plotDownloads",angular.fromJson(angular.toJson($scope.plotDownloads)));
+    	console.log("attrKey",angular.fromJson(angular.toJson($scope.param.attrKey)));
+    }
 
     $scope.showChart=function(){
         $scope.plotDownloads =[];
@@ -160,13 +236,14 @@ function logShowCtrl($scope, $http, $rootScope,$routeParams,$location) {
             for(var j=0;j<$scope.log.length;j++){
                 var obj =$scope.log[j];
                 var value =obj.dataValue;
-                $scope.plotDownloads.push([Date.parse(new Date(obj.addDate)),value]);
+                $scope.plotDownloads.push({value:[Date.parse(new Date(obj.addDate)),value]});
             }
         }else{
             //默认显示第一个波形
             $scope.showWave($scope.log[0]);
         }
-        $.Dashboard.init();
+        $scope.asynLinePointData();
+//        $.Dashboard.init();
     }
 
     $scope.showWave=function (obj) {
@@ -177,133 +254,10 @@ function logShowCtrl($scope, $http, $rootScope,$routeParams,$location) {
             for(var i=0;i<arr.length;i++){
                 $scope.plotDownloads.push([i,arr[i]]);
             }
-            $.Dashboard.init();
+            $scope.asynLinePointData();
+//            $.Dashboard.init();
         }
     }
-
-    var Dashboard = function() {
-        this.$body = $("body")
-        this.$realData = []
-    };
-    $scope.sum=0;
-
-
-
-    var pcolors = '#2b9ac9';
-    var borderColor = '#fff';
-    var bgColor = '#fff';
-
-    Dashboard.prototype.createPlotGraph = function(selector, data1,  labels, colors, borderColor, bgColor) {
-        //shows tooltip
-        function showTooltip(x, y, contents) {
-            $('<div id="tooltip" class="tooltipflot">' + contents + '</div>').css( {
-                position: 'absolute',
-                top: y + 5,
-                left: x + 5
-            }).appendTo("body").fadeIn(200);
-        }
-
-        $.plot($(selector),
-            [ { data: data1,
-                label: labels,
-                color: colors
-            }
-            ],
-            {
-                series: {
-                    lines: {
-                        show: true,
-                        fill: true,
-                        lineWidth: 2,
-                        fillColor: {
-                            colors: [ { opacity: 0.0 },
-                                { opacity: 0.0 }
-                            ]
-                        }
-                    },
-                    points: {
-                        show: true
-                    },
-                    shadowSize: 0,
-                    /*dataLabels:{
-                     enabled:false
-                     }*/
-                },
-                legend: {
-                    position: 'nw'
-                },
-                grid: {
-                    hoverable: true,
-                    clickable: true,
-                    borderColor: borderColor,
-                    borderWidth: 0,
-                    labelMargin: 10,
-                    backgroundColor: bgColor
-                },
-                yaxis: {
-                    //min: 0,
-                    //max: $scope.max,
-
-                 //   ticks:6,
-                //    autoscaleMargin:1,
-
-                 //   tickDecimals:1,
-                    color: 'rgba(0,0,0,0)',
-                    show:true,
-                   // mode:number,
-                    tickFormatter: function (val, axis) {
-                    	console.log("y",val);
-                    	if(String(val).indexOf('.') != -1){
-                    		val=Number(val).toFixed(2);
-                    	}
-                        if($scope.unit){
-                            return val+$scope.unit ; //单位
-                        }else{
-                            return val;
-                        }
-                    },
-                },
-                xaxis: {
-                  //  autoscaleMargin:'1',
-                    color: 'rgba(0,0,0,0)',
-                    tickFormatter: function (val, axis) {
-                    	console.log(val);
-                        //非波形
-                        if( $scope.attrType != "WAVE_TYPE"){
-                            return formatDateTime(val);
-                        }else{
-                            return val;
-                        }
-
-                    },
-                    labelWidth:5
-                },
-                tooltip: true,
-                tooltipOpts: {
-                   content: '%y(%x) ',
-                 /*   content : function(label, xval, yval, flotItem){
-                        return label+"设备:"+yval+"台";
-                    },*/
-                    shifts: {
-                        x: -60,
-                        y: 25
-                    },
-                    defaultTheme: false
-                }
-            });
-    },
-        //end plot graph
-
-        //initializing various charts and componentszuo
-        Dashboard.prototype.init = function() {
-    	    var points=angular.fromJson(angular.toJson($scope.plotDownloads));
-    	    var keys=angular.fromJson(angular.toJson($scope.param.attrKey));
-//    	    console.log("points",points);
-//    	    console.log("keys",keys);
-            this.createPlotGraph("#website-stats2", points , keys , pcolors, borderColor, bgColor);
-        },
-
-        $.Dashboard = new Dashboard, $.Dashboard.Constructor = Dashboard;
 
     function formatDateTime(inputTime) {
         var date = new Date(inputTime);
@@ -322,80 +276,6 @@ function logShowCtrl($scope, $http, $rootScope,$routeParams,$location) {
         // time =time.replace(" "," \n ");
         return time;
     };
-    /*var dom = document.getElementById("container");
-    var myChart = echarts.init(dom);
-    var app = {};
-    option = null;
-    var base = +new Date(1968, 9, 3);
-    var oneDay = 24 * 3600 * 1000;
-    var date = [];
-
-    var data = [Math.random() * 300];
-
-    for (var i = 1; i < 20000; i++) {
-        var now = new Date(base += oneDay);
-        date.push([now.getFullYear(), now.getMonth() + 1, now.getDate()].join('/'));
-        data.push(Math.round((Math.random() - 0.5) * 20 + data[i - 1]));
-    }
-    option = {
-        tooltip: {
-            trigger: 'axis',
-            position: function (pt) {
-                return [pt[0], '10%'];
-            }
-        },
-        title: {
-            left: 'center',
-            text: '历史数据点',
-        },
-        toolbox: {
-            feature: {
-                dataZoom: {
-                    yAxisIndex: 'none'
-                },
-                restore: {},
-                saveAsImage: {}
-            }
-        },
-        xAxis: {
-            type: 'category',
-            boundaryGap: false,
-            data: date
-        },
-        yAxis: {
-            type: 'value',
-            boundaryGap: [0, '100%']
-        },
-        dataZoom: [ {
-            start: 0,
-            end: 10,
-            handleIcon: 'M10.7,11.9v-1.3H9.3v1.3c-4.9,0.3-8.8,4.4-8.8,9.4c0,5,3.9,9.1,8.8,9.4v1.3h1.3v-1.3c4.9-0.3,8.8-4.4,8.8-9.4C19.5,16.3,15.6,12.2,10.7,11.9z M13.3,24.4H6.7V23h6.6V24.4z M13.3,19.6H6.7v-1.4h6.6V19.6z',
-            handleSize: '80%',
-            handleStyle: {
-                color: '#fff',
-                shadowBlur: 3,
-                shadowColor: 'rgba(0, 0, 0, 0.6)',
-                shadowOffsetX: 2,
-                shadowOffsetY: 2
-            }
-        }],
-        series: [
-            {
-                name:'数据值',
-                type:'line',
-                smooth:true,
-                symbol: 'none',
-                sampling: 'average',
-                itemStyle: {
-                    color: 'rgb(49, 158, 203)'
-                },
-                data: data
-            }
-        ]
-    };
-    ;
-    if (option && typeof option === "object") {
-        myChart.setOption(option, true);
-    }*/
+    
     
 }

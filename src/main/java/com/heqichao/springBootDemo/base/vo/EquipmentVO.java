@@ -1,7 +1,9 @@
 package com.heqichao.springBootDemo.base.vo;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.heqichao.springBootDemo.base.entity.Equipment;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class EquipmentVO extends Equipment {
 
 	/**
