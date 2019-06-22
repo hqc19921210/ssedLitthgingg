@@ -70,6 +70,24 @@ function logShowCtrl($scope, $http, $rootScope,$routeParams,$location) {
         $scope.param.end =$("#datepickerEnd").val();
         $scope.init();
     });
+    
+    // 百度地图API功能
+    $scope.getMap=function () {
+        var point={};
+        if ($scope.equip.site) {
+        	var position = $scope.equip.site.split(',');
+            point = new BMap.Point(position[0], position[1]);
+        }else {
+            point=new BMap.Point(114.070855, 22.551052);
+        }
+        var map = new BMap.Map("map");    // 创建Map实例
+        map.centerAndZoom(point, 11);  // 初始化地图,设置中心点坐标和地图级别
+        map.addControl(new BMap.MapTypeControl());   //添加地图类型控件
+        map.enableScrollWheelZoom(true);     //开启鼠标滚轮缩放
+        var marker = new BMap.Marker(point);  // 创建标注
+        map.addOverlay(marker);               // 将标注添加到地图中
+
+    };
 
     //初始化数据
     $scope.init=function(){
@@ -304,21 +322,80 @@ function logShowCtrl($scope, $http, $rootScope,$routeParams,$location) {
         // time =time.replace(" "," \n ");
         return time;
     };
-    $scope.getMap=function () {
-        // 百度地图API功能
-        var point={};
-        if ($scope.equip.site) {
-        	var position = $scope.equip.site.split(',');
-            point = new BMap.Point(position[0], position[1]);
-        }else {
-            point=new BMap.Point(114.070855, 22.551052);
-        }
-        var map = new BMap.Map("map");    // 创建Map实例
-        map.centerAndZoom(point, 11);  // 初始化地图,设置中心点坐标和地图级别
-        map.addControl(new BMap.MapTypeControl());   //添加地图类型控件
-        map.enableScrollWheelZoom(true);     //开启鼠标滚轮缩放
-        var marker = new BMap.Marker(point);  // 创建标注
-        map.addOverlay(marker);               // 将标注添加到地图中
+    /*var dom = document.getElementById("container");
+    var myChart = echarts.init(dom);
+    var app = {};
+    option = null;
+    var base = +new Date(1968, 9, 3);
+    var oneDay = 24 * 3600 * 1000;
+    var date = [];
 
+    var data = [Math.random() * 300];
+
+    for (var i = 1; i < 20000; i++) {
+        var now = new Date(base += oneDay);
+        date.push([now.getFullYear(), now.getMonth() + 1, now.getDate()].join('/'));
+        data.push(Math.round((Math.random() - 0.5) * 20 + data[i - 1]));
+    }
+    option = {
+        tooltip: {
+            trigger: 'axis',
+            position: function (pt) {
+                return [pt[0], '10%'];
+            }
+        },
+        title: {
+            left: 'center',
+            text: '历史数据点',
+        },
+        toolbox: {
+            feature: {
+                dataZoom: {
+                    yAxisIndex: 'none'
+                },
+                restore: {},
+                saveAsImage: {}
+            }
+        },
+        xAxis: {
+            type: 'category',
+            boundaryGap: false,
+            data: date
+        },
+        yAxis: {
+            type: 'value',
+            boundaryGap: [0, '100%']
+        },
+        dataZoom: [ {
+            start: 0,
+            end: 10,
+            handleIcon: 'M10.7,11.9v-1.3H9.3v1.3c-4.9,0.3-8.8,4.4-8.8,9.4c0,5,3.9,9.1,8.8,9.4v1.3h1.3v-1.3c4.9-0.3,8.8-4.4,8.8-9.4C19.5,16.3,15.6,12.2,10.7,11.9z M13.3,24.4H6.7V23h6.6V24.4z M13.3,19.6H6.7v-1.4h6.6V19.6z',
+            handleSize: '80%',
+            handleStyle: {
+                color: '#fff',
+                shadowBlur: 3,
+                shadowColor: 'rgba(0, 0, 0, 0.6)',
+                shadowOffsetX: 2,
+                shadowOffsetY: 2
+            }
+        }],
+        series: [
+            {
+                name:'数据值',
+                type:'line',
+                smooth:true,
+                symbol: 'none',
+                sampling: 'average',
+                itemStyle: {
+                    color: 'rgb(49, 158, 203)'
+                },
+                data: data
+            }
+        ]
     };
+    ;
+    if (option && typeof option === "object") {
+        myChart.setOption(option, true);
+    }*/
+    
 }

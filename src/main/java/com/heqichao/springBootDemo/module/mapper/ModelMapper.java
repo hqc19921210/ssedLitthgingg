@@ -57,7 +57,7 @@ public interface ModelMapper {
     List<Model> queryByUserIds(@Param("list") List<Integer> list,@Param("modelName")String modelName);
     
     @Select("<script>"
-    		+"select * from model  where 1=1  and add_uid = #{uid}  "
+    		+"select id,model_name from model  where 1=1   "
     		+" order by udp_date desc"
     		+"</script>")
     List<Model> queryByUserId(@Param("uid")String uid);

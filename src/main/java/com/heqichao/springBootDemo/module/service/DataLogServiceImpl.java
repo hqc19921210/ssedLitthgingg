@@ -96,7 +96,7 @@ public class DataLogServiceImpl implements DataLogService {
     @Override
     public void sendToOneNet(String devId, String devType, String data,Integer dataLogId) {
         if(checkSendForOneNet(devId,devType)){
-            Equipment equipment =DataCacheUtil.getEquipmentCache(devId);
+        	EquipmentVO equipment =DataCacheUtil.getEquipmentCache(devId);
             if(StringUtil.isEmpty(equipment.getVerification())){
                // return;
             }

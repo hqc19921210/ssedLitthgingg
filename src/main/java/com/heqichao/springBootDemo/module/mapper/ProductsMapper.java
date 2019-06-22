@@ -22,7 +22,8 @@ public interface ProductsMapper {
 	 * @return
 	 */
 	@Select("<script>"
-            +" SELECT p.id, p.udp_date,p.name,p.model_id,p.app_id,p.vu_id,p.remark,p.valid,m.model_name,a.app_name,u.company " + 
+            +" SELECT p.id, p.udp_date,p.name,p.model_id,p.app_id,p.type_cd,p.vu_id,p.remark,p.valid,m.model_name,a.app_name,u.company, " + 
+			" case p.type_cd when 'L' then 'Lora' when 'N' then 'Nbiot' when 'G' then '2G' else null end as typeName"+
             " FROM  model m, products p" + 
             " left join applications a on p.app_id = a.id" + 
             " left join users u on p.vu_id = u.id" + 
@@ -44,8 +45,8 @@ public interface ProductsMapper {
 	 * @param pro
 	 * @return
 	 */
-	@Insert("insert into products (add_uid,udp_uid,name,model_id,app_id,vu_id,remark,valid)"
-			+ " values(#{udpUid},#{udpUid},#{name},#{modelId},#{appId},#{vuId},#{remark},'N') ")
+	@Insert("insert into products (add_uid,udp_uid,name,type_cd,model_id,app_id,vu_id,remark,valid)"
+			+ " values(#{udpUid},#{udpUid},#{name},#{typeCd},#{modelId},#{appId},#{vuId},#{remark},'N') ")
 	public int insertProducts(Products pro);
 	
 	/**
@@ -53,7 +54,7 @@ public interface ProductsMapper {
 	 * @param pro
 	 * @return
 	 */
-	@Update("update  products set name=#{name},model_id=#{modelId},app_id=#{appId},vu_id=#{vuId},remark=#{remark},udp_uid=#{udpUid},udp_date=sysdate()"
+	@Update("update  products set name=#{name},model_id=#{modelId},type_cd=#{typeCd},app_id=#{appId},vu_id=#{vuId},remark=#{remark},udp_uid=#{udpUid},udp_date=sysdate()"
 			+ " where id=#{id} and valid = 'N' ")
 	public int updateProducts(Products pro);
 	
@@ -89,4 +90,19 @@ public interface ProductsMapper {
 		 @Param("uid") Integer uid,
    		 @Param("pId") Integer pId,
    		 @Param("cmp") Integer cmp);
+    /**
+     * 根据设备类型查找产品下拉kv
+     * @return
+     */
+    @Select("<script>"
+    		+"select id ,name from products a where 1=1 "
+    		+ "<if test =\"cmp == 3 \"> and  (vu_id is null or vu_id= #{uid})  </if>"
+    		+ "<if test =\"cmp == 4 \"> and  (vu_id is null or vu_id= #{pId})  </if>"
+    		+ "and valid = 'N' and type_cd = #{type}"
+    		+"</script>")
+    public List<Products> getProductsListByType(
+    		@Param("uid") Integer uid,
+    		@Param("pId") Integer pId,
+    		@Param("cmp") Integer cmp,
+    		@Param("type") String type);
 }

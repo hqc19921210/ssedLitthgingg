@@ -25,7 +25,7 @@ public class MyNbiotSubscription {
 	 * @return
 	 * @throws Exception
 	 */
-	public String subLiteDataChg(LiteApplication app) throws Exception {
+	public  String subLiteDataChg(LiteApplication app) throws Exception {
 		// Two-Way Authentication
         HttpsUtil httpsUtil = new HttpsUtil();
         httpsUtil.initSSLConfigForTwoWay();
@@ -52,7 +52,22 @@ public class MyNbiotSubscription {
 
         logger.info("SubscribeNotification: " + httpResponse_deviceDataChanged.getStatusLine().toString());
         logger.info(bodySubscribe_deviceDataChanged);
+        logger.info(httpResponse_deviceDataChanged.toString());
+        System.out.println("SubscribeNotification: " + httpResponse_deviceDataChanged.getStatusLine().toString());
+        System.out.println(bodySubscribe_deviceDataChanged);
+        System.out.println(httpResponse_deviceDataChanged.getParams().toString());
         
         return httpResponse_deviceDataChanged.getStatusLine().toString();
 	}
+	
+//	public static void main(String[] args) throws Exception {
+//		LiteApplication app = new LiteApplication();
+//		app.setPlatformIp("180.101.147.89:8743");
+//		app.setAppId("zAfzULyvwTLvolphgWsrvgRfNo4a");
+//		app.setSecret("C00396FFAF30B441B8980466FD8FC5571E180B05698D0EFA96BE422FEB8F897B");
+//		app.setCallbackUrl("http://120.78.181.134:8082/service/nbiotCallback/dataChanged/zAfzULyvwTLvolphgWsrvgRfNo4a");
+//		app.setSubscribeNotifycation("https://180.101.147.89:8743/iocm/app/sub/v1.1.0/subscribe");
+//		MyNbiotSubscription m = new MyNbiotSubscription();
+//		m.subLiteDataChg(app);
+//	}
 }

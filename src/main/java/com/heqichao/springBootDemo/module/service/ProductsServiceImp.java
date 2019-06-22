@@ -1,5 +1,6 @@
 package com.heqichao.springBootDemo.module.service;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -21,7 +22,7 @@ import com.heqichao.springBootDemo.base.util.StringUtil;
 
 /**
  * 
- * @author Muzzy XU.
+ * @author Muzzy Xu.
  * @date 2019/06/12
  */
 
@@ -100,15 +101,26 @@ public class ProductsServiceImp implements ProductsService {
 	 */
 	@Override
     public ResponeResult getProductsList() {
+		Map map = RequestContext.getContext().getParamMap();
+		String type = StringUtil.getStringByMap(map,"type");
     	Integer cmp = ServletUtil.getSessionUser().getCompetence();
     	Integer uid = ServletUtil.getSessionUser().getId();
     	Integer pid = ServletUtil.getSessionUser().getParentId();
     	if(uid == null || cmp == null) {
     		return  new ResponeResult(false,"");
     	}
-		Map<String, Integer> res =  productsMapper.getProductsList(uid,pid,cmp).stream().collect(
-						Collectors.toMap(Products::getName,Products::getId, (k1,k2)->k1)
-					);
+    	Map<String, Integer> res = new HashMap<String, Integer>();
+    	if(type != null) {
+    		res =  productsMapper.getProductsListByType(uid,pid,cmp,type).stream().collect(
+    				Collectors.toMap(Products::getName,Products::getId, (k1,k2)->k1)
+    				);
+    		
+    	}else {
+    		res =  productsMapper.getProductsList(uid,pid,cmp).stream().collect(
+    				Collectors.toMap(Products::getName,Products::getId, (k1,k2)->k1)
+    				);
+    		
+    	}
 		return new ResponeResult(res);
     }
 	
