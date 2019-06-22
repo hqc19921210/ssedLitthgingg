@@ -1,15 +1,14 @@
 package com.heqichao.springBootDemo.base.entity;
 
-import java.util.Map;
-
 import org.springframework.stereotype.Component;
 
-import com.heqichao.springBootDemo.base.util.StringUtil;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 /**
  * @author Muzzy Xu.
  */
 @Component("equipments")
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Equipment extends BaseEntity  {
 
 
