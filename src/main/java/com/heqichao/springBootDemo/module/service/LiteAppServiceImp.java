@@ -30,6 +30,7 @@ import com.heqichao.springBootDemo.base.util.AesUtil;
 import com.heqichao.springBootDemo.base.util.PageUtil;
 import com.heqichao.springBootDemo.base.util.ServletUtil;
 import com.heqichao.springBootDemo.base.util.StringUtil;
+import com.heqichao.springBootDemo.base.vo.EquipmentVO;
 
 /**
  * 
@@ -180,7 +181,7 @@ public class LiteAppServiceImp implements LiteAppService {
     }
 	
 	/**
-	 * 命令下发
+	 * 命令下发(废弃)
 	 */
 	@Override
 	public String postCommand(Integer aid,Map params) throws Exception {
@@ -202,9 +203,12 @@ public class LiteAppServiceImp implements LiteAppService {
         return myNbiotCommandUntils.postCommand(paramPostAsynCmd, lapp);
 	}
 	
-	//页面下发命令
+	
+	/**
+	 * 下发命令
+	 */
 	@Override
-	public ResponeResult postCommandList(Map info,List<Boolean> selectlist,List<Map> cmdlist) throws Exception {
+	public ResponeResult postCommandList(EquipmentVO info,List<Boolean> selectlist,List<Map> cmdlist) throws Exception {
 		if(info==null || selectlist==null || selectlist.size()==0 || cmdlist==null || cmdlist.size()==0) {
 			return new ResponeResult(true,"没找到可下发命令","errorMsg");
 		}
@@ -297,7 +301,7 @@ public class LiteAppServiceImp implements LiteAppService {
 			sbRes.insert(0, "01100001");
 			String crcString = Crc16Util.getRestultByString(sbRes.toString());//计算校验位
 			MyNbiotCommands myNbiotCommandUntils = new MyNbiotCommands();
-			LiteApplication lapp = liteAppMapper.getAppInfo((Integer)info.get("appId"));//获取应用信息
+			LiteApplication lapp = liteAppMapper.getAppInfo((Integer)info.getAppId());//获取应用信息
 			// 构建post实体
 			ObjectNode paras = JsonUtil.convertObject2ObjectNode("{\"sset_cmd\":\""+crcString+"\"}");
 			
@@ -307,14 +311,14 @@ public class LiteAppServiceImp implements LiteAppService {
 			paramCommand.put("paras", paras);      
 			
 			Map<String, Object> paramPostAsynCmd = new HashMap<>();
-			paramPostAsynCmd.put("deviceId", info.get("devId"));
+			paramPostAsynCmd.put("deviceId", info.getDevId());
 			paramPostAsynCmd.put("command", paramCommand);
 			paramPostAsynCmd.put("callbackUrl", LiteNAStringUtil.getCallBackURLByType(lapp.getAppId(), Constant.CALLBACK_COMMAND_URL));
 			String callback = myNbiotCommandUntils.postCommand(paramPostAsynCmd, lapp);
 			//下发历史
 			
 			CommandLog cmdlog = new CommandLog();
-			cmdlog.setDevId(info.get("devId").toString());
+			cmdlog.setDevId(info.getDevId());
 			cmdlog.setCallback(callback);
 			cmdlog.setContext(mLog.toString());
 			cmdlog.setAddUid(ServletUtil.getSessionUser().getId());

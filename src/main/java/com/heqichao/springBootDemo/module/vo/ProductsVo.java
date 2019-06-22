@@ -12,6 +12,7 @@ public class ProductsVo extends Products {
 	private String modelName;
 	private String appName;
 	private String company;
+	private String typeName;
 	
 	
 	public String getModelName() {
@@ -31,6 +32,12 @@ public class ProductsVo extends Products {
 	}
 	public void setCompany(String company) {
 		this.company = company;
+	}
+	public String getTypeName() {
+		return typeName;
+	}
+	public void setTypeName(String typeName) {
+		this.typeName = typeName;
 	}
 	
 	

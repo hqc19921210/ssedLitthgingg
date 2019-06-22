@@ -142,12 +142,12 @@ public class AesUtil {
 	 * 测试
 	 * @throws Exception 
 	 */
-//	public static void main(String[] args) throws Exception {
-//		String s = aesEncrypt("QKhS_yQhiVcX2UGJ4AcWSn0qwAQa");
-//		System.out.println("加密后："+s);
-//		String d = aesDecrypt("C00396FFAF30B441B8980466FD8FC5571E180B05698D0EFA96BE422FEB8F897B");
-//		System.out.println("解密后："+d);
-//	}
+	public static void main(String[] args) throws Exception {
+		String s = aesEncrypt("QKhS_yQhiVcX2UGJ4AcWSn0qwAQa");
+		System.out.println("加密后："+s);
+		String d = aesDecrypt("C00396FFAF30B441B8980466FD8FC5571E180B05698D0EFA96BE422FEB8F897B");
+		System.out.println("解密后："+d);
+	}
 
  
 }

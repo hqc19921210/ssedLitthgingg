@@ -5,6 +5,7 @@ import java.util.Map;
 
 import com.github.pagehelper.PageInfo;
 import com.heqichao.springBootDemo.base.param.ResponeResult;
+import com.heqichao.springBootDemo.base.vo.EquipmentVO;
 
 public interface LiteAppService {
 	// 正常
@@ -50,9 +51,9 @@ public interface LiteAppService {
 	ResponeResult subLiteDataChg() throws Exception;
 	ResponeResult getAppSelectList();
 	String postCommand(Integer aid, Map params) throws Exception;
-	ResponeResult postCommandList(Map info, List<Boolean> selectlist, List<Map> cmdlist) throws Exception;
 	PageInfo getCommandLogByDevId();
 	void liteNaCommandCallback(String str);
 	Map<String, String> liteNaDataChangedCallback(String str);
+	ResponeResult postCommandList(EquipmentVO info, List<Boolean> selectlist, List<Map> cmdlist) throws Exception;
 
 }

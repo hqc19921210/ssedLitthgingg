@@ -7,6 +7,7 @@ import com.heqichao.springBootDemo.base.service.EquipmentService;
 import com.heqichao.springBootDemo.base.util.DataCacheUtil;
 import com.heqichao.springBootDemo.base.util.ServletUtil;
 import com.heqichao.springBootDemo.base.util.StringUtil;
+import com.heqichao.springBootDemo.base.vo.EquipmentVO;
 import com.heqichao.springBootDemo.module.entity.ModelAttr;
 import com.heqichao.springBootDemo.module.service.DataLogService;
 import com.heqichao.springBootDemo.module.service.ModelAttrService;
@@ -60,7 +61,12 @@ public class DataLogController extends BaseController{
         //属性列表 初始化属性key为第一个
         if(attrId==null || (StringUtil.isNotEmpty(initOption) && "TRUE".equals(initOption.toUpperCase()))){
             List<ModelAttr> attrList =new ArrayList<>();
-            Equipment equipment  = DataCacheUtil.getEquipmentCache(devId);
+            
+            EquipmentVO equipment  = DataCacheUtil.getEquipmentCache(devId);
+            if(equipment.getModelId() ==null) {
+            	DataCacheUtil.removeEquipmentCache(devId);
+            	equipment  = DataCacheUtil.getEquipmentCache(devId);
+            }
             if(equipment!=null && equipment.getModelId() !=null){
                 attrList =modelAttrService.queryByModelId(equipment.getModelId());
                 if(attrList!=null && attrList.size()>0){

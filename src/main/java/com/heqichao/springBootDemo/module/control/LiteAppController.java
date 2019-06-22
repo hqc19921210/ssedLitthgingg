@@ -1,8 +1,8 @@
 package com.heqichao.springBootDemo.module.control;
 
 import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.heqichao.springBootDemo.base.control.BaseController;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.heqichao.springBootDemo.base.param.ResponeResult;
 import com.heqichao.springBootDemo.base.service.EquipmentService;
+import com.heqichao.springBootDemo.base.vo.EquipmentVO;
 import com.heqichao.springBootDemo.module.service.DataLogService;
 import com.heqichao.springBootDemo.module.service.LiteAppService;
 
@@ -99,7 +100,7 @@ public class LiteAppController extends BaseController{
 	@RequestMapping(value = "/postCommandList")
 	ResponeResult postCommandList() throws Exception {
 		Map map = getParamMap();
-		Map info = (Map) map.get("info");
+		EquipmentVO info = JSONObject.parseObject(JSONObject.toJSONString(map.get("info")), EquipmentVO.class);
         List<Boolean> selectlist =new ArrayList<>();
         Object listJson = map.get("selectlist");
         List<Map> cmdlist =new ArrayList<>();

@@ -9,11 +9,6 @@
        <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts-gl/echarts-gl.min.js"></script>
        <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts-stat/ecStat.min.js"></script>
        <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/extension/dataTool.min.js"></script>
-       <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/map/js/china.js"></script>
-       <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/map/js/world.js"></script>
-       <script type="text/javascript" src="https://api.map.baidu.com/api?v=2.0&ak=xfhhaTThl11qYVrqLZii6w8qE5ggnhrY&__ec_v__=20190126"></script>
-       <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/extension/bmap.min.js"></script>
-       <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/simplex.js"></script>
        <script type="text/javascript">
 var dom = document.getElementById("container");
 var myChart = echarts.init(dom);
@@ -30,7 +25,6 @@ for (var i = 1; i < 20000; i++) {
     date.push([now.getFullYear(), now.getMonth() + 1, now.getDate()].join('/'));
     data.push(Math.round((Math.random() - 0.5) * 20 + data[i - 1]));
 }
-
 option = {
     tooltip: {
         trigger: 'axis',
@@ -40,7 +34,7 @@ option = {
     },
     title: {
         left: 'center',
-        text: '大数据量面积图',
+        text: '历史数据点',
     },
     toolbox: {
         feature: {
@@ -75,22 +69,13 @@ option = {
     }],
     series: [
         {
-            name:'模拟数据',
+            name:'数据值',
             type:'line',
             smooth:true,
             symbol: 'none',
             sampling: 'average',
             itemStyle: {
-                color: 'rgb(255, 70, 131)'
-            },
-            areaStyle: {
-                color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
-                    offset: 0,
-                    color: 'rgb(255, 158, 68)'
-                }, {
-                    offset: 1,
-                    color: 'rgb(255, 70, 131)'
-                }])
+                color: 'rgb(49, 158, 203)'
             },
             data: data
         }

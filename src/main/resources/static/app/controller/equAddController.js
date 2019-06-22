@@ -38,8 +38,8 @@ function equAddCtrl($scope, $http,$rootScope,$location,$timeout) {
     	});
     };
     //获取产品列表
-    $scope.getProductsList = function(uid){
-    	$http.post("service/getProductsList",).success(function(data) {
+    $scope.getProductsList = function(){
+    	$http.post("service/getProductsList",{type:$scope.addFrom.typeCd}).success(function(data) {
     		if(data.resultObj == "errorMsg"){
     			swal(data.message, null, "error");
     		}else{
@@ -56,7 +56,13 @@ function equAddCtrl($scope, $http,$rootScope,$location,$timeout) {
 	$scope.addEqu = function() {
     	$scope.loadCtl.addEnq = true;
     	$scope.addFrom.groupId = $('#equ_easyui_combotree').combotree('getValue');
-    	console.log($scope.addFrom);
+    	if($scope.addFrom.uid == null || $scope.addFrom.devId == null ||
+    			$scope.addFrom.typeCd == null || $scope.addFrom.name == null ||
+    			$scope.addFrom.proId == null || $scope.addFrom.groupId == null ){
+    		swal("请填写所有必填项", null, "error");
+    		$scope.loadCtl.addEnq = false;
+    		return;
+    	}
         $http.post("service/addEqu",$scope.addFrom).success(function(data) {
 			    	if(data.resultObj == "errorMsg"){
 			    		swal(data.message, null, "error");
@@ -74,13 +80,14 @@ function equAddCtrl($scope, $http,$rootScope,$location,$timeout) {
     $scope.init();
 	
 	$scope.selEquType = function(type){
-		if(type=='N'){
-			$scope.chkType=true;
-		}else{
-			$scope.addFrom.appId=null;
-			$scope.chkType=false;
-		}
+//		if(type=='N'){
+//			$scope.chkType=true;
+//		}else{
+//			$scope.addFrom.appId=null;
+//			$scope.chkType=false;
+//		}
 		$scope.addFrom.typeCd = type;
+		$scope.getProductsList();
 	}
 	//切换所属用户
 	$scope.seledUser = function(uid){
