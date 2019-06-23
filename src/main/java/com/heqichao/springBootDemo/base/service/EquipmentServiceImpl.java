@@ -165,6 +165,16 @@ public class EquipmentServiceImpl implements EquipmentService {
     public List<Map<String,String>> getUserEquipmentIdList(Integer uid) {
     	return eMapper.getUserEquipmentIdList(uid);
     }
+
+	/**
+	 * 根据产品ID查找所有设备
+	 * @param uid
+	 * @return
+	 */
+	@Override
+	public List<Map<String,String>> getUserEquipmentIdListByProdId(Integer prodId) {
+		return eMapper.getUserEquipmentIdListByProdId(prodId);
+	}
     /**
      * 根据uid查找父客户
      */

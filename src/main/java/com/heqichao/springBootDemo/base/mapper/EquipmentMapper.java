@@ -34,6 +34,10 @@ public interface EquipmentMapper {
 			+ "</script>")
 	public List<Map<String,String>> getUserEquipmentIdList(@Param("uid") Integer uid);
 
+
+	@Select("<script>select equipments.dev_id,equipments.name from equipments where valid = 'N' and pro_id = #{prodId} </script>")
+	List<Map<String,String>> getUserEquipmentIdListByProdId(@Param("prodId") Integer prodId);
+
 	@Select("SELECT u.parent_uid FROM users u where u.id=#{uid} and u.valid = 'N' ")
 	public Integer getUserParent(@Param("uid") Integer uid);
 
