@@ -33,7 +33,7 @@ function logShowCtrl($scope, $http, $rootScope,$routeParams,$location) {
             }
             $scope.logArr.push($scope.log[(page-1)*defaultSize+i]);
         }
-    }
+    };
 
 
     $scope.fmtDate = function(date){
@@ -44,6 +44,7 @@ function logShowCtrl($scope, $http, $rootScope,$routeParams,$location) {
     }
     //设备用户名
     $scope.equipUserName ="";
+    $scope.prodList=new Array();
     $scope.devList=new Array();
     $scope.attrList=new Array();
     //图型数据
@@ -285,7 +286,8 @@ function logShowCtrl($scope, $http, $rootScope,$routeParams,$location) {
 
 
 
-    window.addEventListener("resize", () => {
+ /*    window.addEventListener("resize", () => {
         myChart.resize();
     });
+  */
 }

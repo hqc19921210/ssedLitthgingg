@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -60,7 +61,10 @@ public class ModelAttrServiceImpl implements ModelAttrService {
 
     @Override
     public List<ModelAttr> queryByModelId(Integer modelId) {
-        return modelAttrMapper.queryByModelId(modelId);
+        if(modelId != null){
+            return modelAttrMapper.queryByModelId(modelId);
+        }
+        return new ArrayList<>();
     }
     
     //查询命令模板列表
@@ -97,6 +101,7 @@ public class ModelAttrServiceImpl implements ModelAttrService {
             throw new ResponeException("没有该权限操作！");
         }
         modelAttrMapper.deleteByModelId(modelId);
+
     }
 
     @Override

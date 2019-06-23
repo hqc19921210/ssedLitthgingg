@@ -54,34 +54,12 @@ public class DataLogController extends BaseController{
         boolean isInit = (StringUtil.isNotEmpty(initOption) && "TRUE".equals(initOption.toUpperCase()));
         //初始化
         //设备列表 初始化设备id为第一个
-        if(prodId!= null || isInit ){
-            List<Map<String, String>> prodList = new ArrayList<>();
-            Map<String, Integer> prodMap = (Map<String, Integer>) productsService.getProductsList().getResultObj();
-            if(prodMap !=null && prodMap.size() >0){
-                Iterator entries = prodMap.entrySet().iterator();
-                while (entries.hasNext()){
-                    Map.Entry<String, Integer> entry = (Map.Entry) entries.next();
-                    Map map1 = new HashMap();
-                    map1.put("prod_id",entry.getValue());
-                    map1.put("name",entry.getKey());
-                    prodList.add(map1);
-                    if(prodId == null){
-                        prodId = entry.getValue();
-                    }
-                }
-            }
-            map.put("prodList",prodList);
+        if(prodId == null || isInit ){
+            prodId=queryProdListOption(prodId,map);
         }
         //设备列表 初始化设备id为第一个
         if( prodId != null &&  (StringUtil.isEmpty(devId) ||isInit) ){
-            List<Map<String, String>> devList = equipmentService.getUserEquipmentIdListByProdId(prodId);
-            if(CollectionUtil.isNotEmpty(devList)){
-                Map<String, String> devMap =devList.get(0);
-                if(StringUtil.isEmpty(devId)){
-                    devId=devMap.get("dev_id");
-                }
-            }
-            map.put("devList",devList);
+            devId =queryDevListOption(prodId,devId,map);
         }
         //属性列表 初始化属性key为第一个
         if( StringUtil.isNotEmpty(devId) && (attrId==null || isInit) ){
@@ -133,6 +111,32 @@ public class DataLogController extends BaseController{
 
 
 
+    @RequestMapping(value = "/queryEquAttrLogTable")
+    ResponeResult queryEquAttrLogTable() {
+        Map map =new HashMap();
+        Map param =getParamMap();
+        Integer prodId =StringUtil.getIntegerByMap(param,"prodId");
+        String devId =(String) param.get("devId");
+        //初始化
+        //设备列表 初始化设备id为第一个
+        if(prodId == null  ){
+            prodId=queryProdListOption(prodId,map);
+        }
+        //设备列表 初始化设备id为第一个
+        if( prodId != null &&  (StringUtil.isEmpty(devId) ) ){
+            devId=queryDevListOption(prodId,devId,map);
+        }
+        String start= (String) param.get("start");
+        String end= (String) param.get("end");
+        if(StringUtil.isNotEmpty(end)){
+            end=end+" 23:59:59";
+        }
+        map.putAll(dataLogService.queryDataLogTable(devId,start,end));
+        map.put("prodId",prodId);
+        map.put("devId",devId);
+        return new ResponeResult(map);
+    }
+
     @RequestMapping(value = "/deleteAllDataLog")
     ResponeResult deleteAllDataLog() {
         List<Map<String, String>> devList = equipmentService.getUserEquipmentIdList(ServletUtil.getSessionUser().getId());
@@ -153,6 +157,36 @@ public class DataLogController extends BaseController{
     	
     	return new ResponeResult(dataLogService.queryDataLog());
     }
-    
-    
+
+    private Integer queryProdListOption(Integer prodId,Map map){
+        List<Map<String, String>> prodList = new ArrayList<>();
+        Map<String, Integer> prodMap = (Map<String, Integer>) productsService.getProductsList().getResultObj();
+        if(prodMap !=null && prodMap.size() >0){
+            Iterator entries = prodMap.entrySet().iterator();
+            while (entries.hasNext()){
+                Map.Entry<String, Integer> entry = (Map.Entry) entries.next();
+                Map map1 = new HashMap();
+                map1.put("prod_id",entry.getValue());
+                map1.put("name",entry.getKey());
+                prodList.add(map1);
+                if(prodId == null){
+                    prodId = entry.getValue();
+                }
+            }
+        }
+        map.put("prodList",prodList);
+        return prodId;
+    }
+
+    private String queryDevListOption(Integer prodId,String devId,Map map){
+        List<Map<String, String>> devList = equipmentService.getUserEquipmentIdListByProdId(prodId);
+        if(CollectionUtil.isNotEmpty(devList)){
+            Map<String, String> devMap =devList.get(0);
+            if(StringUtil.isEmpty(devId)){
+                devId=devMap.get("dev_id");
+            }
+        }
+        map.put("devList",devList);
+        return devId;
+    }
 }
