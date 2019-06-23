@@ -196,6 +196,7 @@ function logShowCtrl($scope, $http, $rootScope,$routeParams,$location) {
             if(data.resultObj.attrKey){
                 $scope.attrKey=data.resultObj.attrKey;
             }
+            $scope.logArr =new Array();
             if(data.resultObj.log){
                 $scope.log=data.resultObj.log;
                 if($scope.log && $scope.log.length>0){
@@ -204,6 +205,7 @@ function logShowCtrl($scope, $http, $rootScope,$routeParams,$location) {
                 }
             }else{
                 $scope.log=[];
+
             }
             $scope.showChart();
 
@@ -281,23 +283,9 @@ function logShowCtrl($scope, $http, $rootScope,$routeParams,$location) {
         }
     }
 
-    function formatDateTime(inputTime) {
-        var date = new Date(inputTime);
-        var y = date.getFullYear();
-        var m = date.getMonth() + 1;
-        m = m < 10 ? ('0' + m) : m;
-        var d = date.getDate();
-        d = d < 10 ? ('0' + d) : d;
-        var h = date.getHours();
-        h = h < 10 ? ('0' + h) : h;
-        var minute = date.getMinutes();
-        var second = date.getSeconds();
-        minute = minute < 10 ? ('0' + minute) : minute;
-        second = second < 10 ? ('0' + second) : second;
-        var time= y + '-' + m + '-' + d+' \n '+h+':'+minute+':'+second;
-        // time =time.replace(" "," \n ");
-        return time;
-    };
-    
-    
+
+
+    window.addEventListener("resize", () => {
+        myChart.resize();
+    });
 }
