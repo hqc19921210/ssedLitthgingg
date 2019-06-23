@@ -17,13 +17,6 @@ public class Constant {
 
     //please replace the IP and Port, when you use the demo.
     public static final String BASE_URL = "https://180.101.147.89:8743";
-
-    //please replace the appId and secret, when you use the demo.
-    public static final String APPID = "JBRAwKqi03l5cXkU7lHaIUsNDd0a";
-    public static final String SECRET = "FYOSsCkXqAmoNijyegrcP3MvKkga";
-
-	public static String PLATFORM_IP = "180.101.147.89";
-	public static String PLATFORM_PORT = "8743";
     /*
      *IP and port of callback url.
      *please replace the IP and Port of your Application deployment environment address, when you use the demo.
@@ -85,8 +78,8 @@ public class Constant {
      * 1. APP_AUTH
      * 2. REFRESH_TOKEN
      */
-    public static final String APP_AUTH = BASE_URL + "/iocm/app/sec/v1.1.0/login";
-    public static final String REFRESH_TOKEN = BASE_URL + "/iocm/app/sec/v1.1.0/refreshToken";
+    public static final String APP_AUTH = "https://SERVER:PORT/iocm/app/sec/v1.1.0/login";
+    public static final String REFRESH_TOKEN = "https://SERVER:PORT/iocm/app/sec/v1.1.0/refreshToken";
     
 
     /*
