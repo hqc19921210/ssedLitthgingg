@@ -12,8 +12,12 @@ import com.heqichao.springBootDemo.base.exception.ResponeException;
 import com.heqichao.springBootDemo.base.util.*;
 import com.heqichao.springBootDemo.base.vo.EquipmentVO;
 import com.heqichao.springBootDemo.module.entity.DataDetail;
+import com.heqichao.springBootDemo.module.liteNA.MyNbiotSubscription;
 import com.heqichao.springBootDemo.module.mqtt.MqttUtil;
 import com.heqichao.springBootDemo.module.service.DataLogService;
+import com.heqichao.springBootDemo.module.vo.AddDeviceVO;
+import com.heqichao.springBootDemo.module.vo.CreateEquimentVO;
+
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -50,6 +54,7 @@ public class EquipmentServiceImpl implements EquipmentService {
     	Map map = RequestContext.getContext().getParamMap();
     	String eid = StringUtil.getStringByMap(map,"eid");
     	Integer gid = StringUtil.getIntegerByMap(map,"gid");
+    	Integer pid = StringUtil.getIntegerByMap(map,"proId");
 		if(gid !=null && -1 == gid){
 			gid =null;
 		}
@@ -60,7 +65,7 @@ public class EquipmentServiceImpl implements EquipmentService {
         		ServletUtil.getSessionUser().getCompetence(),
         		ServletUtil.getSessionUser().getId(),
         		ServletUtil.getSessionUser().getParentId(),
-        		gid,eid,type,seleStatus
+        		gid,eid,type,seleStatus,pid
         		));
     	return pageInfo;
     }
@@ -224,17 +229,41 @@ public class EquipmentServiceImpl implements EquipmentService {
 		return eMapper.queryRange(eid);
 	}
 
+	/**
+	 * 添加设备
+	 * @throws Exception 
+	 */
 	@Override
-    public ResponeResult insertEqu(Map map) {
+    public ResponeResult insertEqu(Map map) throws Exception {
     	Equipment equ = JSONObject.parseObject(JSONObject.toJSONString(map), Equipment.class);
     	Integer uid = ServletUtil.getSessionUser().getId();
     	Integer cmp = ServletUtil.getSessionUser().getCompetence();
     	Integer gid = equ.getGroupId();
-    	if(equ.getName() == null ||equ.getVerification() == null || uid == null || cmp == 4) {
+    	if(equ.getName() == null ||equ.getVerification() == null ||equ.getProId() == null ||  uid == null || cmp == 4) {
     		return new ResponeResult(true,"Add Equipment Input Error!","errorMsg");
     	}
-    	if(eMapper.duplicatedEid(equ.getDevId(),equ.getUid())) {
-    		return new ResponeResult(true,"设备编号重复","errorMsg");
+    	if(eMapper.duplicatedEid(equ.getVerification())) {
+    		return new ResponeResult(true,"设备MAC重复","errorMsg");
+    	}
+    	if("N".equals(equ.getTypeCd())) {
+    		CreateEquimentVO params = eMapper.getAddDevVOByProId(equ.getProId());
+    		params.setVerifyCode(equ.getVerification());
+    		MyNbiotSubscription addDev= new MyNbiotSubscription();
+    		AddDeviceVO dev = addDev.deviceCredentials(params);
+    		if(dev == null) {
+    			return new ResponeResult(true,"无法获取应用ID，注册失败","errorMsg");
+    		}
+    		if("200".equals(dev.getStatus())){
+    			equ.setDevId(dev.getDeviceId());
+    			params.setDevId(dev.getDeviceId());//生成的devid
+    			params.setDevName(equ.getName());
+    			addDev.deviceModify(params);
+    		}else {
+    			return new ResponeResult(true,"注册失败："+dev.getErrorContext(),"errorMsg");
+    		}
+    		
+    	}else {
+    		equ.setDevId(equ.getVerification());
     	}
     	if(cmp ==2) {
     		equ.setGroupAdmId(gid);
@@ -276,7 +305,7 @@ public class EquipmentServiceImpl implements EquipmentService {
 		}
 		String oId = eMapper.getEquIdOld(equ.getId());
 		boolean chgDevId = !oId.equals(equ.getDevId());//true为修改了设备编号
-		if(chgDevId&&eMapper.duplicatedEid(equ.getDevId(),equ.getUid())) {
+		if(chgDevId&&eMapper.duplicatedEid(equ.getDevId())) {
 			return new ResponeResult(true,"设备编号重复","errorMsg");
 		}
 		if(cmp ==2) {
@@ -322,10 +351,6 @@ public class EquipmentServiceImpl implements EquipmentService {
     		return new ResponeResult(true,"无编辑权限","errorMsg");
     		
     	}
-    	if(cmp != 2 && !eMapper.duplicatedEid(devId,uid)) {
-    		return new ResponeResult(true,"无编辑权限","errorMsg");
-    		
-    	}
 		return new ResponeResult(eMapper.getEquEditById(devId,id));
 	}
     
@@ -347,6 +372,27 @@ public class EquipmentServiceImpl implements EquipmentService {
     			return new ResponeResult();
     		}
 
+    	}
+    	return  new ResponeResult(true,"Delete Equipment fail","errorMsg");
+    }
+    
+    @Override
+    public ResponeResult deleteEquAll(Map map) {
+    	String equs = StringUtil.getStringByMap(map,"equs");
+    	Integer udid = ServletUtil.getSessionUser().getId();
+    	Integer cmp = ServletUtil.getSessionUser().getCompetence();
+    	if(  equs == null || udid == null || cmp == 4) {
+    		return new ResponeResult(true,"Delete fail!","errorMsg");
+    	}else {
+//    		if(StringUtil.isNotEmpty(equs)){
+//    			dataLogService.deleteDataLog(devId);
+//    		}
+    		if(eMapper.delEquAll(equs,udid)>0) {
+    			//删除缓存
+//    			DataCacheUtil.removeEquipmentCache(devId);
+    			return new ResponeResult();
+    		}
+    		
     	}
     	return  new ResponeResult(true,"Delete Equipment fail","errorMsg");
     }
@@ -634,13 +680,13 @@ public class EquipmentServiceImpl implements EquipmentService {
     		eMapper.insertUploadResult(res);
     		return;
     	}
-    	if(eMapper.duplicatedEid(equ.getDevId(),currId)) {
-    		res.setResIndex(index);
-    		res.setResStatus(UPLOAD_FAIL);
-    		res.setErrReason("设备编号重复");
-    		eMapper.insertUploadResult(res);
-    		return;
-    	}
+//    	if(eMapper.duplicatedEid(equ.getDevId(),currId)) {
+//    		res.setResIndex(index);
+//    		res.setResStatus(UPLOAD_FAIL);
+//    		res.setErrReason("设备编号重复");
+//    		eMapper.insertUploadResult(res);
+//    		return;
+//    	}
     	Integer modelId = eMapper.getModelIdByName(equ.getModelName(), currId);
     	if(modelId==null) {
     		res.setResIndex(index);

@@ -122,12 +122,36 @@
                                 </div> 
                             </div> 
                           </div> 
-                        <div class="row">  
+                        <div class="row" ng-if="addFrom.typeCd == 'N'">  
                          <div class="col-md-12"> 
                              <div class="form-group"> 
-                                 <label  class="control-label">所属应用</label> 
-                                 <select  class="form-control" name="appId"  ng-model="addFrom.appId" ng-options="x for (x, y) in selApps" >
+                                 <label  class="control-label">所属应用<span style="color : red">*</span></label> 
+                                 <select  class="form-control" name="appId"  ng-model="$parent.addFrom.appId" ng-options="x for (x, y) in selApps" required>
 									</select>
+                             </div> 
+                         </div> 
+                         </div> 
+                        <div class="row" ng-if="addFrom.typeCd == 'N'">  
+                         <div class="col-md-12"> 
+                             <div class="form-group"> 
+                                 <label  class="control-label">设备的型号<span style="color : red">*</span></label> 
+                                 <input type="text" class="form-control" ng-model="$parent.addFrom.appModel"  required >
+                             </div> 
+                         </div> 
+                         </div> 
+                        <div class="row" ng-if="addFrom.typeCd == 'N'">  
+                         <div class="col-md-12"> 
+                             <div class="form-group"> 
+                                 <label  class="control-label">设备类型<span style="color : red">*</span></label> 
+                                 <input type="text" class="form-control" ng-model="$parent.addFrom.deviceType"  required >
+                             </div> 
+                         </div> 
+                         </div> 
+                        <div class="row" ng-if="addFrom.typeCd == 'N'">  
+                         <div class="col-md-12"> 
+                             <div class="form-group"> 
+                                 <label  class="control-label">厂商ID<span style="color : red">*</span></label> 
+                                 <input type="text" class="form-control" ng-model="$parent.addFrom.manufacturerId"  required >
                              </div> 
                          </div> 
                          </div> 

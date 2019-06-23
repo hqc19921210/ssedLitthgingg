@@ -18,13 +18,18 @@
 				<form role="form" class="form-horizontal" >
                         <div class="row">
                             <div class="col-md-12 col-sm-12 col-xs-12">
-                                <label  class="col-sm-2 control-label">设备名称或编号：</label>
-                                <div class="col-sm-3">
+                                <label  class="col-sm-1 control-label">名称或编号：</label>
+                                <div class="col-sm-2">
                                     <input type="text" class="form-control" ng-model="quereyData.eid" placeholder="模糊搜索">
                                 </div>
-                                <label  class="col-sm-2 control-label">设备类型：</label>
+                                <label  class="col-sm-1 control-label">产品：</label>
                                 <div class="col-sm-2">
-                                     <select class="form-control"  ng-model="quereyData.type" >
+                                    <select  class="form-control"   ng-model="quereyData.proId" ng-options="x for (x, y) in selProducts" ng-change="init()" >
+									</select>
+                                </div>
+                                <label  class="col-sm-1 control-label">类型：</label>
+                                <div class="col-sm-2">
+                                     <select class="form-control"  ng-model="quereyData.type" ng-change="init()">
 									<option  value="L">LORA</option>
 									<option  value="N">NBIOT</option>
 									<option  value="G">2G</option>
@@ -32,7 +37,7 @@
                                 </div>
                                 <label  class="col-sm-1 control-label">状态：</label>
                                 <div class="col-sm-2">
-                                    <select class="form-control"  ng-model="quereyData.seleStatus" >
+                                    <select class="form-control"  ng-model="quereyData.seleStatus" ng-change="init()">
 									<option  value="1">在线</option>
 									<option  value="0">离线</option>
 								</select>
@@ -50,6 +55,7 @@
                                         <li><a >导出GPRS设备</a></li>
                                     </ul>
                                 </div>
+                                <button class="btn btn-default waves-effect" type="button" ng-click="delEquAll()" >批量删除</button>
 	                             <a href="#/module/equAdd" type="button" ng-if="edit_cmp" class="btn btn-primary waves-effect waves-light" >新增设备 <i class="fa fa-plus"></i></a>
                                 <button  class="btn btn-primary waves-effect waves-light" type="submit"  btn-loading="loadCtl.search" ng-click="init()">搜索</button>
                                 <button class="btn btn-default waves-effect" type="button" ng-click="resetSearch()">重置</button>
@@ -62,6 +68,8 @@
 								<table class="table">
 									<thead>
 									<tr>
+										<th><input  type="checkbox" checked="true" ng-model="select_all" ng-change="selAll()">
+                                            </th>
 										<th>状态</th>
 										<th>设备名称</th>
 										<th>设备MAC</th>
@@ -75,6 +83,7 @@
 									</thead>
 									<tbody>
 									<tr ng-repeat="eqm in equipments"> 
+									<td><input  type="checkbox" ng-model="checkboxList[$index]" checked="checkboxList[$index]"></td>
 									<td><img ng-src="{{getStatusImg(eqm.online)}}"/></td>
 									<td>{{ eqm.name }}</td>
 									<td>{{ eqm.typeCd == 'L' ? eqm.devId : (!eqm.verification ? '未填写MAC' : eqm.verification)}}<p/><span class="help-inline" ng-if="!!eqm.secRemark" style="color:gray;" >{{eqm.secRemark}}</span></td>

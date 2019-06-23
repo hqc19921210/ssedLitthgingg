@@ -6,7 +6,9 @@ function equEditCtrl($scope, $http,$rootScope,$location,$timeout,$routeParams) {
 	elem.src = 'assets/js/jquery.easyui.min.js';
 	document.body.appendChild(elem);
 	$scope.loadCtl={
-    		addEnq:false
+    		addEnq:false,
+    		loadUser:true,
+    		loadProd:true
     };
 	$scope.globalCMP=$rootScope.user.competence;
 	$scope.addFrom = {};
@@ -55,21 +57,25 @@ function equEditCtrl($scope, $http,$rootScope,$location,$timeout,$routeParams) {
     };
     //获取用户列表
     $scope.seleUsersLst = function(){
+    	$scope.loadCtl.loadUser = true;
     	$http.get("service/getCompanySeleList").success(function(data) {
     		if(data.resultObj == "errorMsg"){
     			swal(data.message, null, "error");
     		}else{
     			$scope.selCompanys = data.resultObj;
+    			$scope.loadCtl.loadUser = false;
     		}
     	});
     };
   //获取产品列表
     $scope.getProductsList = function(){
+    	$scope.loadCtl.loadProd = true;
     	$http.post("service/getProductsList",{type:$scope.addFrom.typeCd}).success(function(data) {
     		if(data.resultObj == "errorMsg"){
     			swal(data.message, null, "error");
     		}else{
     			$scope.selProducts = data.resultObj;
+    			$scope.loadCtl.loadProd = false;
     		}
     	});
     };
@@ -82,9 +88,9 @@ function equEditCtrl($scope, $http,$rootScope,$location,$timeout,$routeParams) {
 	$scope.addEqu = function() {
     	$scope.loadCtl.addEnq = true;
     	$scope.addFrom.groupId = $('#equ_easyui_combotree').combotree('getValue');
-    	if($scope.addFrom.uid == null || $scope.addFrom.devId == null ||
-    			$scope.addFrom.typeCd == null || $scope.addFrom.name == null ||
-    			$scope.addFrom.proId == null || $scope.addFrom.groupId == null ){
+    	if(!$scope.addFrom.uid || !$scope.addFrom.verification ||
+    			!$scope.addFrom.typeCd || !$scope.addFrom.name ||
+    			!$scope.addFrom.proId || !$scope.addFrom.groupId ){
     		swal("请填写所有必填项", null, "error");
     		$scope.loadCtl.addEnq = false;
     		return;

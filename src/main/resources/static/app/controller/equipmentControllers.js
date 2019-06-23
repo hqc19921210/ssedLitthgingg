@@ -15,6 +15,7 @@ function equCtrl($scope, $http,$location, $rootScope) {
     };
 	$scope.data= null;
 	$scope.seleItem={};
+	$scope.checkboxList=[];
 	$scope.edit_cmp=$rootScope.edit_cmp;
     $scope.init=function(){
     	$scope.loadCtl.search = true;
@@ -24,12 +25,26 @@ function equCtrl($scope, $http,$location, $rootScope) {
     		$scope.total=data.resultObj.total;
     		$scope.pageArr=data.resultObj.navigatepageNums;
     		$scope.quereyData.page=data.resultObj.pageNum;
+    		//初始化选中框
+    		for(var i=0;i<$scope.equipments.length;i++){
+        		$scope.checkboxList[i]=false;
+        	}
     		$scope.loadCtl.search = false;
     	});
     }
+  //获取产品列表
+    $scope.getProductsList = function(){
+    	$http.post("service/getProductsList").success(function(data) {
+    		if(data.resultObj == "errorMsg"){
+    			swal(data.message, null, "error");
+    		}else{
+    			$scope.selProducts = data.resultObj;
+    		}
+    	});
+    };
   //初始化
     $scope.init();
-
+    $scope.getProductsList();
     //翻页
     $scope.changePage=function(page){
         $scope.quereyData.page=page;
@@ -38,6 +53,7 @@ function equCtrl($scope, $http,$location, $rootScope) {
     $scope.resetSearch=function(){
         $scope.quereyData.eid=null;
         $scope.quereyData.type=null;
+        $scope.quereyData.proId=null;
         $scope.quereyData.seleStatus=null;
         $scope.quereyData.page=1;
         $scope.pages=0;
@@ -77,7 +93,38 @@ function equCtrl($scope, $http,$location, $rootScope) {
         });
 		
 	}
-	 
+	$scope.delEquAll = function(){
+		swal({   
+			title: "是否确定删除所以选中设备？",   
+			type: "warning",   
+			showCancelButton: true,   
+			confirmButtonColor: "#DD6B55",   
+			confirmButtonText: "确定删除",   
+			cancelButtonText: "取消", 
+			closeOnConfirm: false,   
+			closeOnCancel: false 
+		}, function(isConfirm){   
+			if (isConfirm) {     
+				$scope.delEquByIdAll();
+			}  else {     
+				swal("操作取消", null, "error");   
+			} 
+		});
+		
+	}
+	//全选
+    $scope.selAll=function(){
+    	if($scope.select_all) {
+    		$scope.checkboxList=[];
+            for(var i=0;i<$scope.equipments.length;i++){
+        		$scope.checkboxList[i]=true;
+        	}
+        }else {
+        	for(var i=0;i<$scope.equipments.length;i++){
+        		$scope.checkboxList[i]=false;
+        	}
+        }
+    }
 	$scope.delEquById = function(entity){
 		$http.post("service/delEqu",{eid:entity.id,devId:entity.devId}).success(function(data) {
 				if(data.resultObj == "errorMsg"){
@@ -87,6 +134,28 @@ function equCtrl($scope, $http,$location, $rootScope) {
 					$scope.init();
 				}
 			});
+	}
+	$scope.delEquByIdAll = function(){
+		var postFalg = false;
+		$scope.delEqus="";
+		for(let i=0;i<$scope.checkboxList.length;i++){
+			if($scope.checkboxList[i]){
+				postFalg = true;
+				$scope.delEqus +=$scope.equipments[i].id+",";
+			}
+		};
+		if(!postFalg){
+			swal("没有选中任何设备", null, "error");
+			return;
+		}
+		$http.post("service/delEquAll",{equs:$scope.delEqus.substr(0,$scope.delEqus.length-1)}).success(function(data) {
+			if(data.resultObj == "errorMsg"){
+				swal(data.message, null, "error");
+			}else{
+				swal("删除成功", null, "success");
+				$scope.init();
+			}
+		});
 	}
 	//获取上下线图片
     $scope.getStatusImg = function (status) {

@@ -83,6 +83,17 @@ function productsCtrl($scope, $http, $rootScope) {
     
     $scope.addEqu = function() {
     	$scope.loadCtl.addEnq = true;
+    	if(!$scope.addFrom.name || !$scope.addFrom.typeCd ||
+    			!$scope.addFrom.modelId || 
+    			($scope.addFrom.typeCd=="N" && 
+    					(!$scope.addFrom.appId || 
+    					!$scope.addFrom.appModel || 
+    					!$scope.addFrom.deviceType || 
+    					!$scope.addFrom.manufacturerId)) ){
+    		swal("请填写所有必填项", null, "error");
+    		$scope.loadCtl.addEnq = false;
+    		return;
+    	}
         $http.post("service/editProduct",$scope.addFrom).success(function(data) {
 			    	if(data.resultObj == "errorMsg"){
 			    		swal(data.message, null, "error");

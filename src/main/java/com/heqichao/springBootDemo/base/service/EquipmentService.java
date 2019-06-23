@@ -44,7 +44,7 @@ public interface EquipmentService {
 
 	List<Map<String, String>> getUserEquipmentIdList(Integer uid);
 
-	ResponeResult insertEqu(Map map);
+	ResponeResult insertEqu(Map map) throws Exception;
 
 	ResponeResult deleteEquByID(Map map);
 
@@ -127,4 +127,6 @@ public interface EquipmentService {
 	 * @param addDate
 	 */
 	void updateEquDataPointDate(List<DataDetail> list, Date addDate);
+
+	ResponeResult deleteEquAll(Map map);
 }

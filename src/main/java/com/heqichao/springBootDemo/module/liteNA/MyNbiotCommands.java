@@ -7,6 +7,7 @@ import org.apache.http.HttpResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.github.pagehelper.StringUtil;
 import com.heqichao.springBootDemo.module.entity.LiteApplication;
 
 /**
@@ -29,6 +30,9 @@ public class MyNbiotCommands {
 	 * @throws Exception
 	 */
 	public String postCommand(Map<String, Object> paramPostAsynCmd,LiteApplication app) throws Exception {
+		if(StringUtil.isEmpty(app.getPlatformIp())) {
+			return "无法获取应用ID，命令下发失败";
+		}
 		HttpsUtil httpsUtil = new HttpsUtil();
 		MyNbiotAuths myNbiotAuthUntils = new MyNbiotAuths();//新建login对象
         httpsUtil.initSSLConfigForTwoWay();//检查目录下的证书，二段校验
@@ -37,7 +41,7 @@ public class MyNbiotCommands {
         String accessToken = myNbiotAuthUntils.login(httpsUtil,app);
 
         //Please make sure that the following parameter values have been modified in the Constant file.
-        String urlPostAsynCmd = "https://"+app.getPlatformIp()+"/iocm/app/cmd/v1.4.0/deviceCommands";
+        String urlPostAsynCmd = Constant.POST_ASYN_CMD.replace("SERVER:PORT", app.getPlatformIp());
         
         String jsonRequest = JsonUtil.jsonObj2Sting(paramPostAsynCmd);
                 
