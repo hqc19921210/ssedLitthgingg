@@ -31,10 +31,7 @@ public class MyNbiotAuths {
 	@SuppressWarnings("unchecked")
 	public String login(HttpsUtil httpsUtil,LiteApplication app) throws Exception {
 		
-//		String appId = Constant.APPID;
-//		String secret = Constant.SECRET;
-//		String urlLogin = Constant.APP_AUTH;
-		String urlLogin = "https://"+app.getPlatformIp()+"/iocm/app/sec/v1.1.0/login";
+		String urlLogin = Constant.APP_AUTH.replace("SERVER:PORT", app.getPlatformIp());
 		
 		Map<String, String> paramLogin = new HashMap<>();
 		paramLogin.put("appId", app.getAppId());
