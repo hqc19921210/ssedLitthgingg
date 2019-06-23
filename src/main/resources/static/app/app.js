@@ -84,19 +84,21 @@ var demoApp =angular.module("demoApp", ["ngRoute"]);
 	}).when("/module/logShow/", {
 			templateUrl: "app/module/logShow.html",
 			controller: logShowCtrl
+	}).when("/module/logShowTable/", {
+			templateUrl: "app/module/logShowTable.html",
+			controller:logShowTableCtrl
 	}).when("/module/i-want-see-logger", {
 		templateUrl: "app/module/queryDataLog.html",
 		controller: queryDataLogCtrl
-		}).when("/module/logShow/:devId/:attrId", {
+	}).when("/module/logShow/:devId/:attrId", {
 			templateUrl: "app/module/logShow.html",
 			controller: logShowCtrl
-		}).when("/module/logShow/:devId", {
+	}).when("/module/logShow/:devId", {
 			templateUrl: "app/module/logShow.html",
 			controller: logShowCtrl
-		}).otherwise({
+	}).otherwise({
 		templateUrl: "app/module/home.html",
 			controller: homeCtrl
-		/*templateUrl: "app/module/devPage.html",
-		controller: devPage*/
+
 	});
 }]);

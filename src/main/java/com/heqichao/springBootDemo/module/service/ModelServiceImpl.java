@@ -145,6 +145,7 @@ public class ModelServiceImpl implements ModelService {
             }catch (Exception e){}
 
         }
+        DataCacheUtil.removeModelAttrRListCache(modelId);
         return modelId;
     }
 
@@ -226,6 +227,7 @@ public class ModelServiceImpl implements ModelService {
             //删除报警设置
             alarmSettingService.deleteByModelId(modelId);
         }
+        DataCacheUtil.removeModelAttrRListCache(modelId);
     }
 
     @Override

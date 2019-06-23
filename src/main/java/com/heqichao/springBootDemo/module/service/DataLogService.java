@@ -86,4 +86,8 @@ public interface DataLogService {
      * @return
      */
     boolean checkSendForOneNet(String devId,String devType);
+
+    Map queryDataLogTable(String devId,String startTime, String endTime);
+
+    List<Map> queryLastestDataDetail(String devId);
 }

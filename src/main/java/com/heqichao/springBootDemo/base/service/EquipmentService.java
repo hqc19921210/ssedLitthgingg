@@ -44,6 +44,8 @@ public interface EquipmentService {
 
 	List<Map<String, String>> getUserEquipmentIdList(Integer uid);
 
+	List<Map<String, String>> getUserEquipmentIdListByProdId(Integer prodId);
+
 	ResponeResult insertEqu(Map map) throws Exception;
 
 	ResponeResult deleteEquByID(Map map);
@@ -129,4 +131,12 @@ public interface EquipmentService {
 	void updateEquDataPointDate(List<DataDetail> list, Date addDate);
 
 	ResponeResult deleteEquAll(Map map);
+	/**
+	 * 查找设备在某时间段内的新增数
+	 * @param list
+	 * @param startDay
+	 * @param endDay
+	 * @return
+	 */
+	Map queryAddEquCount(Date startDay,Date endDay,String type);
 }

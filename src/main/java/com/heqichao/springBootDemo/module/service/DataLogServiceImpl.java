@@ -2,6 +2,7 @@ package com.heqichao.springBootDemo.module.service;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.github.pagehelper.PageInfo;
 import com.heqichao.springBootDemo.base.entity.Equipment;
 import com.heqichao.springBootDemo.base.entity.SendRequestLogEntity;
 import com.heqichao.springBootDemo.base.entity.User;
@@ -74,23 +75,12 @@ public class DataLogServiceImpl implements DataLogService {
     @Override
     public void save(List<DataDetail> dataDetails, String devId) {
         dataDetailMapper.save(dataDetails);
-        DataCacheUtil.del(DataCacheUtil.LASTEST_DATADETAIL,devId);
+        DataCacheUtil.removeLatestDataCache(devId);
     }
 
     @Override
     public List<Map>  getLastestDetail(String devId) {
-
-        Object data= DataCacheUtil.get(DataCacheUtil.LASTEST_DATADETAIL,devId);
-        if(data == null){
-            List<Map> dataDetails = dataDetailMapper.queryLastestDataDetail(devId);
-            if(CollectionUtil.isNotEmpty(dataDetails)){
-                DataCacheUtil.set(DataCacheUtil.LASTEST_DATADETAIL,devId,dataDetails);
-                return dataDetails;
-            }
-        }else{
-            return (List<Map>) data;
-        }
-        return Collections.EMPTY_LIST;
+        return DataCacheUtil.getLatestDataCache(devId);
     }
 
     @Override
@@ -98,7 +88,7 @@ public class DataLogServiceImpl implements DataLogService {
         if(checkSendForOneNet(devId,devType)){
         	EquipmentVO equipment =DataCacheUtil.getEquipmentCache(devId);
             if(StringUtil.isEmpty(equipment.getVerification())){
-               // return;
+                return;
             }
             int dataSizt =data.length();
             Date date =new Date();
@@ -163,6 +153,31 @@ public class DataLogServiceImpl implements DataLogService {
             }
         }
         return false;
+    }
+
+    @Override
+    public Map queryDataLogTable(String devId, String startTime, String endTime) {
+        Map map = new HashMap();
+        if(StringUtil.isEmpty(devId)){
+            return map;
+        }
+        EquipmentVO equipmentVO =DataCacheUtil.getEquipmentCache(devId);
+        if(equipmentVO != null){
+            Integer modelId =equipmentVO.getModelId();
+            List<ModelAttr> modelAttrList = DataCacheUtil.getModelAttrRListCache(modelId);
+            if(CollectionUtil.isNotEmpty(modelAttrList)){
+                PageUtil.setPage();
+                map.put("equ",equipmentVO);
+                map.put("modelAttr",modelAttrList);
+                map.put("data",new PageInfo(dataDetailMapper.queryDataLogTable(devId,modelId,modelAttrList,startTime,endTime)));
+            }
+        }
+        return map;
+    }
+
+    @Override
+    public List<Map> queryLastestDataDetail(String devId) {
+        return dataDetailMapper.queryLastestDataDetail(devId);
     }
 
     @Override
@@ -400,7 +415,7 @@ public class DataLogServiceImpl implements DataLogService {
             dataDetailMapper.updateStatus(UN_ENABLE_STATUS,ids,date);
             alarmLogService.deleteAlarmLog(devId);
             //删除最新的接收数据缓存
-            DataCacheUtil.del(DataCacheUtil.LASTEST_DATADETAIL,devId);
+            DataCacheUtil.removeLatestDataCache(devId);
         }
     }
 
