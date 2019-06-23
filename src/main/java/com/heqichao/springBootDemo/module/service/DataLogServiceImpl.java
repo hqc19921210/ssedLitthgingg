@@ -98,7 +98,7 @@ public class DataLogServiceImpl implements DataLogService {
         if(checkSendForOneNet(devId,devType)){
         	EquipmentVO equipment =DataCacheUtil.getEquipmentCache(devId);
             if(StringUtil.isEmpty(equipment.getVerification())){
-               // return;
+                return;
             }
             int dataSizt =data.length();
             Date date =new Date();

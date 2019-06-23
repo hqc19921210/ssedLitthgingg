@@ -4,6 +4,7 @@ import com.heqichao.springBootDemo.base.control.BaseController;
 import com.heqichao.springBootDemo.base.entity.Equipment;
 import com.heqichao.springBootDemo.base.param.ResponeResult;
 import com.heqichao.springBootDemo.base.service.EquipmentService;
+import com.heqichao.springBootDemo.base.util.CollectionUtil;
 import com.heqichao.springBootDemo.base.util.DataCacheUtil;
 import com.heqichao.springBootDemo.base.util.ServletUtil;
 import com.heqichao.springBootDemo.base.util.StringUtil;
@@ -50,7 +51,7 @@ public class DataLogController extends BaseController{
         //设备列表 初始化设备id为第一个
         if(StringUtil.isEmpty(devId) || (StringUtil.isNotEmpty(initOption) && "TRUE".equals(initOption.toUpperCase())) ){
             List<Map<String, String>> devList = equipmentService.getUserEquipmentIdList(ServletUtil.getSessionUser().getId());
-            if(devList!=null && devList.size()>0){
+            if(CollectionUtil.isNotEmpty(devList)){
                 Map<String, String> devMap =devList.get(0);
                 if(StringUtil.isEmpty(devId)){
                     devId=devMap.get("dev_id");

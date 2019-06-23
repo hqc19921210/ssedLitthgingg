@@ -127,4 +127,13 @@ public interface EquipmentService {
 	 * @param addDate
 	 */
 	void updateEquDataPointDate(List<DataDetail> list, Date addDate);
+
+	/**
+	 * 查找设备在某时间段内的新增数
+	 * @param list
+	 * @param startDay
+	 * @param endDay
+	 * @return
+	 */
+	Map queryAddEquCount(Date startDay,Date endDay,String type);
 }

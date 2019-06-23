@@ -125,7 +125,27 @@ public class EquipmentServiceImpl implements EquipmentService {
 		}
 
     }
-    // 设备匹配数据点
+
+	@Override
+	public Map queryAddEquCount( Date startDay, Date endDay,String type) {
+		Map map =new HashMap();
+		List<Map<String, String>> devList = getUserEquipmentIdList(ServletUtil.getSessionUser().getId());
+		List<String> devIdList =new ArrayList<>();
+		if(CollectionUtil.isNotEmpty(devList)) {
+			for(Map<String, String> devMap : devList){
+				devIdList.add(devMap.get("dev_id"));
+			}
+			int sum =0 ;
+			if("sum".equals(type)){
+				sum=eMapper.querySumEquCount(devIdList,startDay);
+			}
+			map.put("log",eMapper.queryAddEquCount(devIdList,startDay,endDay));
+			map.put("sum",sum);
+		}
+		return map;
+	}
+
+	// 设备匹配数据点
     public Map<String,Object> toEquipmentShow(EquipmentVO equ,DataDetail point){
     	Map<String,Object> newClu= new HashMap<String,Object>();
     	if(equ == null) {
