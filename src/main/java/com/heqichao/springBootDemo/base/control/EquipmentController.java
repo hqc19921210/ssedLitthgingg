@@ -72,6 +72,11 @@ public class EquipmentController extends BaseController{
     public ResponeResult delEqu(@RequestBody Map map) throws Exception {
     	return eService.deleteEquByID(map);
     }
+    @RequestMapping(value = "/delEquAll" )
+    @ResponseBody
+    public ResponeResult delEquAll(@RequestBody Map map) throws Exception {
+    	return eService.deleteEquAll(map);
+    }
     
     // 设备下拉kv
     @RequestMapping(value = "/getEquSelectList" )

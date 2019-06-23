@@ -98,8 +98,6 @@ function commandPostCtrl($scope, $http,$timeout,$routeParams, $rootScope, $locat
     			}
     			
     			
-    		}else{
-    			continue;
     		}
     	}
     	if(!postFalg){

@@ -15,6 +15,7 @@ import com.heqichao.springBootDemo.base.entity.Equipment;
 import com.heqichao.springBootDemo.base.entity.UploadResultEntity;
 import com.heqichao.springBootDemo.base.vo.EquipmentVO;
 import com.heqichao.springBootDemo.module.entity.DataDetail;
+import com.heqichao.springBootDemo.module.vo.CreateEquimentVO;
 
 /**
  * @author Muzzy Xu.
@@ -116,6 +117,7 @@ public interface EquipmentMapper {
 			+ " <if test=\"gid !=null \"> and e.group_id = #{gid}  </if>  </if>"
 			+ "<if test=\"competence == 4 \"> and e.group_id=g.id and e.uid = #{parentId} "
 			+ "<if test=\"gid !=null \"> and e.group_id = #{gid}  </if>  </if>"
+			+ "<if test=\"pid !=null \"> and e.pro_id = #{pid}   </if>"
 			+ "<if test =\"sEid !=null  and sEid!='' \"> and (e.dev_id like CONCAT('%',#{sEid},'%') or e.name like CONCAT('%',#{sEid},'%'))  </if>"
 			+ "<if test =\"sType !=null  and sType!='' \"> and e.type_cd like CONCAT(CONCAT('%',#{sType}),'%')  </if>"
 			+ "<if test =\"sStatus !=null  and sStatus!='' \"> and e.online = #{sStatus}  </if>"
@@ -127,11 +129,11 @@ public interface EquipmentMapper {
 			@Param("gid")Integer gid,
 			@Param("sEid")String sEid,
 			@Param("sType")String sType,
-			@Param("sStatus")String sStatus);
-
-	@Select("<script>SELECT e.id,e.name,e.dev_id,e.type_cd,e.model_id,e.group_id,e.group_adm_id,e.app_id," +
-			" e.verification,e.support_code,e.supporter,e.site,e.address,e.remark,e.online,e.uid,e.udp_date," +
-			" u.company uName,m.model_name,a.app_name,g.name groupName," +
+			@Param("sStatus")String sStatus,@Param("pid")Integer pid);
+	
+	@Select("<script>SELECT e.id,e.name,e.dev_id,e.type_cd,e.model_id,e.group_id,e.group_adm_id,e.app_id," + 
+			" e.verification,e.support_code,e.supporter,e.site,e.address,e.remark,e.online,e.uid,e.udp_date," + 
+			" u.company uName,m.model_name,a.app_name,g.name groupName," + 
 			" e.data_point_date mx_date,"+
 
 			" case e.type_cd when 'L' then 'Lora' when 'N' then 'Nbiot' when 'G' then '2G' else null end as typeName " +
@@ -319,15 +321,30 @@ public interface EquipmentMapper {
 
 	@Update("update equipments set  udp_date = sysdate(), udp_uid = #{udid}, valid = 'D' where id=#{id} and valid = 'N' ")
 	public int delEquById(@Param("id")Integer eid,@Param("udid")Integer udid);
+	
+	@Update("update equipments set  udp_date = sysdate(), udp_uid = #{udid}, valid = 'D' where id in (${equs}) and valid = 'N' ")
+	public int delEquAll(@Param("equs")String equs,@Param("udid")Integer udid);
+	
+	@Select("select count(1)>0 from equipments where verification = #{verification} and valid = 'N' ")
+	public boolean duplicatedEid(@Param("verification")String verification);
+	
 
 	@Update("update equipments set  valid = #{status} where dev_id=#{devId} and valid = 'N' ")
 	public int setEquStatus(@Param("devId")String eidevIdd,@Param("status")String status);
 
-	@Select("select count(1)>0 from equipments where dev_id = #{devId} and valid = 'N' ")
-	public boolean duplicatedEid(@Param("devId")String devId,@Param("uid")Integer uid);
 
 	@Select("select dev_id from equipments where id = #{id} and valid = 'N'  ")
 	public String getEquIdOld(@Param("id")Integer id);
+	
+	/**
+	 * 根据prod_id获取注册设备信息
+	 * @param id
+	 * @return
+	 */
+	@Select(" SELECT p.device_type,p.app_model,p.manufacturer_id,a.app,a.app_name,a.secret,a.platform_ip" + 
+			" FROM products p, applications a" + 
+			" WHERE p.id = #{pid} AND p.valid = 'N' AND p.app_id=a.id")
+	public CreateEquimentVO getAddDevVOByProId(@Param("pid")Integer pid);
 
 	@Update("update equipments set  e_range = #{range} where eid=#{eid} and valid = 'N'")
 	 int updateRange(@Param("eid")String eid,@Param("range")Integer range);

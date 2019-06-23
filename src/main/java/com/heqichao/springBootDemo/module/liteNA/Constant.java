@@ -110,7 +110,18 @@ public class Constant {
     public static final String QUERY_DEVICE_DATA = BASE_URL + "/iocm/app/dm/v1.3.0/devices";
     public static final String QUERY_DEVICE_HISTORY_DATA = BASE_URL + "/iocm/app/data/v1.1.0/deviceDataHistory";
     public static final String QUERY_DEVICE_CAPABILITIES = BASE_URL + "/iocm/app/data/v1.1.0/deviceCapabilities";
-    public static final String SUBSCRIBE_NOTIFYCATION = BASE_URL + "/iocm/app/sub/v1.1.0/subscribe";
+    /**
+     * 设备注册请求URL
+     */
+    public static final String DEVICE_CREDENTIALS = "https://SERVER:PORT/iocm/app/reg/v1.1.0/deviceCredentials?appId=S_APPID";
+    /**
+     * 设备注册请求URL
+     */
+    public static final String DEVICE_MODIFY = "https://SERVER:PORT/iocm/app/dm/v1.4.0/devices/S_DEVICEID?appId=S_APPID";
+    /**
+     * 订阅数据变化请求URL
+     */
+    public static final String SUBSCRIBE_NOTIFYCATION = "https://SERVER:PORT/iocm/app/sub/v1.1.0/subscribe";
     
     
     /*
@@ -122,7 +133,10 @@ public class Constant {
      * 5. QUERY_DEVICECMD_CANCEL_TASK
      *
      */
-    public static final String POST_ASYN_CMD = BASE_URL + "/iocm/app/cmd/v1.4.0/deviceCommands";
+    /**
+     * 命令下发请求URL
+     */
+    public static final String POST_ASYN_CMD = "https://SERVER:PORT/iocm/app/cmd/v1.4.0/deviceCommands";
     public static final String QUERY_DEVICE_CMD = BASE_URL + "/iocm/app/cmd/v1.4.0/deviceCommands";
     public static final String UPDATE_ASYN_COMMAND = BASE_URL + "/iocm/app/cmd/v1.4.0/deviceCommands/%s";
     public static final String CREATE_DEVICECMD_CANCEL_TASK = BASE_URL + "/iocm/app/cmd/v1.4.0/deviceCommandCancelTasks";

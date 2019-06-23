@@ -20,7 +20,7 @@
                          <div class="form-group "> 
                               <label  class="col-md-2 control-label ">所属用户<span style="color : red">*</span></label>  
 							  <div class="col-md-9">
-	                               <select  class="form-control" name="uid"  ng-model="addFrom.uid" ng-change="seledUser(addFrom.uid)" ng-options="x for (x, y) in selCompanys" required>
+	                               <select  class="form-control" name="uid"  ng-model="addFrom.uid" ng-change="seledUser(addFrom.uid)" ng-options="x for (x, y) in selCompanys" ng-disabled="loadCtl.loadUser" required>
 									</select>
                               </div>
                          </div> 
@@ -57,7 +57,7 @@
                          <div class="form-group "> 
                               <label  class="col-md-2 control-label ">所属产品<span style="color : red">*</span></label>  
 							  <div class="col-md-9">
-	                               <select  class="form-control" name="modelId"  ng-model="addFrom.proId" ng-options="x for (x, y) in selProducts" required>
+	                               <select  class="form-control" name="modelId"  ng-model="addFrom.proId" ng-options="x for (x, y) in selProducts" ng-disabled="loadCtl.loadProd" required>
 									</select>
                               </div>
                          </div>  
@@ -67,18 +67,6 @@
 	                               <input id="equ_easyui_combotree" class="easyui-combotree"  style="display: none;">
                               </div>
                          </div> 
-                         <div class="form-group "> 
-                              <label  class="col-md-2 control-label ">厂商ID</label>  
-							  <div class="col-md-9">
-	                                <input type="text" class="form-control" name="supportCode" ng-model="addFrom.supportCode"  >
-                              </div>
-                         </div>
-                         <div class="form-group "> 
-                              <label  class="col-md-2 control-label ">厂商名称</label>  
-							  <div class="col-md-9">
-	                                <input type="text" class="form-control" name="supporter" ng-model="addFrom.supporter"  >
-                              </div>
-                         </div>
                          <div class="form-group "> 
                               <label  class="col-md-2 control-label ">功能信息</label>  
 							  <div class="col-md-9">

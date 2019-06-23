@@ -22,6 +22,9 @@ public class Products extends BaseEntity  {
 	private Integer modelId;//对应模板
 	private Integer appId;//对应应用
 	private Integer vuId;//指定用户
+	private String deviceType;//设备类型
+	private String appModel;//设备的型号
+	private String manufacturerId;//厂商ID
 	private String remark;//描述
 	private String valid;//有效标志：N正常，D删除
 	
@@ -67,6 +70,24 @@ public class Products extends BaseEntity  {
 	}
 	public void setTypeCd(String typeCd) {
 		this.typeCd = typeCd;
+	}
+	public String getDeviceType() {
+		return deviceType;
+	}
+	public void setDeviceType(String deviceType) {
+		this.deviceType = deviceType;
+	}
+	public String getAppModel() {
+		return appModel;
+	}
+	public void setAppModel(String appModel) {
+		this.appModel = appModel;
+	}
+	public String getManufacturerId() {
+		return manufacturerId;
+	}
+	public void setManufacturerId(String manufacturerId) {
+		this.manufacturerId = manufacturerId;
 	}
     
     
