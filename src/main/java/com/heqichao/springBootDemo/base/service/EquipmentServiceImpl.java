@@ -250,7 +250,7 @@ public class EquipmentServiceImpl implements EquipmentService {
     	Integer uid = ServletUtil.getSessionUser().getId();
     	Integer cmp = ServletUtil.getSessionUser().getCompetence();
     	Integer gid = equ.getGroupId();
-    	if(equ.getName() == null ||equ.getDevId() == null || uid == null || cmp == 4) {
+    	if(equ.getName() == null ||equ.getVerification() == null || uid == null || cmp == 4) {
     		return new ResponeResult(true,"Add Equipment Input Error!","errorMsg");
     	}
     	if(eMapper.duplicatedEid(equ.getDevId(),equ.getUid())) {

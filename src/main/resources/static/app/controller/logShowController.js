@@ -88,10 +88,17 @@ function logShowCtrl($scope, $http, $rootScope,$routeParams,$location) {
         map.addOverlay(marker);               // 将标注添加到地图中
 
     };
+    //图表loading配置
+    var loadingSet={
+    		  text: 'loading',
+    		  color: '#319ecb',
+    		  textColor: '#319ecb',
+    		  maskColor: 'rgba(255, 255, 255, 0.8)',
+    		  zlevel: 0};
     //图表初始化
     var dom = document.getElementById("container");
     var myChart = echarts.init(dom);
-    option = {
+    var option = {
         tooltip: {
             trigger: 'axis',
             position: function (pt) {
@@ -147,7 +154,8 @@ function logShowCtrl($scope, $http, $rootScope,$routeParams,$location) {
                 name:'数据值',
                 type:'line',
                 smooth:true,
-                symbol: 'none',
+//                symbol: 'none',
+                symbolSize: 8,
                 sampling: 'average',
                 itemStyle: {
                     color: 'rgb(49, 158, 203)'
@@ -163,7 +171,7 @@ function logShowCtrl($scope, $http, $rootScope,$routeParams,$location) {
     
     //初始化数据
     $scope.init=function(){
-    	myChart.showLoading();
+    	myChart.showLoading('default',loadingSet);
         $http.post("/service/queryEquAttrLog",$scope.param).success(function(data) {
             $scope.param.initOption='FALSE';
             if(data.resultObj.devList){
@@ -225,8 +233,12 @@ function logShowCtrl($scope, $http, $rootScope,$routeParams,$location) {
     }
 
     $scope.asynLinePointData=function(){
-    	console.log("plotDownloads",angular.fromJson(angular.toJson($scope.plotDownloads)));
-    	console.log("attrKey",angular.fromJson(angular.toJson($scope.param.attrKey)));
+    	myChart.setOption({
+            series: [{
+                data: $scope.plotDownloads
+            }]
+        });
+    	myChart.hideLoading();
     }
 
     $scope.showChart=function(){
@@ -236,14 +248,13 @@ function logShowCtrl($scope, $http, $rootScope,$routeParams,$location) {
             for(var j=0;j<$scope.log.length;j++){
                 var obj =$scope.log[j];
                 var value =obj.dataValue;
-                $scope.plotDownloads.push({value:[Date.parse(new Date(obj.addDate)),value]});
+                $scope.plotDownloads.push({value:[obj.addDate,value]});
             }
         }else{
             //默认显示第一个波形
             $scope.showWave($scope.log[0]);
         }
         $scope.asynLinePointData();
-//        $.Dashboard.init();
     }
 
     $scope.showWave=function (obj) {
@@ -252,10 +263,9 @@ function logShowCtrl($scope, $http, $rootScope,$routeParams,$location) {
             var values=obj.dataValue;
             var arr = values.split(",");
             for(var i=0;i<arr.length;i++){
-                $scope.plotDownloads.push([i,arr[i]]);
+                $scope.plotDownloads.push({value:[i,arr[i]]});
             }
             $scope.asynLinePointData();
-//            $.Dashboard.init();
         }
     }
 

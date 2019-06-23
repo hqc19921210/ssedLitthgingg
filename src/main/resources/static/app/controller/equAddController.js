@@ -56,7 +56,7 @@ function equAddCtrl($scope, $http,$rootScope,$location,$timeout) {
 	$scope.addEqu = function() {
     	$scope.loadCtl.addEnq = true;
     	$scope.addFrom.groupId = $('#equ_easyui_combotree').combotree('getValue');
-    	if($scope.addFrom.uid == null || $scope.addFrom.devId == null ||
+    	if($scope.addFrom.uid == null || $scope.addFrom.verification == null ||
     			$scope.addFrom.typeCd == null || $scope.addFrom.name == null ||
     			$scope.addFrom.proId == null || $scope.addFrom.groupId == null ){
     		swal("请填写所有必填项", null, "error");

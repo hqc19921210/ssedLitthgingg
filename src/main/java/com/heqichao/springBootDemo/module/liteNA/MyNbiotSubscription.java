@@ -52,10 +52,6 @@ public class MyNbiotSubscription {
 
         logger.info("SubscribeNotification: " + httpResponse_deviceDataChanged.getStatusLine().toString());
         logger.info(bodySubscribe_deviceDataChanged);
-        logger.info(httpResponse_deviceDataChanged.toString());
-        System.out.println("SubscribeNotification: " + httpResponse_deviceDataChanged.getStatusLine().toString());
-        System.out.println(bodySubscribe_deviceDataChanged);
-        System.out.println(httpResponse_deviceDataChanged.getParams().toString());
         
         return httpResponse_deviceDataChanged.getStatusLine().toString();
 	}
