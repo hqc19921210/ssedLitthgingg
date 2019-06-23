@@ -2,6 +2,7 @@ package com.heqichao.springBootDemo.base.control;
 
 import com.heqichao.springBootDemo.base.param.ResponeResult;
 import com.heqichao.springBootDemo.base.service.EquipmentService;
+import com.heqichao.springBootDemo.base.util.DateUtil;
 import com.heqichao.springBootDemo.base.util.ExcelReader;
 import com.heqichao.springBootDemo.base.util.FileUtil;
 
@@ -10,6 +11,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
+import com.heqichao.springBootDemo.base.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -166,4 +168,12 @@ public class EquipmentController extends BaseController{
     	return new ResponeResult(eService.getUploadResult());
     }
 
+    @RequestMapping(value = "/getAddEquCount")
+    public ResponeResult getAddEquCount() {
+        Map param =getParamMap();
+        String start= (String) param.get("start");
+        String end= (String) param.get("end");
+        String type = (String) param.get("type");
+        return new ResponeResult(eService.queryAddEquCount(DateUtil.parasDate(start), DateUtil.getEndTime(DateUtil.parasDate(end)), type));
+    }
 }

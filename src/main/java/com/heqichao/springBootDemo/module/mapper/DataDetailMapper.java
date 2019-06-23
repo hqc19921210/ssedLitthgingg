@@ -1,6 +1,7 @@
 package com.heqichao.springBootDemo.module.mapper;
 
 import com.heqichao.springBootDemo.module.entity.DataDetail;
+import com.heqichao.springBootDemo.module.entity.ModelAttr;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
@@ -96,6 +97,27 @@ public interface DataDetailMapper {
             "select id,attr_id as attrId,data_name as dataName,unit,data_value as dataValue,udp_date as udpDate,data_type as dataType from data_detail where  data_status ='N' and dev_id = #{devId} and  add_date =(select max(add_date) from  data_log  where  data_status ='N' and dev_id = #{devId})" +
             "</script>")
     List<Map> queryLastestDataDetail(@Param("devId") String devId);
+
+    /**
+     * 查找历史数据表，行转列
+     * @param devId
+     * @param modelId
+     * @param list
+     * @return
+     */
+    @Select("<script>"
+            +"SELECT dd.log_id , "
+            + " max(dl.add_date) as '上报时间', "
+            + "<foreach  collection=\"list\"  separator=\",\" item=\"model\" >"
+            + " max(CASE dd.attr_id when #{model.id} then CONCAT(dd.data_value,ifnull(dd.unit,'')) else '' end) as #{model.attrName} "
+            + "</foreach>"
+            +"from data_detail dd LEFT JOIN data_log dl on dd.log_id = dl.id where  "
+            +"dd.dev_id =#{devId} AND  dd.data_status ='N' and dd.attr_id in (select id from model_attr where model_id =#{modelId})  "
+            + "<if test =\"start !=null  and start!=''\"> and dd.add_date &gt;= #{start} </if>" //大于等于
+            + "<if test =\"end !=null  and end!='' \"> and dd.add_date &lt;= #{end} </if>"  // 小于等于
+            +"group by dd.log_id ORDER BY dd.log_id desc "
+            +"</script>")
+    List<Map> queryDataLogTable(@Param("devId")String devId,@Param("modelId")Integer modelId,@Param("list") List<ModelAttr> list ,@Param("start") String start, @Param("end") String end);
 
 }
 

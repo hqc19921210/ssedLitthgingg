@@ -4,7 +4,13 @@ import com.heqichao.springBootDemo.base.entity.Equipment;
 import com.heqichao.springBootDemo.base.param.ApplicationContextUtil;
 import com.heqichao.springBootDemo.base.service.EquipmentService;
 import com.heqichao.springBootDemo.base.vo.EquipmentVO;
+import com.heqichao.springBootDemo.module.entity.ModelAttr;
+import com.heqichao.springBootDemo.module.service.DataLogService;
+import com.heqichao.springBootDemo.module.service.ModelAttrService;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -14,6 +20,11 @@ import java.util.Map;
 public class DataCacheUtil {
 
     /**
+     * 缓存默认有效时间(s)
+     */
+    private static long EXPIRE_TIME = 24 * 60 * 60 ;
+    
+    /**
      * 所有系统缓存的前缀
      */
     private static String SSET_CACHE_KEY_ ="SSET_";
@@ -21,7 +32,7 @@ public class DataCacheUtil {
     /**
      * 获取最新设备数据 缓存Key
      */
-    public static String LASTEST_DATADETAIL = "LASTEST_DATA_";
+    public static String LATEST_DATADETAIL = "LATEST_DATA_";
 
     /**
      * 设备信息缓存
@@ -29,7 +40,12 @@ public class DataCacheUtil {
     public static String EQUIPMENT_INFO ="EQUIPMENT_";
 
     /**
-     * 缓存放入 永久
+     * 模板属性缓存
+     */
+    public static String MODEL_ATTR ="MODEL_ATTR_";
+
+    /**
+     * 缓存放入 过期时间为系统默认时间
      * @param  prefix 前缀
      * @param key   键
      * @param value 值
@@ -39,7 +55,7 @@ public class DataCacheUtil {
         if(StringUtil.isEmpty(key) || StringUtil.isEmpty(prefix)){
             return false;
         }
-        return  RedisUtil.set(SSET_CACHE_KEY_+prefix+key,value);
+        return  RedisUtil.set(SSET_CACHE_KEY_+prefix+key,value,EXPIRE_TIME);
     }
 
     /**
@@ -86,7 +102,7 @@ public class DataCacheUtil {
     }
 
     /**
-     * 使用hashmap结构存放map 对象
+     * 使用hashmap结构存放map 对象， 过期时间为系统默认时间
      * @param  prefix 前缀
      * @param key
      * @param map
@@ -95,7 +111,7 @@ public class DataCacheUtil {
         if(StringUtil.isEmpty(key) || StringUtil.isEmpty(prefix)){
             return ;
         }
-       RedisUtil.hmset(SSET_CACHE_KEY_+prefix+key,map);
+       RedisUtil.hmset(SSET_CACHE_KEY_+prefix+key,map,EXPIRE_TIME);
     }
 
     /**
@@ -150,10 +166,10 @@ public class DataCacheUtil {
             if(obj!=null){
                 return (EquipmentVO) obj;
             }else{
-                EquipmentService equipmentService = (EquipmentService) ApplicationContextUtil.getApplicationContext().getBean("equipmentServiceImpl");
+                EquipmentService equipmentService =  ApplicationContextUtil.getApplicationContext().getBean(EquipmentService.class);
                 EquipmentVO equipment =equipmentService.getEquipmentInfo(devId);
                 if(equipment != null){
-                    DataCacheUtil.set(EQUIPMENT_INFO,devId,equipment);
+                    DataCacheUtil.set(EQUIPMENT_INFO,devId,equipment,EXPIRE_TIME);
                     return equipment;
                 }
             }
@@ -168,5 +184,67 @@ public class DataCacheUtil {
      */
     public static void removeEquipmentCache(String devId){
         del(EQUIPMENT_INFO,devId);
+    }
+
+    /**
+     *  获取设备的模型属性缓存
+     * @param modelId
+     * @return
+     */
+    public static List<ModelAttr> getModelAttrRListCache(Integer modelId){
+        if(modelId != null) {
+            Object obj = DataCacheUtil.get(MODEL_ATTR, modelId.toString());
+            if (obj != null) {
+                return (List<ModelAttr>) obj;
+            } else {
+                ModelAttrService modelAttrService =  ApplicationContextUtil.getApplicationContext().getBean(ModelAttrService.class);
+                List<ModelAttr> modelAttrList =modelAttrService.queryByModelId(modelId);
+                if(CollectionUtil.isNotEmpty(modelAttrList)){
+                    DataCacheUtil.set(MODEL_ATTR,modelId.toString(),modelAttrList,EXPIRE_TIME);
+                }
+                return modelAttrList;
+            }
+        }
+       return new ArrayList<>();
+    }
+
+    /**
+     * 删除模板属性缓存
+     * @param modelId
+     */
+    public static void removeModelAttrRListCache(Integer modelId){
+        if(modelId!=null){
+            del(MODEL_ATTR,modelId.toString());
+        }
+    }
+
+    /**
+     * 获取最新的接收数据缓存
+     * @param devId
+     * @return
+     */
+    public static  List<Map> getLatestDataCache(String devId){
+        Object data= DataCacheUtil.get(DataCacheUtil.LATEST_DATADETAIL,devId);
+        if(data == null){
+            DataLogService dataLogService =  ApplicationContextUtil.getApplicationContext().getBean(DataLogService.class);
+            List<Map> dataDetails = dataLogService.queryLastestDataDetail(devId);
+            if(CollectionUtil.isNotEmpty(dataDetails)){
+                DataCacheUtil.set(DataCacheUtil.LATEST_DATADETAIL,devId,dataDetails,EXPIRE_TIME);
+                return dataDetails;
+            }
+        }else{
+            return (List<Map>) data;
+        }
+        return Collections.EMPTY_LIST;
+    }
+
+    /**
+     * 删除最新的接收数据缓存
+     * @param devId
+     */
+    public static void removeLatestDataCache(String... devId){
+        if(devId != null && devId.length >0 ){
+            del(LATEST_DATADETAIL,devId);
+        }
     }
 }

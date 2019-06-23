@@ -1,0 +1,76 @@
+<div class="container" >
+    <div class="row">
+        <!--<div class="col-md-12">-->
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">历史数据列表</h3>
+            </div>
+
+            <div class="panel-body">
+                <form role="form" class="form-horizontal">
+                    <div class="form-group">
+                        <div class="col-md-12 col-sm-12 col-xs-12">
+                            <label  class="col-sm-1 control-label">产品</label>
+                            <div class="col-sm-2">
+                                <select name="$index_valueType"class="form-control input-sm" ng-model="param.prodId" ng-change="changeProdId()">
+                                    <option value="{{val.prod_id}}"  ng-repeat="(key, val) in prodList" >{{val.name}}</option>
+                                </select>
+                            </div>
+
+                            <label  class="col-sm-1 control-label">设备</label>
+                            <div class="col-sm-2">
+                                <select name="$index_valueType"class="form-control input-sm" ng-model="param.devId" ng-change="changeDevId()">
+                                    <option value="{{val.dev_id}}"  ng-repeat="(key, val) in devList" >{{val.name}}</option>
+                                </select>
+                            </div>
+
+                      <!--  </div>
+                        <div class="col-md-12 col-sm-12 col-xs-12 m-t-10">-->
+                            <label  class="col-sm-1 control-label">时间</label>
+                            <div class="col-sm-5">
+                                <div class="input-group">
+                                    <input type="text" class="form-control" style="z-index: 1"  id="datepickerStrat" ng-model="param.start" >
+                                    <span class="input-group-addon">到</span>
+                                    <input type="text" class="form-control"  style="z-index: 1"   id="datepickerEnd"  ng-model="param.end" >
+                                </div>
+                            </div>
+                           <!-- <div class="col-sm-6"></div>-->
+
+                        </div>
+                    </div>
+
+                </form>
+
+                <div class="row m-t-10">
+                    <div class="col-md-12 col-sm-12 col-xs-12">
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead >
+                                <tr>
+
+                                    <th>设备名称</th>
+                                    <th>设备MAC</th>
+                                    <th>上报时间</th>
+                                    <th ng-repeat="model in modelAttr" ng-bind="model.attrName"> </th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr ng-repeat="entity in log">
+                                    <td ng-bind="equ.name"  ></td>
+                                    <td ng-bind="equ.verification" ></td>
+                                    <td ng-bind="entity['上报时间'] | date:'yyyy-MM-dd HH:mm:ss' "  ></td>
+                                    <td ng-repeat="(key, val) in entity" ng-bind="getValue(entity,$index)" ng-if="key != 'log_id' || key != '上报时间' "   > </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <page-info pages="pages" curpage="param.page" total="total" change="changePage(page)"></page-info>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+</div>

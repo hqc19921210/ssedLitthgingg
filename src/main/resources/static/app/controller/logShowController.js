@@ -33,7 +33,7 @@ function logShowCtrl($scope, $http, $rootScope,$routeParams,$location) {
             }
             $scope.logArr.push($scope.log[(page-1)*defaultSize+i]);
         }
-    }
+    };
 
 
     $scope.fmtDate = function(date){
@@ -44,6 +44,7 @@ function logShowCtrl($scope, $http, $rootScope,$routeParams,$location) {
     }
     //设备用户名
     $scope.equipUserName ="";
+    $scope.prodList=new Array();
     $scope.devList=new Array();
     $scope.attrList=new Array();
     //图型数据
@@ -174,33 +175,41 @@ function logShowCtrl($scope, $http, $rootScope,$routeParams,$location) {
     	myChart.showLoading('default',loadingSet);
         $http.post("/service/queryEquAttrLog",$scope.param).success(function(data) {
             $scope.param.initOption='FALSE';
+            if(data.resultObj.prodList){
+                $scope.prodList = data.resultObj.prodList;
+            }
             if(data.resultObj.devList){
                 $scope.devList = data.resultObj.devList;
             }
+            if(data.resultObj.attrList){
+                $scope.attrList= data.resultObj.attrList;
+            }
+            $scope.param.prodId=""+data.resultObj.prodId;
             $scope.param.devId=data.resultObj.devId;
             $scope.param.attrId=""+data.resultObj.attrId;
-           if(data.resultObj.attrList){
-               $scope.attrList= data.resultObj.attrList;
-           }
+
             if(data.resultObj.dataType){
                 $scope.attrType=data.resultObj.dataType;
             }
             if(data.resultObj.unit){
                 $scope.unit=data.resultObj.unit;
             }
-
             if(data.resultObj.attrKey){
                 $scope.attrKey=data.resultObj.attrKey;
             }
-
+            $scope.logArr =new Array();
             if(data.resultObj.log){
                 $scope.log=data.resultObj.log;
                 if($scope.log && $scope.log.length>0){
                     $scope.pages =Math.ceil($scope.log.length/defaultSize);
                     $scope.changePage(1);
                 }
-                $scope.showChart();
+            }else{
+                $scope.log=[];
+
             }
+            $scope.showChart();
+
             if(data.resultObj.equip){
                 $scope.equip=data.resultObj.equip;
                 $scope.getMap();
@@ -215,10 +224,16 @@ function logShowCtrl($scope, $http, $rootScope,$routeParams,$location) {
     //初始化
     $scope.init();
 
+    $scope.changeProdId=function () {
+        $scope.param.devId="";
+        $scope.param.attrId="";
+        $scope.init();
+    };
+
     $scope.changeDevId=function () {
         $scope.param.attrId="";
         $scope.init();
-    }
+    };
 
     $scope.changeAttr=function(){
         for(var i=0;i<$scope.attrList.length;i++){
@@ -230,7 +245,7 @@ function logShowCtrl($scope, $http, $rootScope,$routeParams,$location) {
                 break;
             }
         }
-    }
+    };
 
     $scope.asynLinePointData=function(){
     	myChart.setOption({
@@ -239,7 +254,7 @@ function logShowCtrl($scope, $http, $rootScope,$routeParams,$location) {
             }]
         });
     	myChart.hideLoading();
-    }
+    };
 
     $scope.showChart=function(){
         $scope.plotDownloads =[];
@@ -269,23 +284,10 @@ function logShowCtrl($scope, $http, $rootScope,$routeParams,$location) {
         }
     }
 
-    function formatDateTime(inputTime) {
-        var date = new Date(inputTime);
-        var y = date.getFullYear();
-        var m = date.getMonth() + 1;
-        m = m < 10 ? ('0' + m) : m;
-        var d = date.getDate();
-        d = d < 10 ? ('0' + d) : d;
-        var h = date.getHours();
-        h = h < 10 ? ('0' + h) : h;
-        var minute = date.getMinutes();
-        var second = date.getSeconds();
-        minute = minute < 10 ? ('0' + minute) : minute;
-        second = second < 10 ? ('0' + second) : second;
-        var time= y + '-' + m + '-' + d+' \n '+h+':'+minute+':'+second;
-        // time =time.replace(" "," \n ");
-        return time;
-    };
-    
-    
+
+
+ /*    window.addEventListener("resize", () => {
+        myChart.resize();
+    });
+  */
 }

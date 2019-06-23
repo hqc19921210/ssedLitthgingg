@@ -162,16 +162,18 @@
                             </li> 
 							 
 							<li class="has_sub">
-                                <a href="javascript:void(0);" class="waves-effect waves-light"><i class="md ion-android-storage"></i><span>数据管理</span><span class="pull-right"><i class="md md-add"></i></span></a>
+                                <a href="javascript:void(0);" class="waves-effect waves-light"><i class="md ion-android-storage"></i><span>历史数据</span><span class="pull-right"><i class="md md-add"></i></span></a>
                                 <ul>
                                     
-                                    <li ng-if="user.competence == 2">
+                                  <!--  <li ng-if="user.competence == 2">
                                         <a href="#/module/modelList"><span>数据模板</span></a>
-                                    </li>
+                                    </li>-->
                                     <li>
-                                        <a href="#/module/logShow/"><span>历史数据</span></a>
+                                        <a href="#/module/logShow/"><span>历史数据图</span></a>
                                     </li>
-                                    
+									<li>
+										<a href="#/module/logShowTable/"><span>历史数据表</span></a>
+									</li>
 
 									
                                 </ul>
@@ -236,7 +238,7 @@
 		<div class="content-page" >
 			<div class="content" ng-view></div>
 			<footer class="footer text-right">
-				2018 © SSED.
+				2019 © SSED.
 			</footer>
 		</div>
 		<!-- loading遮罩层 -->
@@ -339,14 +341,14 @@
 		
 	
 		<!-- flot Chart -->
-		<script src="assets/plugins/flot-chart/jquery.flot.js"></script>
+		<!--<script src="assets/plugins/flot-chart/jquery.flot.js"></script>
 		<script src="assets/plugins/flot-chart/jquery.flot.time.js"></script>
 		<script src="assets/plugins/flot-chart/jquery.flot.tooltip.min.js"></script>
 		<script src="assets/plugins/flot-chart/jquery.flot.resize.js"></script>
 		<script src="assets/plugins/flot-chart/jquery.flot.pie.js"></script>
 		<script src="assets/plugins/flot-chart/jquery.flot.selection.js"></script>
 		<script src="assets/plugins/flot-chart/jquery.flot.stack.js"></script>
-		<script src="assets/plugins/flot-chart/jquery.flot.crosshair.js"></script>
+		<script src="assets/plugins/flot-chart/jquery.flot.crosshair.js"></script>-->
 
 		<!-- notify -->
 		<script src="assets/plugins/notifications/notify.min.js"></script>
@@ -377,6 +379,7 @@
 		<script src="app/controller/modelEditController.js"></script>
 		<script src="app/controller/modelListController.js"></script>
 		<script src="app/controller/logShowController.js"></script>
+		<script src="app/controller/logShowTableController.js"></script>
 		<script src="app/controller/devMapController.js"></script>
 		<script src="app/controller/devListController.js"></script>
 		<script src="app/controller/alarmSettingControllers.js"></script>

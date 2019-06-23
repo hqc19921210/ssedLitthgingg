@@ -70,11 +70,18 @@
 
              <div class="portlet">
                  <div class="portlet-heading">
-
+                 <!-- <h3 class="">数据图</h3>-->
                  <div class="col-md-12 col-sm-12 col-xs-12">
-                                 <div class="col-sm-6"></div>
+                                 <div class="col-sm-6 m-t-10">
+                                     <div class="portfolioFilter">
+                                         <a ng-click="changeType('daily')" id="type_daily"  ng-class="{current : param.type == 'daily'} ">日新增</a>
+                                         <a ng-click="changeType('sum')"  id="type_sum"   ng-class=" { current : param.type == 'sum' } ">累计总数</a>
+                                     </div>
+
+                                 </div>
                                  <div class="col-sm-6">
-                                     <label  class=" control-label">时间</label>
+                                    <!-- <label  class=" control-label">时间</label>-->
+
                                      <div class="">
                                          <div class="input-group">
                                              <input type="text" class="form-control" style="z-index: 1"  id="datepickerStrat1" ng-model="param.start" >
@@ -107,20 +114,7 @@
                          <div class="row">
                              <div class="col-md-12">
                                  <div id="website-stats" style="position: relative;height: 320px"></div>
-                                 <div class="row text-center m-t-30">
-                                     <div class="col-sm-4">
-                                        <!-- <h4 class="counter">{{sum}}次</h4>
-                                         <small class="text-muted"> 年雷击总数</small>-->
-                                     </div>
-                                     <div class="col-sm-4">
-                                         <h4 class="counter" >{{alarmSunCount}}次</h4>
-                                         <small class="text-muted">总故障数</small>
-                                     </div>
-                                     <div class="col-sm-4">
-                                        <!-- <h4 class="counter">{{sum/52| number:3}}次</h4>
-                                         <small class="text-muted">周平均雷击数</small>-->
-                                     </div>
-                                 </div>
+
                              </div>
                          </div>
                      </div>
@@ -131,7 +125,7 @@
 
          <div class="col-lg-4">
              <div class="portlet">
-                 <div class="portlet-heading">
+                <!-- <div class="portlet-heading">
                      <h3 class="portlet-title text-dark text-uppercase">
                             设备统计
                      </h3>
@@ -139,7 +133,7 @@
                          <a href="javascript:;" data-toggle="reload"><i class="ion-refresh"></i></a>
                      </div>
                      <div class="clearfix"></div>
-                 </div>
+                 </div>-->
                  <div id="portlet2" class="panel-collapse collapse in">
                      <div class="portlet-body">
                          <div class="row">
@@ -149,7 +143,7 @@
                                      </div>
                                  </div>
 
-                                 <div class="row text-center m-t-30">
+                                 <div class="row text-center">
                                      <div class="col-sm-12">
                                          <h4 class="counter">{{home.equAll}}台</h4>
                                          <small class="text-muted"> 总设备数</small>
