@@ -127,24 +127,20 @@
 				        <div class="col-sm-7 ng-binding">{{seleItem.name}}</div>
 			        </div>
                		<div class="form-group clearfix">
-				        <label class="col-sm-5 control-label ng-binding" style="text-align: right">设备编号：</label>
-				        <div class="col-sm-7 ng-binding">{{seleItem.devId}}</div>
+				        <label class="col-sm-5 control-label ng-binding" style="text-align: right">设备MAC：</label>
+				        <div class="col-sm-7 ng-binding">{{ seleItem.typeCd == 'L' ? seleItem.devId : (!seleItem.verification ? '未填写MAC' : seleItem.verification)}}</div>
 			        </div>
                		<div class="form-group clearfix">
 				        <label class="col-sm-5 control-label ng-binding" style="text-align: right">设备类型：</label>
 				        <div class="col-sm-7 ng-binding">{{seleItem.typeName}}</div>
 			        </div>
                		<div class="form-group clearfix">
-				        <label class="col-sm-5 control-label ng-binding" style="text-align: right">数据模板：</label>
-				        <div class="col-sm-7 ng-binding">{{seleItem.modelName}}</div>
+				        <label class="col-sm-5 control-label ng-binding" style="text-align: right">所属产品：</label>
+				        <div class="col-sm-7 ng-binding">{{seleItem.proName}}</div>
 			        </div>
                		<div class="form-group clearfix">
 				        <label class="col-sm-5 control-label ng-binding" style="text-align: right">所属分组：</label>
 				        <div class="col-sm-7 ng-binding">{{seleItem.groupName}}</div>
-			        </div>
-               		<div class="form-group clearfix" ng-if="seleItem.typeCd=='N'">
-				        <label class="col-sm-5 control-label ng-binding" style="text-align: right">所属应用：</label>
-				        <div class="col-sm-7 ng-binding">{{$parent.seleItem.appName}}</div>
 			        </div>
                		<div class="form-group clearfix">
 				        <label class="col-sm-5 control-label ng-binding" style="text-align: right">所属用户：</label>
@@ -154,17 +150,10 @@
 				        <label class="col-sm-5 control-label ng-binding" style="text-align: right">设备地址：</label>
 				        <div class="col-sm-7 ng-binding">{{seleItem.address}}<em class="info_em">{{seleItem.site}}</em></div>
 			        </div>
-               		<div class="form-group clearfix">
-				        <label class="col-sm-5 control-label ng-binding" style="text-align: right">验证码：</label>
-				        <div class="col-sm-7 ng-binding">{{seleItem.verification}}</div>
-			        </div>
-               		<div class="form-group clearfix">
-				        <label class="col-sm-5 control-label ng-binding" style="text-align: right">厂商ID：</label>
-				        <div class="col-sm-7 ng-binding">{{seleItem.supportCode}}</div>
-			        </div>
-               		<div class="form-group clearfix">
-				        <label class="col-sm-5 control-label ng-binding" style="text-align: right">厂商名称：</label>
-				        <div class="col-sm-7 ng-binding">{{seleItem.supporter}}</div>
+               		
+			        <div class="form-group clearfix">
+				        <label class="col-sm-5 control-label ng-binding" style="text-align: right">站内识别码：</label>
+				        <div class="col-sm-7 ng-binding">{{seleItem.devId}}</div>
 			        </div>
                		<div class="form-group clearfix">
 				        <label class="col-sm-5 control-label ng-binding" style="text-align: right">备注：</label>

@@ -99,6 +99,8 @@ public class EquipmentServiceImpl implements EquipmentService {
     		newClu.put("devId", equ.getDevId());
     		newClu.put("type", equ.getTypeName());
     		newClu.put("online", equ.getOnline());
+    		newClu.put("verification", equ.getVerification());
+    		newClu.put("proId", equ.getProId());
     		List<Map> currPoint = new ArrayList<>();
     		try {
     			/*for (DataDetail point : pLst) {
@@ -113,7 +115,6 @@ public class EquipmentServiceImpl implements EquipmentService {
     		newClu.put("dataPoints",currPoint);
     		newLst.add(newClu);
     	}
-//        PageInfo pageInfo = new PageInfo(newLst);
     	//将重构的数据set回pageInfo
     	pageInfo.setList(newLst);
         return pageInfo;

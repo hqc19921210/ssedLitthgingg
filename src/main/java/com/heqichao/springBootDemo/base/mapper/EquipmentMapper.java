@@ -55,15 +55,16 @@ public interface EquipmentMapper {
 	 * @return
 	 */
 
-	@Select("SELECT e.id,e.name,e.dev_id,e.type_cd,e.model_id,e.group_id,e.group_adm_id,e.app_id,"+
+	@Select("SELECT e.id,e.name,e.dev_id,e.type_cd,e.group_id,e.group_adm_id,p.model_id,p.app_id,e.pro_id,"+
 			" e.verification,e.support_code,e.supporter,e.site,e.address,e.remark,e.online,e.uid,e.udp_date," +
-			" u.company uName,m.model_name,a.app_name," +
+			" u.company uName,m.model_name,a.app_name, p.name proName," +
 			" case e.type_cd when 'L' then 'Lora' when 'N' then 'Nbiot' when 'G' then '2G' else null end as typeName, " +
 			" (select u2.open_id from users u2 where u2.valid = 'N' and u2.open_id is not null and  (u2.id=e.id or u2.parent_uid=e.id) limit 1) as validWechat "+
 			"  FROM equipments e" +
 			"  left join users u on e.uid=u.id" +
-			"  left join model m on e.model_id=m.id" +
-			"  left join applications a on e.app_id=a.id" +
+			"  left join products p on e.pro_id=p.id and p.valid = 'N' " + 
+			"  left join model m on p.model_id=m.id" +
+			"  left join applications a on p.app_id=a.id" +
 			"  where e.valid = 'N' and e.dev_id = #{devId} ")
 	public EquipmentVO getEquById(@Param("devId") String  devId);
 
@@ -74,15 +75,15 @@ public interface EquipmentMapper {
 	 * @return
 	 */
 
-	@Select("SELECT e.id,e.name,e.dev_id,e.type_cd,,e.group_id,e.group_adm_id,pro_id,"+
+	@Select("SELECT e.id,e.name,e.dev_id,e.type_cd,e.group_id,e.group_adm_id,e.pro_id,p.model_id,p.app_id,"+
 			" e.verification,e.support_code,e.supporter,e.site,e.address,e.remark,e.online,e.uid,e.udp_date," +
 			" u.company uName,m.model_name,a.app_name," +
 			" case e.type_cd when 'L' then 'Lora' when 'N' then 'Nbiot' when 'G' then '2G' else null end as typeName " +
 			"  FROM equipments e" +
 			"  left join users u on e.uid=u.id" +
-			"  left join model m on e.model_id=m.id" +
-			"  left join applications a on e.app_id=a.id" +
-
+			"  left join products p on e.pro_id=p.id and p.valid = 'N'" +
+			"  left join model m on p.model_id=m.id" +
+			"  left join applications a on p.app_id=a.id" +
 			"  where e.valid = 'N' and e.dev_id = #{devId} and e.id=#{id}")
 	public EquipmentVO getEquEditById(@Param("devId") String  devId,@Param("id") Integer  id);
 
@@ -101,15 +102,14 @@ public interface EquipmentMapper {
 	 * @return
 	 */
 
-	@Select("<script>SELECT e.id,e.name,e.dev_id,e.type_cd,e.group_id,e.group_adm_id,e.pro_id," +
+	@Select("<script>SELECT e.id,e.name,e.dev_id,e.type_cd,e.group_id,e.group_adm_id,e.pro_id,p.model_id,p.app_id," +
 			" e.verification,e.support_code,e.supporter,e.site,e.address,e.remark,e.sec_remark,e.online,e.uid,e.udp_date," +
 			" u.company uName,g.name groupName,p.name proName," +
 			" case e.type_cd when 'L' then 'Lora' when 'N' then 'Nbiot' when 'G' then '2G' else null end as typeName, " +
-			" (select count(1)>0 from model_attr ma where ma.model_id=e.model_id and model_type='W') as validCMD " +
+			" (select count(1)>0 from model_attr ma where ma.model_id=p.model_id and ma.model_type='W') as validCMD " +
 			"  FROM group_equ g,equipments e" +
 			"  left join users u on e.uid=u.id" +
-			"  left join products p on e.pro_id=p.id" +
-
+			"  left join products p on e.pro_id=p.id and p.valid = 'N'" + 
 			"  where e.valid = 'N'  "
 			+ "<if test=\"competence == 2 \"> and e.group_adm_id=g.id"
 			+ "<if test=\"gid !=null \"> and e.group_adm_id = #{gid}  </if> </if>"
@@ -131,17 +131,28 @@ public interface EquipmentMapper {
 			@Param("sType")String sType,
 			@Param("sStatus")String sStatus,@Param("pid")Integer pid);
 	
-	@Select("<script>SELECT e.id,e.name,e.dev_id,e.type_cd,e.model_id,e.group_id,e.group_adm_id,e.app_id," + 
-			" e.verification,e.support_code,e.supporter,e.site,e.address,e.remark,e.online,e.uid,e.udp_date," + 
-			" u.company uName,m.model_name,a.app_name,g.name groupName," + 
-			" e.data_point_date mx_date,"+
-
+	/**
+	 * 列表展示主查询
+	 * @param competence
+	 * @param id
+	 * @param parentId
+	 * @param gid
+	 * @param sEid
+	 * @param sType
+	 * @param sStatus
+	 * @return
+	 */
+	@Select("<script>SELECT e.id,e.name,e.dev_id,e.type_cd,e.pro_id,"+
+//			 "e.model_id,e.group_id,e.group_adm_id,e.app_id," + 
+//			"e.support_code,e.supporter,e.site,e.address,e.remark,"+
+			" e.verification,e.online,e.uid,e.udp_date," + 
+//			" u.company uName,m.model_name,a.app_name,g.name groupName," + 
+//			" e.data_point_date mx_date,"+
 			" case e.type_cd when 'L' then 'Lora' when 'N' then 'Nbiot' when 'G' then '2G' else null end as typeName " +
 			"  FROM group_equ g,equipments e" +
-			"  left join users u on e.uid=u.id" +
-			"  left join model m on e.model_id=m.id" +
-			"  left join applications a on e.app_id=a.id" +
-//			" LEFT JOIN (select  max(vd.add_date) mx_date,vd.dev_id from data_detail vd where vd.data_status='N' GROUP BY vd.dev_id ) t2 on t2.dev_id=e.dev_id"+
+//			"  left join users u on e.uid=u.id" +
+//			"  left join model m on e.model_id=m.id" +
+//			"  left join applications a on e.app_id=a.id" +
 			"  where e.valid = 'N'  "
 			+ "<if test=\"competence == 2 \"> and e.group_adm_id=g.id"
 			+ "<if test=\"gid !=null \"> and e.group_adm_id = #{gid}  </if> </if>"

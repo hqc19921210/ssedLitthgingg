@@ -127,7 +127,7 @@
                                 <div class="form-group">
                                     <div class="col-md-12">
                                         <div class="form-group">
-                                            <div><strong>设备编号：</strong><span class=" about-info-p text-muted"  ng-bind="equip.devId"></span></div>
+                                            <div><strong>设备MAC：</strong><span class=" about-info-p text-muted"  ng-bind="equip.typeCd == 'L' ? equip.devId : (!equip.verification ? '未填写MAC' : equip.verification)"></span></div>
                                         </div>
                                     </div>
                                     <div class="col-md-12">
@@ -141,38 +141,16 @@
                                             <div><strong>设备类型：</strong><span class=" about-info-p text-muted"  ng-bind="equip.typeName"></span></div>
                                         </div>
                                     </div>
-                                    <div class="col-md-12">
-                                        <div class="form-group">
-                                            <div><strong>分组名称：</strong><span class=" about-info-p text-muted"  ng-bind="equip.groupName"></span></div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-12">
-                                        <div class="form-group">
-                                            <div><strong>验证码：</strong><span class=" about-info-p text-muted"  ng-bind="equip.verification"></span></div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-12">
-                                        <div class="form-group">
-                                            <div><strong>厂商ID：</strong><span class=" about-info-p text-muted"  ng-bind="equip.supportCode"></span></div>
-                                        </div>
-                                    </div>
-
-
-                                    <div class="col-md-12">
-                                        <div class="form-group">
-                                            <div><strong>厂商名称：</strong><span class=" about-info-p text-muted"  ng-bind="equip.supporter"></span></div>
-                                        </div>
-                                    </div>
-                                   <!--  <div class="col-md-12">
+                                     <div class="col-md-12">
                                         <div class="form-group">
                                             <div><strong>所属用户：</strong><span class=" about-info-p text-muted"  ng-bind="equip.uName"></span></div>
                                         </div>
-                                    </div>-->
-                                  <!--  <div class="col-md-12">
+                                    </div>
+                                    <!-- <div class="col-md-12">
                                         <div class="form-group">
-                                            <div><strong>在离线：</strong><span class=" about-info-p text-muted"  ng-bind="equip.online"></span></div>
+                                            <div><strong>设备在离线：</strong><span class=" about-info-p text-muted"  ng-bind="equip.online == 1 ? '在线':'离线'"></span></div>
                                         </div>
-                                    </div>-->
+                                    </div> -->
 
                                 </div>
                         </div>
@@ -195,5 +173,3 @@
     </div>
 
 
-<!--
-</div>-->
