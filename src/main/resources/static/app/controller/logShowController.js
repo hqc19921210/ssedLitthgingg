@@ -16,7 +16,9 @@ function logShowCtrl($scope, $http, $rootScope,$routeParams,$location) {
     $scope.param.devId="";
     $scope.param.attrId="";
     $scope.attrKey="";
-    if($routeParams){
+    console.log($routeParams);
+    if(!!$routeParams.devId){
+        $scope.param.proId=$routeParams.proId;
         $scope.param.devId=$routeParams.devId;
         $scope.param.attrId=$routeParams.attrId;
         //初始化选择
@@ -185,7 +187,7 @@ function logShowCtrl($scope, $http, $rootScope,$routeParams,$location) {
                 $scope.attrList= data.resultObj.attrList;
             }
             $scope.param.prodId=""+data.resultObj.prodId;
-            $scope.param.devId=data.resultObj.devId;
+            $scope.param.devId=""+data.resultObj.devId;
             $scope.param.attrId=""+data.resultObj.attrId;
 
             if(data.resultObj.dataType){
@@ -231,6 +233,7 @@ function logShowCtrl($scope, $http, $rootScope,$routeParams,$location) {
     };
 
     $scope.changeDevId=function () {
+    	console.log($scope.param.devId);
         $scope.param.attrId="";
         $scope.init();
     };
@@ -263,7 +266,7 @@ function logShowCtrl($scope, $http, $rootScope,$routeParams,$location) {
             for(var j=0;j<$scope.log.length;j++){
                 var obj =$scope.log[j];
                 var value =obj.dataValue;
-                $scope.plotDownloads.push({value:[obj.addDate,value]});
+                $scope.plotDownloads.splice(0,0,{value:[obj.addDate,value]});//因为下方列表是时间desc排序，故需把数据点放到首位
             }
         }else{
             //默认显示第一个波形

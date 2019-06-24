@@ -40,7 +40,7 @@ function devMapCtrl($scope, $http, $rootScope,$routeParams,$timeout,$interval) {
 	//为后台请求参数 带分页数据
     $scope.quereyData={
         page:1, //当前页码 初始化为1
-        size:defaultSize, //每页数据量 defaultSize全局变量
+        size:3, //每页数据量 defaultSize全局变量
     };
 	$scope.pages=0;
 	$scope.total=0;

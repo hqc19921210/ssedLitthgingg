@@ -122,10 +122,13 @@ public interface AlarmLogMapper {
 	@Select(
 			"<script>"
 			+"select * from ("
-			+"select a.id,a.dev_id,a.attr_id,a.data_status, " +
+			+"select a.id,a.dev_id,e.type_cd,e.verification,a.attr_id,a.data_status, " +
 					" case a.data_status when 'A' then '报警' when 'N' then '已处理' end as status_name, "+
-					"a.udp_date,a.alram_type,a.data_value,a.new_value,a.unit,e.name,ma.attr_name,ma.data_type,m.model_name from (alarm_log a LEFT JOIN equipments e on a.dev_id = e.dev_id and e.valid ='N') LEFT JOIN model_attr ma on a.attr_id = ma.id and model_type='R' left join model m on m.id = ma.model_id where "
-			+"   data_status != 'D' and  a.dev_id in "
+					"a.udp_date,a.alram_type,a.data_value,a.new_value,a.unit,e.name,ma.attr_name,ma.data_type,m.model_name"
+					+ " from (alarm_log a LEFT JOIN equipments e on a.dev_id = e.dev_id and e.valid ='N') "
+					+ " LEFT JOIN model_attr ma on a.attr_id = ma.id and model_type='R' "
+					+ " left join model m on m.id = ma.model_id "
+			+"   where data_status != 'D' and  a.dev_id in "
 			+"  (select e.dev_id from equipments e where e.valid = 'N'"
 			+ "<if test=\"competence == 3 \"> and e.uid= #{id} </if>"
 			+ "<if test=\"competence == 4 \"> and e.uid= #{parentId} </if>"

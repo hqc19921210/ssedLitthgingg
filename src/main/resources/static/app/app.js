@@ -90,7 +90,7 @@ var demoApp =angular.module("demoApp", ["ngRoute"]);
 	}).when("/module/i-want-see-logger", {
 		templateUrl: "app/module/queryDataLog.html",
 		controller: queryDataLogCtrl
-	}).when("/module/logShow/:devId/:attrId", {
+	}).when("/module/logShow/:proId/:devId/:attrId", {
 			templateUrl: "app/module/logShow.html",
 			controller: logShowCtrl
 	}).when("/module/logShow/:devId", {

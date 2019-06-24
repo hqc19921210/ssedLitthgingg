@@ -37,7 +37,7 @@
 		                            <div class="monitor_line"><img ng-src="{{getStatusImg(eqm.online)}}"/></div>
 		                            <div class="monitor_didData">
 		                                <a title="{{eqm.name}}" >{{eqm.name}}</a>
-		                                <em>{{eqm.devId}}</em>
+		                                <em>{{eqm.typeCd == 'L' ? eqm.devId : (!eqm.verification ? '未填写MAC' : eqm.verification)}}</em>
 		                            </div>
 		                            </div>
 		                        </li>
@@ -52,7 +52,7 @@
 			                <div ng-repeat="equ in equipments" style="margin-top: 20px;" class="repeat_list">
 			                    <div id="{{equ.devId}}"
 			                         class="link_null"></div>
-			                    <h4 class="data_h4 clearfix">设备名称：{{equ.name}}（{{equ.type}}）<span class="decice_num">设备编号：{{equ.devId}}</span></h4>
+			                    <h4 class="data_h4 clearfix">设备名称：{{equ.name}}（{{equ.type}}）<span class="decice_num">设备MAC：{{equ.typeCd == 'L' ? equ.devId : (!equ.verification ? '未填写MAC' : equ.verification)}}</span></h4>
 			                   <!--循环数据点列表-->
 			                    <div class="monitor_data_list clearfix" ng-repeat="dataPointItem in equ.dataPoints">
 			                        <div class="col-xs-6  col-sm-6 col-md-3 history_padding" style="word-break:break-all;">
@@ -62,7 +62,7 @@
 			                        <div class="col-xs-6 col-sm-6 col-md-2 history_padding">
 			                            <span>更新时间：</span>
 			                            <span>
-			                                {{dataPointItem.udpDate | date:'yyyy-MM-dd hh:mm:ss'}}
+			                                {{dataPointItem.udpDate | date:'yyyy-MM-dd HH:mm:ss'}}
 			                            </span>
 			                        </div>
 			
@@ -79,7 +79,7 @@
 										</div>
 									</div>
 			                        <div class="col-xs-6 col-sm-6 col-md-2 data_history history_padding ">
-			                            <a ng-click="gotoLog(equ.devId,dataPointItem.attrId)" type="button"  class="btn btn-primary waves-effect waves-light" >历史数据 <i class="ion-stats-bars"></i></a>
+			                            <a ng-click="gotoLog(equ.devId,dataPointItem.attrId,equ.proId)" type="button"  class="btn btn-primary waves-effect waves-light" >历史数据 <i class="ion-stats-bars"></i></a>
 			                        </div>
 			                    </div>
 			

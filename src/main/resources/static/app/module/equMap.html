@@ -23,7 +23,7 @@
                 	<div class="pointer-div" ng-click="devidMap(eqm.devId,eqm.site)">
                     <div class="monitor_line"><img ng-src="{{getStatusImg(eqm.online)}}"/></div>
                     <div class="monitor_center">
-                        <a title="{{eqm.name}}" >{{eqm.name}}</a><em>{{eqm.devId}}</em>
+                        <a title="{{eqm.name}}" >{{eqm.name}}</a><em>{{eqm.typeCd == 'L' ? eqm.devId : (!eqm.verification ? '未填写MAC' : eqm.verification)}}</em>
                     </div>
                     </div>
                 </li>
@@ -38,7 +38,7 @@
                 <table class="table row map_table">
                     <thead>
                     <tr class="ng-scope">
-                        <th>设备编号</th>
+                        <th>设备MAC</th>
                         <th>设备模板</th>
                         <th>数据点名称</th>
                         <th>报警内容</th>
@@ -49,7 +49,7 @@
                     </thead>
                     <tbody id="device_content">
                     <tr ng-repeat="alarmItem in alarmItems">
-                        <td>{{alarmItem.dev_id}}</td>
+                        <td>{{alarmItem.typeCd == 'L' ? alarmItem.devId : (!alarmItem.verification ? '未填写MAC' : alarmItem.verification)}}</td>
                         <td>{{alarmItem.model_name}}</td>
                         <td>{{alarmItem.attr_name}}</td>
                         <td>当前{{alarmItem.attr_name}}值为{{alarmItem.data_value}}{{alarmItem.unit}}</td>
