@@ -13,12 +13,12 @@ function logShowCtrl($scope, $http, $rootScope,$routeParams,$location) {
     $scope.log=new Array();
     $scope.logArr =new Array();
     $scope.param={};
+    $scope.param.prodId="";
     $scope.param.devId="";
     $scope.param.attrId="";
     $scope.attrKey="";
-    console.log($routeParams);
     if(!!$routeParams.devId){
-        $scope.param.proId=$routeParams.proId;
+        $scope.param.prodId=$routeParams.proId;
         $scope.param.devId=$routeParams.devId;
         $scope.param.attrId=$routeParams.attrId;
         //初始化选择
@@ -233,7 +233,6 @@ function logShowCtrl($scope, $http, $rootScope,$routeParams,$location) {
     };
 
     $scope.changeDevId=function () {
-    	console.log($scope.param.devId);
         $scope.param.attrId="";
         $scope.init();
     };
