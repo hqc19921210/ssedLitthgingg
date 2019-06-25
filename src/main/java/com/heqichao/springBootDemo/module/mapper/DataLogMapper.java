@@ -37,4 +37,12 @@ public interface DataLogMapper {
     @Select("select * from data_log d where data_status = 'N' order by add_date desc limit 100")
     public List<DataLog> queryDataLog();
     // End Muaay
+
+    @Select(
+            "<script>"
+                + "select * from data_log  where data_status ='N' and dev_id=#{devId}  and id ="
+                +" ( select log_id from data_detail where data_status ='N' and dev_id=#{devId}  and data_name =#{dataName} and data_value =#{dataValue} order by add_date desc limit 1 )"
+            + "</script>"
+    )
+    DataLog queryLatestDataLog( @Param("devId")String devId,@Param("dataName")String dataName,@Param("dataValue")String dataValue);
 }

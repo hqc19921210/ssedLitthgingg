@@ -23,7 +23,15 @@ import com.heqichao.springBootDemo.module.vo.CreateEquimentVO;
  * 
  */
 public interface EquipmentMapper {
-	
+
+	/**
+	 * 查找某人下所拥有某个设备类型的设备dev_id
+	 * @param uid
+	 * @param type
+	 * @return
+	 */
+	@Select("SELECT dev_id FROM equipments where uid = #{uid}  and valid = 'N' and type_cd  = #{type}")
+	List<String> queryDevIdByUidAndType(@Param("uid") Integer uid,@Param("type")String type);
 	
 	@Select("<script>select equipments.dev_id,equipments.name from equipments where valid = 'N'  " +
 			"and uid like (" +

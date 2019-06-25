@@ -177,13 +177,13 @@ function logShowCtrl($scope, $http, $rootScope,$routeParams,$location) {
     	myChart.showLoading('default',loadingSet);
         $http.post("/service/queryEquAttrLog",$scope.param).success(function(data) {
             $scope.param.initOption='FALSE';
-            if(data.resultObj.prodList){
+            if(!! data.resultObj.prodList){
                 $scope.prodList = data.resultObj.prodList;
             }
-            if(data.resultObj.devList){
+            if(!! data.resultObj.devList){
                 $scope.devList = data.resultObj.devList;
             }
-            if(data.resultObj.attrList){
+            if(!! data.resultObj.attrList){
                 $scope.attrList= data.resultObj.attrList;
             }
             $scope.param.prodId=""+data.resultObj.prodId;
@@ -193,6 +193,7 @@ function logShowCtrl($scope, $http, $rootScope,$routeParams,$location) {
             if(data.resultObj.dataType){
                 $scope.attrType=data.resultObj.dataType;
             }
+            $scope.unit="";
             if(data.resultObj.unit){
                 $scope.unit=data.resultObj.unit;
             }
@@ -200,15 +201,13 @@ function logShowCtrl($scope, $http, $rootScope,$routeParams,$location) {
                 $scope.attrKey=data.resultObj.attrKey;
             }
             $scope.logArr =new Array();
+            $scope.log=new Array();
             if(data.resultObj.log){
                 $scope.log=data.resultObj.log;
                 if($scope.log && $scope.log.length>0){
                     $scope.pages =Math.ceil($scope.log.length/defaultSize);
                     $scope.changePage(1);
                 }
-            }else{
-                $scope.log=[];
-
             }
             $scope.showChart();
 
