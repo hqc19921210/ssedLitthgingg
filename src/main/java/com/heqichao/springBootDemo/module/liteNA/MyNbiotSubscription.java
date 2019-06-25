@@ -14,7 +14,7 @@ import com.heqichao.springBootDemo.module.vo.AddDeviceVO;
 import com.heqichao.springBootDemo.module.vo.CreateEquimentVO;
 
 /**
- * 电信云所有订阅功能
+ * 电信云订阅功能
  * @author Muzzy Xu.
  * @date 2019/03/22
  *

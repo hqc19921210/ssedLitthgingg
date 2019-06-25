@@ -16,9 +16,8 @@ function logShowCtrl($scope, $http, $rootScope,$routeParams,$location) {
     $scope.param.devId="";
     $scope.param.attrId="";
     $scope.attrKey="";
-    console.log($routeParams);
     if(!!$routeParams.devId){
-        $scope.param.proId=$routeParams.proId;
+        $scope.param.prodId=$routeParams.proId;
         $scope.param.devId=$routeParams.devId;
         $scope.param.attrId=$routeParams.attrId;
         //初始化选择
