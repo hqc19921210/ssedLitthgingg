@@ -45,6 +45,20 @@ public class DataCacheUtil {
     public static String MODEL_ATTR ="MODEL_ATTR_";
 
     /**
+     * 缓存放入 永久
+     * @param  prefix 前缀
+     * @param key   键
+     * @param value 值
+     * @return true成功 false 失败
+     */
+    public static boolean setForever(String prefix,String key ,Object value ){
+        if(StringUtil.isEmpty(key) || StringUtil.isEmpty(prefix)){
+            return false;
+        }
+        return  RedisUtil.set(SSET_CACHE_KEY_+prefix+key,value);
+    }
+
+    /**
      * 缓存放入 过期时间为系统默认时间
      * @param  prefix 前缀
      * @param key   键
