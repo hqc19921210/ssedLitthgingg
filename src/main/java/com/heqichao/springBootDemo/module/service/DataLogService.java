@@ -13,11 +13,14 @@ import java.util.Map;
 public interface DataLogService {
 
     //有效
-    public static final String ENABLE_STATUS="N";
+    String ENABLE_STATUS="N";
     //无效
-    public static final String UN_ENABLE_STATUS="D";
+    String UN_ENABLE_STATUS="D";
     //无效
-    public static final String ERROR_STATUS="ERR";
+    String ERROR_STATUS="ERR";
+
+    //sset用户ID
+    Integer SSET_USER_ID =13;
     /**
      * 保存数据
      * @param devId 设备ID
@@ -90,4 +93,13 @@ public interface DataLogService {
     Map queryDataLogTable(String devId,String startTime, String endTime);
 
     List<Map> queryLastestDataDetail(String devId);
+
+    /**
+     * 根据属性值 属性名 和设备ID查找最新一条接收信息的记录
+     * @param devId
+     * @param dataName
+     * @param dataValue
+     * @return
+     */
+    DataLog queryLatestDataLog(String devId,String dataName,String dataValue);
 }

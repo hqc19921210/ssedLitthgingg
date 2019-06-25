@@ -58,31 +58,36 @@ function logShowTableCtrl($scope, $http, $routeParams) {
     //初始化数据
     $scope.init=function(){
         $http.post("/service/queryEquAttrLogTable",$scope.param).success(function(data) {
-            $scope.pages=data.resultObj.data.pages;
-            $scope.total=data.resultObj.data.total;
-            $scope.param.page=data.resultObj.data.pageNum;
-
-            if(data.resultObj.prodList){
+            $scope.pages=0;
+            $scope.log=[];
+            if(!! data.resultObj.data){
+                $scope.total=data.resultObj.data.total;
+                $scope.param.page=data.resultObj.data.pageNum;
+                if(!! data.resultObj.data.list){
+                    $scope.log=data.resultObj.data.list;
+                }
+                if( data.resultObj.data.pages){
+                    $scope.pages=data.resultObj.data.pages;
+                }
+            }
+            if(!! data.resultObj.prodList){
                 $scope.prodList = data.resultObj.prodList;
             }
-            if(data.resultObj.devList){
+            if(!! data.resultObj.devList){
                 $scope.devList = data.resultObj.devList;
             }
             $scope.param.prodId=""+data.resultObj.prodId;
             $scope.param.devId=data.resultObj.devId;
 
-            $scope.log=[];
             $scope.modelAttr=[];
             $scope.equ={};
-            if(data.resultObj.equ){
+            if(!! data.resultObj.equ){
                 $scope.equ=data.resultObj.equ;
             }
-            if(data.resultObj.modelAttr){
+            if(!! data.resultObj.modelAttr){
                 $scope.modelAttr=data.resultObj.modelAttr;
             }
-            if(data.resultObj.data.list){
-                $scope.log=data.resultObj.data.list;
-            }
+
         });
     };
 
@@ -104,7 +109,10 @@ function logShowTableCtrl($scope, $http, $routeParams) {
 
 
     $scope.getValue=function(item,index){
-        return item[$scope.modelAttr[index  ].attrName];
+        if(index < $scope.modelAttr.length){
+            return item[$scope.modelAttr[index].attrName];
+        }
+       return "";
     }
 
 
