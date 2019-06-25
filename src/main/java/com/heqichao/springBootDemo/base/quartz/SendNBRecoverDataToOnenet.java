@@ -2,6 +2,7 @@ package com.heqichao.springBootDemo.base.quartz;
 
 import com.heqichao.springBootDemo.base.service.EquipmentService;
 import com.heqichao.springBootDemo.base.util.CollectionUtil;
+import com.heqichao.springBootDemo.base.util.DataCacheUtil;
 import com.heqichao.springBootDemo.base.util.DateUtil;
 import com.heqichao.springBootDemo.module.entity.DataLog;
 import com.heqichao.springBootDemo.module.service.DataLogService;
@@ -19,11 +20,7 @@ import java.util.Map;
  */
 @Component
 public class SendNBRecoverDataToOnenet {
-
-    //用来临时存放最新一条记录的时间
-    private static Map<String ,Long> dateMap =new HashMap<>();
-
-
+    private String cacheKey ="SEND_NB_TIME_";
     @Autowired
     private DataLogService dataLogService;
 
@@ -32,6 +29,7 @@ public class SendNBRecoverDataToOnenet {
 
     @Scheduled(cron = "0 0/3 * * * ?")
     public void timerToNow(){
+
         //定时任务时间，3分钟
         int limitTime =3;
         Date nowDate =new Date();
@@ -52,13 +50,13 @@ public class SendNBRecoverDataToOnenet {
                     if(DateUtil.minBetween(nowDate,updDate) >= limitTime){
 
                         //判断是否发送过这个时间点的数据
-                        Long snedTime = dateMap.get(devId);
+                        Long snedTime = (Long) DataCacheUtil.get(cacheKey,devId);
                         if(snedTime != null && snedTime.equals(updDate.getTime())){
                             //这条记录已经发送过了 就不再发送
                             continue;
                         }
                         //放置最新一条记录的时间到缓存
-                        dateMap.put(devId,updDate.getTime());
+                        DataCacheUtil.setForever(cacheKey,devId,updDate.getTime());
                         for(Map dataMap:dataList){
                             String dataName = (String) dataMap.get("dataName");
                             String dataValue = (String) dataMap.get("dataValue");
