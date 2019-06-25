@@ -25,7 +25,7 @@ public class MyApplicationRunningListener implements ApplicationRunner {
     }
 
     private void initTask(){
-       // MqttUtil.init();
+        MqttUtil.init();
     }
 
 }
