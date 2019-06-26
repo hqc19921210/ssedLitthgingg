@@ -139,4 +139,12 @@ public interface EquipmentService {
 	 * @return
 	 */
 	Map queryAddEquCount(Date startDay,Date endDay,String type);
+
+	/**
+	 * 查找某人下所拥有某个设备类型的设备dev_id
+	 * @param uid
+	 * @param type
+	 * @return
+	 */
+	List<String> queryDevIdByUidAndType(Integer uid ,String type);
 }

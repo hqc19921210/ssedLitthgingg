@@ -151,6 +151,11 @@ public class EquipmentServiceImpl implements EquipmentService {
 		return map;
 	}
 
+	@Override
+	public List<String> queryDevIdByUidAndType(Integer uid, String type) {
+		return eMapper.queryDevIdByUidAndType(uid,type);
+	}
+
 	// 设备匹配数据点
     public Map<String,Object> toEquipmentShow(EquipmentVO equ,DataDetail point){
     	Map<String,Object> newClu= new HashMap<String,Object>();
