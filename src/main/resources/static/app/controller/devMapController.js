@@ -40,7 +40,7 @@ function devMapCtrl($scope, $http, $rootScope,$routeParams,$timeout,$interval) {
 	//为后台请求参数 带分页数据
     $scope.quereyData={
         page:1, //当前页码 初始化为1
-        size:3, //每页数据量 defaultSize全局变量
+        size:10, //每页数据量 defaultSize全局变量
     };
 	$scope.pages=0;
 	$scope.total=0;
@@ -74,7 +74,6 @@ function devMapCtrl($scope, $http, $rootScope,$routeParams,$timeout,$interval) {
     
     $scope.getDevList=function(page){
    	 $scope.loadCtl.search = true;
-//   	 $scope.init();
    	 $scope.getAlarmNewest();
    	 $scope.quereyData.page=page ? page : 1;
    	$scope.quereyData.gid=$('.easyui-combotree').combotree('getValue');
@@ -169,15 +168,8 @@ function devMapCtrl($scope, $http, $rootScope,$routeParams,$timeout,$interval) {
                       var point = new BMap.Point(e.target.getPosition().lng, e.target.getPosition().lat);
                       var devidState = (data.resultObj.onlineStatus == 0) ? '<img src="assets/img/offline.png" />' : '<img src="assets/img/online.png" />';
                       $scope.map.centerAndZoom(point, 18);
-//                      var devidManage;
                       var devidDataHistory;
                       var devidAlarmHistory;
-//                      if($rootScope.ums_device_manage){
-//                    	  devidManage='<a style="padding:5px 10px;margin:0 10px;background:#f60;color: #fff;line-height: 20px;border-radius:5px;" href="' + $scope.host + '/main.html#/device/deviceDatail/' + content + '">设备管理</a>';
-//                      }else {
-//                    	  devidManage='<a style="padding:5px 10px;margin:0 10px;background:#f60;color: #fff;line-height: 20px;border-radius:5px;" href="' + $scope.host + '/main.html#/device/deviceDatail/' + content + '">设备管理</a>';
-////                          devidManage='';
-//                      }
 
                       devidDataHistory='<a style="padding:5px 10px;margin:0 10px;background:#f60;color: #fff;line-height: 20px;border-radius:5px;" href="#/module/logShow/' + data.resultObj.devId + '">历史记录</a>';
                       devidAlarmHistory='<a style="padding:5px 10px;margin:0 10px;background:#f60;color: #fff;line-height: 20px;border-radius:5px;" href="#/module/alarmLogList/'+data.resultObj.devId + '">报警记录</a>';
@@ -190,7 +182,6 @@ function devMapCtrl($scope, $http, $rootScope,$routeParams,$timeout,$interval) {
                           '<b>所属用户 ：</b>' + data.resultObj.uName + '<br />' +
                           '<b>设备地址 ：</b>' + (!data.resultObj.address ? data.resultObj.site : data.resultObj.address) +
                           '</div></div><div style="margin:20px auto;text-align: center;font-size:12px;">' +
-//                          devidManage +
                           devidDataHistory +
                           devidAlarmHistory +
                           '</div>';
@@ -231,16 +222,15 @@ function devMapCtrl($scope, $http, $rootScope,$routeParams,$timeout,$interval) {
     $scope.getDevGroupsList();
   //翻页
     $scope.changePage=function(page){
-        $scope.quereyData.page=page;
-        $scope.init();
+        $scope.getDevList(page);
     }
   //每30s刷新一次
-    $scope.$on('$destroy',function(){
+  /*  $scope.$on('$destroy',function(){
    	 $interval.cancel(timeout_upd);
     })
 	var timeout_upd = $interval(function() {
         $scope.getDevList($scope.quereyData.page);
-	}, 30*1000);
+	}, 30*1000);*/
   //获取上下线图片
     $scope.getStatusImg = function (status) {
         if(status == 0){

@@ -50,7 +50,8 @@ function logShowCtrl($scope, $http, $rootScope,$routeParams,$location) {
     $scope.devList=new Array();
     $scope.attrList=new Array();
     //图型数据
-    $scope.plotDownloads =new Array();
+    $scope.plotDownloads =[];
+    $scope.plotx =[];
     $scope.attrType="";
 
     $scope.param.end =$scope.fmtDate(new Date());
@@ -126,6 +127,7 @@ function logShowCtrl($scope, $http, $rootScope,$routeParams,$location) {
             boundaryGap: false,
         },
         yAxis: {
+        	name : '单位：',
             type: 'value',
             boundaryGap: [0, '100%']
         },
@@ -175,6 +177,8 @@ function logShowCtrl($scope, $http, $rootScope,$routeParams,$location) {
     //初始化数据
     $scope.init=function(){
     	myChart.showLoading('default',loadingSet);
+    	$scope.plotDownloads =[];
+    	$scope.plotx =[];
         $http.post("/service/queryEquAttrLog",$scope.param).success(function(data) {
             $scope.param.initOption='FALSE';
             if(!! data.resultObj.prodList){
@@ -248,8 +252,20 @@ function logShowCtrl($scope, $http, $rootScope,$routeParams,$location) {
         }
     };
 
+    //图表数据点异步加载
     $scope.asynLinePointData=function(){
     	myChart.setOption({
+    		xAxis: {
+                data:$scope.plotx
+            },
+    		yAxis: {
+            	name : '单位：'+$scope.unit
+            },
+            dataZoom: [ //重新加载写区域
+            	{
+    	            start: 0,
+    	            end: 100
+    	        }],
             series: [{
                 data: $scope.plotDownloads
             }]
@@ -264,7 +280,9 @@ function logShowCtrl($scope, $http, $rootScope,$routeParams,$location) {
             for(var j=0;j<$scope.log.length;j++){
                 var obj =$scope.log[j];
                 var value =obj.dataValue;
-                $scope.plotDownloads.splice(0,0,{value:[obj.addDate,value]});//因为下方列表是时间desc排序，故需把数据点放到首位
+//                $scope.plotDownloads.splice(0,0,{value:[obj.addDate,value]});//因为下方列表是时间desc排序，故需把数据点放到首位
+                $scope.plotx.splice(0,0,obj.addDate);//因为下方列表是时间desc排序，故需把数据点放到首位
+                $scope.plotDownloads.splice(0,0,obj.dataValue);//因为下方列表是时间desc排序，故需把数据点放到首位
             }
         }else{
             //默认显示第一个波形

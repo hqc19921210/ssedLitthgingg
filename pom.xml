@@ -85,6 +85,16 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-aop</artifactId>
 		</dependency>
+		
+		<!-- Logback  https://mvnrepository.com/artifact/ch.qos.logback/logback-classic -->
+		<dependency>
+		    <groupId>ch.qos.logback</groupId>
+		    <artifactId>logback-classic</artifactId>
+		    <version>1.2.3</version>
+		    <!--此处test 是关键，表明底层日志实现框架-也即该依赖在test 代码编译、运行时才起作用-->
+		    <scope>test</scope>
+		</dependency>
+				
 
 		<!--阿里的fastjson 暂时没用-->
 		<dependency>
