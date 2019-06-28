@@ -2,15 +2,6 @@ package com.heqichao.springBootDemo.module.entity;
 
 import com.heqichao.springBootDemo.base.entity.BaseEntity;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-
 import org.springframework.stereotype.Component;
 
 /**
@@ -129,6 +120,22 @@ public class ModelAttr extends BaseEntity {
     public void setOrderNo(int orderNo) {
         this.orderNo = orderNo;
     }
+
+	public Integer getNumMax() {
+		return numMax;
+	}
+
+	public void setNumMax(Integer numMax) {
+		this.numMax = numMax;
+	}
+
+	public Integer getNumMin() {
+		return numMin;
+	}
+
+	public void setNumMin(Integer numMin) {
+		this.numMin = numMin;
+	}
 
 
     

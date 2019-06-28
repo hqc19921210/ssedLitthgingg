@@ -11,7 +11,11 @@ import java.util.Map;
  * Created by heqichao on 2019-5-26.
  */
 public class ModelAttrVo extends ModelAttr {
-    //数值类型名称
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -5983963651902053800L;
+	//数值类型名称
     private String valueName;
     //数据类型名称
     private String dataName;

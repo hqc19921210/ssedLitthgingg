@@ -26,3 +26,5 @@ db/groupsProcedure/
 springbootdemo-0.0.1-SNAPSHOT_0920.jar
 static/download/1544538268920/模板.xls
 src/main/resources/application-prod.properties
+*.0
+sset.log.0.lck
